@@ -1,0 +1,25 @@
+[
+    {
+        "id" : 1,
+        "name" : "Yearly Learning Plan",
+        "price" : "550",
+        "properties" : [
+            "Complete Project Management Course",
+            "Complete Business Analysis Course",
+            "Access to Tritek BaseCamp",
+            "Live Projects"
+        ]
+    },
+
+    {
+        "id" : 2,
+        "name" : "Monthly Learning Plan",
+        "price" : "19",
+        "properties" : [
+            "Complete Project Management Course",
+            "Complete Business Analysis Course",
+            "",
+            ""
+        ]
+    }
+]

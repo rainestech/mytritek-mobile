@@ -1,0 +1,26 @@
+[
+    {
+        "id" : 1,
+        "name" : "Naimo",
+        "testimony" : "I joined Tritek on 15th of June 2019 after a  colleague of mine recommended Tritek. I spoke to Adeshola and she booked me in. I was very anxious to find out if it was the best fit for me but after...",
+        "image" : "assets/user_profile/user_1.jpg"
+    },
+    {
+        "id" : 2,
+        "name" : "PMO Analyst",
+        "testimony" : "I just want to say a big thank you to Tritek…especially Mojisola, who was very helpful in prepping me for this role. I got my first role as an IT PMO Analyst last year June after I was introduced...",
+        "image" : "assets/user_profile/user_2.jpg"
+    },
+    {
+        "id" : 3,
+        "name" : "Anne",
+        "testimony" : "I have just been offered a role as a Senior Project coordinator/Comms Team Lead. The funniest part is .. I was offered the role of a Senior project coordinator first, but was called back and told ...",
+        "image" : "assets/user_profile/user_3.jpg"
+    },
+    {
+        "id" : 4,
+        "name" : "Christine",
+        "testimony" : "It’s been a while, but I’ve got some great news-I have a secured a role as a Project Support Officer, working on a large GDPR project. I worked on project elite Afro 1 and also currently working on...",
+        "image" : "assets/user_profile/user_4.jpg"
+    }
+]
