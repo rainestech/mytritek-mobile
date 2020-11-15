@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/home/home.dart';
+import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
 
 class SelectPlan extends StatefulWidget {
   final String courseName, image, price;
@@ -261,11 +267,11 @@ class _SelectPlanState extends State<SelectPlan> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 305.0,
+              expandedHeight: 150.0,
               pinned: true,
               forceElevated: true,
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.white,
+              backgroundColor: themeBlue,
               elevation: 0.0,
               leading: IconButton(
                 icon: Icon(
@@ -276,204 +282,250 @@ class _SelectPlanState extends State<SelectPlan> {
                   Navigator.pop(context);
                 },
               ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    'Back',
+                    style: TextStyle(
+                      fontFamily: 'Signika Negative',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                      color: themeGold,
+                    ),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => AccountSettings()));
+                    },
+                    child: Container(
+                      height: 26.0,
+                      width: 26.0,
+                      margin: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image:
+                          AssetImage('assets/icon.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'MyTritek',
+                    style: TextStyle(
+                      fontFamily: 'Signika Negative',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 25.0,
+                      color: themeGold,
+                    ),
+                  ),
+                ],
+              ),
               flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      top: 0.0,
-                      left: 0.0,
-                      child: Container(
-                        width: width,
-                        height: 328.0,
-                        padding: EdgeInsets.all(20.0),
-                        alignment: Alignment.bottomCenter,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(courseImage),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20.0),
-                            bottomRight: Radius.circular(20.0),
-                          ),
+                background: Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  alignment: Alignment.bottomCenter,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/appbar_bg.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      AutoSizeText(
+                        'Membership/Subscriptions',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: 'Signika Negative',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 25.0,
+                          color: Colors.white,
                         ),
                       ),
-                    ),
-                    Positioned(
-                      child: Container(
-                        width: width,
-                        height: 328.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20.0),
-                            bottomRight: Radius.circular(20.0),
-                          ),
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0.0,
-                      left: 0.0,
-                      child: Container(
-                        height: 130.0,
-                        width: width,
-                        padding: EdgeInsets.all(15.0),
-                        alignment: Alignment.bottomCenter,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              courseName,
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Signika Negative',
-                              ),
+                      InkWell(
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => AccountSettings()));
+                        },
+                        child: Container(
+                          height: 40.0,
+                          width: 40.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            image: DecorationImage(
+                              image:
+                              AssetImage('assets/user_profile/profile.png'),
+                              fit: BoxFit.cover,
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ];
         },
-        body: ListView(
-          children: [
-            SizedBox(height: 15.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    paymentMethodDialog();
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(right: 20.0, left: 20.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          blurRadius: 1.5,
-                          spreadRadius: 1.5,
-                          color: Colors.grey[200],
+        body: FutureBuilder<List<SubscriptionList>>(
+          future: loadProducts(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+
+            return snapshot.hasData
+                ? ListView.builder(
+                itemCount: snapshot.data.length,
+                primary: false,
+                itemBuilder: (BuildContext ctxt, int index) {
+                  return InkWell(
+                    onTap: () {
+                      // ....
+                    },
+                    child: Container(
+                      // width: 230.0,
+                      margin: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: themeBlue,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 2.0,
+                            spreadRadius: 1.5,
+                            color: Colors.grey[300],
+                          )
+                        ],
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(20.0, 1.0, 20.0, 2.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            SizedBox(height: 5.0),
+                            AutoSizeText(
+                              snapshot.data[index].name,
+                              maxLines: 2,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 5.0),
+                            for(var item in snapshot.data[index].properties )
+                              AutoSizeText(
+                                item.length > 0 ? "\u2022 " + item : "",
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            SizedBox(height: 5.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(
+                                  'Price: ' + '\$${snapshot.data[index].price}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: themeGold,
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 10.0),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            'All-Access Pass',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            'You will get unlimit access to every class you want for a year. All lessons for you auto-renews annually.',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontSize: 17.0,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            '\$499.99/ year',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                InkWell(
-                  onTap: () {
-                    paymentMethodDialog();
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(right: 20.0, left: 20.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          blurRadius: 1.5,
-                          spreadRadius: 1.5,
-                          color: Colors.grey[200],
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 10.0),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            'This Class Only',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            'A good choice for who want to learn a single class for a long time.',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontSize: 17.0,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            '\$$coursePrice/ once',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontSize: 20.0,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                  );
+                })
+                : Center(
+                    child: SpinKitRipple(color: Colors.red),
+                );
+          },
         ),
+      );
+    }
+
+    AppBar buildAppBar(BuildContext context) {
+      return AppBar(
+        backgroundColor: themeBlue,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: iconColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: false,
+        title: Text(
+          'Back'.toUpperCase(),
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: iconColor,
+            ),
+            onPressed: () {},
+          ),
+        ],
       );
     }
 
     return Scaffold(
       body: nestedAppBar(),
+      backgroundColor: themeBg,
     );
   }
+
+  Future<List<SubscriptionList>> loadProducts() async {
+    var jsonString = await rootBundle.loadString('assets/json/subscription_slide.json');
+    final jsonResponse = json.decode(jsonString);
+
+    List<SubscriptionList> subs = [];
+
+    for (var o in jsonResponse) {
+      SubscriptionList course = SubscriptionList(
+          o["id"],
+          o["name"],
+          o["price"],
+          o["properties"]);
+
+      subs.add(course);
+    }
+
+    return subs;
+  }
+
+  Future<List<String>> loadProperties(List property) async {
+    // List<String> subs = [];
+    //
+    // for (var o in property) {
+    //   subs.add(o);
+    // }
+
+    return property;
+  }
 }
+

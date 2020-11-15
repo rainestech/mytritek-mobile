@@ -13,7 +13,7 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'What you will get',
+          'Course Features',
           style: TextStyle(
             fontFamily: 'Signika Negative',
             fontSize: 18.0,
@@ -23,52 +23,171 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
         ),
         
         ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
           leading: Icon(
             Icons.menu,
-            color: Colors.black,
+            color: themeGold,
             size: 25.0,
           ),
-          title: Text(
-            '15 Videos Lessons',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Signika Negative',
-              fontSize: 18.0,
-            ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Quizzes',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                  color: themeBlue
+                ),
+              ),
+              Spacer(),
+              Text(
+                '250',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          leading: Icon(
+            Icons.av_timer,
+            color: themeGold,
+            size: 25.0,
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Duration',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                  color: themeBlue
+                ),
+              ),
+              Spacer(),
+              Text(
+                '45 Weeks',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          leading: Icon(
+            Icons.people,
+            color: themeGold,
+            size: 25.0,
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Enrolled',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                  color: themeBlue
+                ),
+              ),
+              Spacer(),
+              Text(
+                '2034',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          leading: Icon(
+            Icons.redo,
+            color: themeGold,
+            size: 25.0,
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Re-Take Course',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                  color: themeBlue
+                ),
+              ),
+              Spacer(),
+              Text(
+                '2034',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          dense: true,
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          leading: Icon(
+            Icons.sticky_note_2_outlined,
+            color: themeGold,
+            size: 25.0,
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Re-Take Course',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                  color: themeBlue
+                ),
+              ),
+              Spacer(),
+              Text(
+                'Self',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
           ),
         ),
 
-        ListTile(
-          leading: Icon(
-            Icons.star_border,
-            color: Colors.black,
-            size: 25.0,
-          ),
-          title: Text(
-            'Exclusive Learning Materials',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Signika Negative',
-              fontSize: 18.0,
-            ),
-          ),
-        ),
-
-        ListTile(
-          leading: Icon(
-            Icons.check,
-            color: Colors.black,
-            size: 25.0,
-          ),
-          title: Text(
-            '100% Guaranteed',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Signika Negative',
-              fontSize: 18.0,
-            ),
-          ),
-        ),
       ],
     );
   }

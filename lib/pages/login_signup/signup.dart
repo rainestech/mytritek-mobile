@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+// import 'package:international_phone_input/international_phone_input.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/login_signup/otp_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -12,6 +15,9 @@ class _SignUpState extends State<SignUp> {
   // Initially password is obscure
   bool _obscureText = true;
   bool _obscureConfirmText = true;
+  String phoneNumber;
+
+  get onPhoneNumberChange => null;
 
   // Toggles the password show status
   void _viewPassword() {
@@ -29,156 +35,332 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    nestedAppBar() {
-      return NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: 180,
-              pinned: true,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding: EdgeInsets.all(20.0),
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appbar_bg.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Text(
-                    'Sign up',
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 25.0,
-                    ),
-                  ),
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage('assets/appbar_bg.png'), fit: BoxFit.cover),
+      ),
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0.0,
+            left: 0.0,
+            child: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.1, 0.3, 0.5, 0.7, 0.9],
+                  colors: [
+                    Colors.black.withOpacity(0.3),
+                    Colors.black.withOpacity(0.4),
+                    Colors.black.withOpacity(0.55),
+                    Colors.black.withOpacity(0.67),
+                    Colors.black.withOpacity(0.79),
+                  ],
                 ),
               ),
-              automaticallyImplyLeading: false,
             ),
-          ];
-        },
-        body: ListView(
-          children: <Widget>[
-            SizedBox(height: 30.0),
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(right: 30.0, left: 30.0),
-              child: Column(
+          ),
+          Positioned(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: ListView(
+                physics: BouncingScrollPhysics(),
                 children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Username',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Signika Negative',
-                        color: Colors.grey[500],
-                      ),
-                      contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                  Padding(
+                    padding: EdgeInsets.only(top: 50.0, left: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Welcome to',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          appName,
+                          style: TextStyle(
+                            color: themeGold,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Signika Negative',
-                        color: Colors.grey[500],
-                      ),
-                      contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Create new User Account',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: Login()));
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(1.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                            ),
+                            child:
+                            Text(
+                              'Or Login Here',
+                              style: TextStyle(
+                                color: themeGold,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(width: 30)
+                      ],
                     ),
                   ),
-                  SizedBox(height: 10.0),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Phone number',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Signika Negative',
-                        color: Colors.grey[500],
-                      ),
-                      contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Signika Negative',
-                        color: Colors.grey[500],
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye),
-                        onPressed: _viewPassword,
-                      ),
-                      contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                    ),
-                    obscureText: _obscureText,
-                  ),
-                  SizedBox(height: 10.0),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Confirm password',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Signika Negative',
-                        color: Colors.grey[500],
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.remove_red_eye),
-                        onPressed: _viewConfirmPassword,
-                      ),
-                      contentPadding:
-                          const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                    ),
-                    obscureText: _obscureConfirmText,
-                  ),
-                  SizedBox(height: 40.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: OTPScreen()));
-                    },
+                  SizedBox(height: 50.0),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
                     child: Container(
-                      padding: EdgeInsets.all(15.0),
-                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
-                        color: textColor,
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
-                      child: Text(
-                        'Sign up',
+                      child: TextField(
                         style: TextStyle(
-                          fontFamily: 'Signika Negative',
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'First Name',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
                         ),
                       ),
                     ),
                   ),
+                  SizedBox(height: 20.0),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child: TextField(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'Last Name',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child: TextField(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'E-mail',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Container(
+                      padding: EdgeInsets.only(left: 10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child: InternationalPhoneNumberInput(
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        // autoValidate: false,
+                        selectorTextStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.DIALOG,
+                        ),
+                        inputBorder: InputBorder.none,
+                        inputDecoration: InputDecoration(
+                          // contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'Phone Number',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                        onInputChanged: (PhoneNumber value) {  },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child: TextField(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'Username',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200].withOpacity(0.3),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child:
+                      TextField(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(left: 20.0, top: 13.0, bottom: 12.0),
+                          hintText: 'Password',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            // fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: InputBorder.none,
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.remove_red_eye),
+                            onPressed: _viewPassword,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30.0),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    child: SizedBox(
+                      height: 50.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.bottomRight,
+                            stops: [0.1, 0.5, 0.9],
+                            colors: [
+                              Colors.yellow[300].withOpacity(0.6),
+                              Colors.yellow[500].withOpacity(0.8),
+                              Colors.yellow[600].withOpacity(1.0),
+                            ],
+                          ),
+                        ),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          onPressed: () {},
+                          color: Colors.transparent,
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30.0),
                 ],
               ),
             ),
-          ],
-        ),
-      );
-    }
-
-    return Scaffold(
-      body: nestedAppBar(),
+          ),
+        ],
+      ),
     );
   }
+
 }

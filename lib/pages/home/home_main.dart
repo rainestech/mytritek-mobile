@@ -225,7 +225,7 @@ class _HomeMainState extends State<HomeMain> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: themeBg,
       body: nestedAppBar(),
     );
   }

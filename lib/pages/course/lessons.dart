@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/pages/video_play/video_play.dart';
 
@@ -82,26 +83,16 @@ class _LessonsState extends State<Lessons> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(item['img']),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    Container(
-                      width: width - 120.0,
+                      width: width - 25,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 8.0, bottom: 4.0, right: 8.0, left: 8.0),
-                            child: Text(
+                            child: AutoSizeText(
                               '${item['title']}',
+                              maxLines: 2,
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontFamily: 'Signika Negative',
@@ -113,13 +104,38 @@ class _LessonsState extends State<Lessons> {
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
-                            child: Text(
-                              '${item['description']}',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                height: 1.6,
-                                color: Colors.grey,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.av_timer,
+                                  size: 20.0,
+                                ),
+                                SizedBox(width: 3.0),
+                                Text(
+                                   '9 mins, 50s',// '${item['video_time']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    height: 1.6,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  Icons.edit_off,
+                                  size: 20.0,
+                                ),
+                                SizedBox(width: 3.0),
+                                Text(
+                                   '9 Quizzes',// '${item['video_time']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    height: 1.6,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/dataClass/passDataToCoursePage.dart';
@@ -17,6 +18,8 @@ class CoursePage extends StatefulWidget {
 
 class _CoursePageState extends State<CoursePage> {
   bool wishlist = false;
+  bool subscribed = false;
+  bool preview = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   onAddedInWishlist() {
@@ -39,11 +42,11 @@ class _CoursePageState extends State<CoursePage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 470,
+              expandedHeight: 400,
               pinned: true,
               forceElevated: true,
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.white,
+              backgroundColor: themeBlue,
               elevation: 0.0,
               leading: IconButton(
                 icon: Icon(
@@ -87,7 +90,7 @@ class _CoursePageState extends State<CoursePage> {
                       left: 0.0,
                       child: Container(
                         width: width,
-                        height: 440.0,
+                        height: 370.0,
                         padding: EdgeInsets.all(20.0),
                         alignment: Alignment.bottomCenter,
                         decoration: BoxDecoration(
@@ -105,7 +108,7 @@ class _CoursePageState extends State<CoursePage> {
                     Positioned(
                       child: Container(
                         width: width,
-                        height: 440.0,
+                        height: 370.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20.0),
@@ -116,10 +119,10 @@ class _CoursePageState extends State<CoursePage> {
                       ),
                     ),
                     Positioned(
-                      bottom: 0.0,
+                      bottom: 50.0,
                       left: 0.0,
                       child: Container(
-                        height: 375.0,
+                        height: 250.0,
                         width: width,
                         padding: EdgeInsets.all(15.0),
                         alignment: Alignment.bottomCenter,
@@ -127,24 +130,28 @@ class _CoursePageState extends State<CoursePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Tritek Team',
+                              'Instructor - Tritek Team',
                               style: TextStyle(
-                                color: textColor,
+                                color: themeGold,
                                 fontSize: 14.0,
                                 fontFamily: 'Signika Negative',
                               ),
                             ),
-                            SizedBox(height: 15.0),
-                            Text(
-                              courseData.courseTitle,
+                            // SizedBox(height: 5.0),
+                            Spacer(),
+                            AutoSizeText(
+                               'Course Title with more text to break the line and test autosize till it overflows. I think we\'re good!',// c
+                              minFontSize: 20,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,// ourseData.courseTitle,
                               style: TextStyle(
-                                color: textColor,
+                                color: themeGold,
                                 fontSize: 30.0,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Signika Negative',
                               ),
                             ),
-                            SizedBox(height: 15.0),
+                            Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -197,8 +204,10 @@ class _CoursePageState extends State<CoursePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10.0),
-                            InkWell(
+                            // SizedBox(height: 10.0),
+                            Spacer(),
+
+                            if (subscribed) InkWell(
                               onTap: () {
                                 Navigator.push(
                                     context,
@@ -229,8 +238,39 @@ class _CoursePageState extends State<CoursePage> {
                                 ),
                               ),
                             ),
+                            if (!subscribed) InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SelectPlan(
+                                              courseName: courseData.courseTitle,
+                                              image: courseData.image,
+                                              price: '50',
+                                            )));
+                              },
+                              child: Container(
+                                width: width,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(13.0),
+                                decoration: BoxDecoration(
+                                    color: themeBlue,
+                                    borderRadius: BorderRadius.circular(5.0)),
+                                child: Text(
+                                  'Buy Membership',
+                                  style: TextStyle(
+                                    fontFamily: 'Signika Negative',
+                                    fontSize: 16.0,
+                                    color: themeGold,
+                                    fontWeight: FontWeight.w700,
+                                    wordSpacing: 3.0,
+                                    letterSpacing: 0.6,
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(height: 10.0),
-                            InkWell(
+                            if (preview) InkWell(
                               onTap: () {
                                 Navigator.push(
                                     context,
@@ -273,16 +313,18 @@ class _CoursePageState extends State<CoursePage> {
                         fontFamily: 'Signika Negative',
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
+                          color: themeGold
                       ),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      'Lessons',
+                      'Curriculum',
                       style: TextStyle(
                         fontFamily: 'Signika Negative',
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
+                        color: themeGold
                       ),
                     ),
                   ),
@@ -315,3 +357,35 @@ class _CoursePageState extends State<CoursePage> {
     );
   }
 }
+
+
+// class CourseActions extends StatelessWidget {
+//   final bool activeSub;
+//   final bool trailer;
+//
+//   const CourseActions({Key key, this.activeSub, this.trailer}) : super(key: key);
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
+//
+// }
+
+// class ColoredTabBar extends Container implements PreferredSizeWidget {
+//   ColoredTabBar(this.color, this.tabBar);
+//
+//   final Color color;
+//   final TabBar tabBar;
+//
+//   @override
+//   Size get preferredSize => tabBar.preferredSize;
+//
+//   @override
+//   Widget build(BuildContext context) => Container(
+//     color: color,
+//     child: tabBar,
+//   );
+// }

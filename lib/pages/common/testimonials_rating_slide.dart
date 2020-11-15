@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/pages/common/carousel_testimonial.dart';
-class TestimonialSlider extends StatefulWidget {
+import 'package:tritek_lms/pages/common/carousel_testimonial_rating.dart';
+
+class TestimonialRatingSlider extends StatefulWidget {
   @override
-  _TestimonialSlider createState() => _TestimonialSlider();
+  _TestimonialRatingSlider createState() => _TestimonialRatingSlider();
 }
 
-class _TestimonialSlider extends State<TestimonialSlider> {
+class _TestimonialRatingSlider extends State<TestimonialRatingSlider> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -19,7 +20,7 @@ class _TestimonialSlider extends State<TestimonialSlider> {
 
     return Container(
       width: width,
-      height: 160.0,
+      height: 170.0,
       color: Theme.of(context).appBarTheme.color,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -28,20 +29,21 @@ class _TestimonialSlider extends State<TestimonialSlider> {
           Container(
             padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 2),
             child: Text(
-              'Testimonials',
+              'Reviews',
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: themeGold,
-                fontSize: 18.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Signika Negative',
                 letterSpacing: 0.7,
               ),
             ),
           ),
+          SizedBox(height: 10),
           Container(
             height: 125.0,
-            child: FutureBuilder<List<TestimonyList>>(
+            child: FutureBuilder<List<TestimonyRatingList>>(
               future: loadProducts(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
@@ -51,7 +53,7 @@ class _TestimonialSlider extends State<TestimonialSlider> {
                     options: CarouselOptions(
                       height: (height / 4.0),
                       enlargeCenterPage: true,
-                      autoPlay: true,
+                      autoPlay: false,
                       aspectRatio: 16 / 9,
                       autoPlayInterval: const Duration(seconds: 20),
                       autoPlayCurve: Curves.fastOutSlowIn,
@@ -62,7 +64,7 @@ class _TestimonialSlider extends State<TestimonialSlider> {
                     ),
                     items: [
                       for(var item in snapshot.data )
-                        CarouselTestimonial(width, item.name, item.testimony, item.image),
+                        CarouselTestimonialRating(width, item.name, item.testimony, item.image, item.rating),
                     ],
                   ),
                   ) :
@@ -78,27 +80,29 @@ class _TestimonialSlider extends State<TestimonialSlider> {
   }
 }
 
-class TestimonyList {
+class TestimonyRatingList {
   int id;
   String name;
   String image;
   String testimony;
+  String rating;
 
-  TestimonyList(this.id, this.name, this.testimony, this.image);
+  TestimonyRatingList(this.id, this.name, this.testimony, this.image, this.rating);
 }
 
-Future<List<TestimonyList>> loadProducts() async {
+Future<List<TestimonyRatingList>> loadProducts() async {
   var jsonString = await rootBundle.loadString('assets/json/testimony_slide.json');
   final jsonResponse = json.decode(jsonString);
 
-  List<TestimonyList> subs = [];
+  List<TestimonyRatingList> subs = [];
 
   for (var o in jsonResponse) {
-    TestimonyList course = TestimonyList(
+    TestimonyRatingList course = TestimonyRatingList(
         o["id"],
         o["name"],
         o["testimony"],
-        o["image"]);
+        o["image"],
+        o["rating"]);
 
     subs.add(course);
   }
