@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/pages/home/home.dart';
 import 'package:tritek_lms/pages/login_signup/otp_screen.dart';
-import 'package:tritek_lms/pages/login_signup/signup.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -12,109 +11,6 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   @override
-  // Widget build(BuildContext context) {
-  //   nestedAppBar() {
-  //     return NestedScrollView(
-  //       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-  //         return <Widget>[
-  //           SliverAppBar(
-  //             expandedHeight: 180,
-  //             pinned: true,
-  //             leading: IconButton(
-  //               icon: Icon(Icons.arrow_back_ios),
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //             flexibleSpace: FlexibleSpaceBar(
-  //               background: Container(
-  //                 padding: EdgeInsets.all(20.0),
-  //                 alignment: Alignment.bottomLeft,
-  //                 decoration: BoxDecoration(
-  //                   image: DecorationImage(
-  //                     image: AssetImage('assets/appbar_bg.png'),
-  //                     fit: BoxFit.cover,
-  //                   ),
-  //                 ),
-  //                 child: Text(
-  //                   'Forgot Password',
-  //                   style: TextStyle(
-  //                     fontFamily: 'Signika Negative',
-  //                     fontWeight: FontWeight.w700,
-  //                     fontSize: 25.0,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //             automaticallyImplyLeading: false,
-  //           ),
-  //         ];
-  //       },
-  //       body: ListView(
-  //         children: <Widget>[
-  //           SizedBox(height: 30.0),
-  //           Container(
-  //             alignment: Alignment.center,
-  //             margin: EdgeInsets.only(right: 30.0, left: 30.0),
-  //             child: Column(
-  //               children: <Widget>[
-  //                 Text(
-  //                   'Enter your registered email to forgot your password',
-  //                   style: TextStyle(
-  //                     fontSize: 13.0,
-  //                     fontFamily: 'Signika Negative',
-  //                     color: Colors.grey[500],
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 20.0),
-  //                 TextField(
-  //                   decoration: InputDecoration(
-  //                     hintText: 'Enter registered email',
-  //                     hintStyle: TextStyle(
-  //                       fontFamily: 'Signika Negative',
-  //                       color: Colors.grey[500],
-  //                     ),
-  //                     contentPadding:
-  //                         const EdgeInsets.only(top: 12.0, bottom: 12.0),
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 40.0),
-  //                 InkWell(
-  //                   onTap: () {
-  //                     Navigator.push(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) => Home()));
-  //                   },
-  //                   child: Container(
-  //                     padding: EdgeInsets.all(15.0),
-  //                     alignment: Alignment.center,
-  //                     decoration: BoxDecoration(
-  //                       borderRadius: BorderRadius.circular(5.0),
-  //                       color: textColor,
-  //                     ),
-  //                     child: Text(
-  //                       'Forgot Password',
-  //                       style: TextStyle(
-  //                         fontFamily: 'Signika Negative',
-  //                         fontSize: 18.0,
-  //                         fontWeight: FontWeight.w700,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  //
-  //   return Scaffold(
-  //     body: nestedAppBar(),
-  //   );
-  // }
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -192,21 +88,71 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   SizedBox(height: 70.0),
                   Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                    padding: EdgeInsets.only(left: 25.0, right: 25, bottom: 20),
+                    child: Text(
+                      'Enter your registered phone number to request an OTP to reset your account password',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.grey[200].withOpacity(0.3),
+                  //       borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  //     ),
+                  //     child: TextField(
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 16.0,
+                  //         fontWeight: FontWeight.w500,
+                  //       ),
+                  //       decoration: InputDecoration(
+                  //         contentPadding: EdgeInsets.only(left: 20.0),
+                  //         hintText: 'Email',
+                  //         hintStyle: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 16.0,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //         border: InputBorder.none,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  Padding(
+                    padding: EdgeInsets.all(20.0),
                     child: Container(
+                      padding: EdgeInsets.only(left: 10.0),
                       decoration: BoxDecoration(
                         color: Colors.grey[200].withOpacity(0.3),
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
-                      child: TextField(
-                        style: TextStyle(
+                      child: InternationalPhoneNumberInput(
+                        textStyle: TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
                           fontWeight: FontWeight.w500,
                         ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'Email',
+                        initialValue: PhoneNumber(
+                            phoneNumber: '', isoCode: '+1', dialCode: '+1'),
+                        // autoValidate: false,
+                        selectorTextStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.DIALOG,
+                        ),
+                        inputBorder: InputBorder.none,
+                        inputDecoration: InputDecoration(
+                          // contentPadding: EdgeInsets.only(left: 20.0),
+                          hintText: 'Phone Number',
                           hintStyle: TextStyle(
                             color: Colors.white,
                             fontSize: 16.0,
@@ -214,6 +160,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           ),
                           border: InputBorder.none,
                         ),
+                        onInputChanged: (PhoneNumber value) {},
                       ),
                     ),
                   ),
