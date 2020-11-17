@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/dataClass/passDataToCoursePage.dart';
+import 'package:tritek_lms/data/passDataToCoursePage.dart';
 import 'package:tritek_lms/pages/course/lessons.dart';
 import 'package:tritek_lms/pages/course/overview.dart';
 import 'package:tritek_lms/pages/payment/select_plan.dart';

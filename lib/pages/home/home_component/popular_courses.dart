@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:tritek_lms/dataClass/passDataToCoursePage.dart';
+import 'package:tritek_lms/data/passDataToCoursePage.dart';
 import 'package:tritek_lms/pages/course/course.dart';
+
 class PoplularCourse extends StatefulWidget {
   @override
   _PoplularCourseState createState() => _PoplularCourseState();
