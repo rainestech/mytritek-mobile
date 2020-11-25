@@ -1,12 +1,395 @@
-class Courses {
-  final int id;
-  final String name;
-  final String image;
-  final String category;
-  final String rating;
-  final String noOfRating;
-  final String price;
+class Course {
+  int id;
+  String title;
+  String duration;
+  String students;
+  String retake;
+  String enrolled;
+  String author;
+  String description;
+  List<Sections> sections;
+  String image;
+  Instructor instructor;
+  List<Comments> comments;
 
-  Courses(this.id, this.image, this.name, this.category, this.rating,
-      this.noOfRating, this.price);
+  Course(
+      {this.id,
+      this.title,
+      this.duration,
+      this.students,
+      this.retake,
+      this.enrolled,
+      this.author,
+      this.description,
+      this.sections,
+      this.image,
+      this.instructor,
+      this.comments});
+
+  Course.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    duration = json['duration'];
+    students = json['students'];
+    retake = json['retake'];
+    enrolled = json['enrolled'];
+    author = json['author'];
+    description = json['description'];
+    if (json['sections'] != null) {
+      sections = new List<Sections>();
+      json['sections'].forEach((v) {
+        sections.add(new Sections.fromJson(v));
+      });
+    }
+    image = json['image'];
+    instructor = json['instructor'] != null
+        ? new Instructor.fromJson(json['instructor'])
+        : null;
+    if (json['comments'] != null) {
+      comments = new List<Comments>();
+      json['comments'].forEach((v) {
+        comments.add(new Comments.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['duration'] = this.duration;
+    data['students'] = this.students;
+    data['retake'] = this.retake;
+    data['enrolled'] = this.enrolled;
+    data['author'] = this.author;
+    data['description'] = this.description;
+    if (this.sections != null) {
+      data['sections'] = this.sections.map((v) => v.toJson()).toList();
+    }
+    data['image'] = this.image;
+    if (this.instructor != null) {
+      data['instructor'] = this.instructor.toJson();
+    }
+    if (this.comments != null) {
+      data['comments'] = this.comments.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Sections {
+  String sectionName;
+  int sectionOrder;
+  int id;
+  List<Lessons> lessons;
+
+  Sections({this.sectionName, this.sectionOrder, this.id, this.lessons});
+
+  Sections.fromJson(Map<String, dynamic> json) {
+    sectionName = json['sectionName'];
+    sectionOrder = json['sectionOrder'];
+    id = json['id'];
+    if (json['lessons'] != null) {
+      lessons = new List<Lessons>();
+      json['lessons'].forEach((v) {
+        lessons.add(new Lessons.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sectionName'] = this.sectionName;
+    data['sectionOrder'] = this.sectionOrder;
+    data['id'] = this.id;
+    if (this.lessons != null) {
+      data['lessons'] = this.lessons.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Lessons {
+  int itemId;
+  int itemOrder;
+  String postTitle;
+  int postId;
+  int sectionId;
+  String duration;
+  String preview;
+  int quizCount;
+
+  Lessons(
+      {this.itemId,
+      this.itemOrder,
+      this.postTitle,
+      this.postId,
+      this.sectionId,
+      this.duration,
+      this.preview,
+      this.quizCount});
+
+  Lessons.fromJson(Map<String, dynamic> json) {
+    itemId = json['itemId'];
+    itemOrder = json['itemOrder'];
+    postTitle = json['postTitle'];
+    postId = json['postId'];
+    sectionId = json['sectionId'];
+    duration = json['duration'];
+    preview = json['preview'];
+    quizCount = json['quizCount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['itemId'] = this.itemId;
+    data['itemOrder'] = this.itemOrder;
+    data['postTitle'] = this.postTitle;
+    data['postId'] = this.postId;
+    data['sectionId'] = this.sectionId;
+    data['duration'] = this.duration;
+    data['preview'] = this.preview;
+    data['quizCount'] = this.quizCount;
+    return data;
+  }
+}
+
+class Instructor {
+  int id;
+  String email;
+  String username;
+  String name;
+  String description;
+
+  Instructor({this.id, this.email, this.username, this.name, this.description});
+
+  Instructor.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    username = json['username'];
+    name = json['name'];
+    description = json['description'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['email'] = this.email;
+    data['username'] = this.username;
+    data['name'] = this.name;
+    data['description'] = this.description;
+    return data;
+  }
+}
+
+class Comments {
+  int id;
+  String author;
+  String comment;
+  String rating;
+  String image;
+
+  Comments({this.id, this.author, this.comment, this.rating, this.image});
+
+  Comments.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    author = json['author'];
+    comment = json['comment'];
+    rating = json['rating'];
+    image = json['image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['author'] = this.author;
+    data['comment'] = this.comment;
+    data['rating'] = this.rating;
+    data['image'] = this.image;
+    return data;
+  }
+}
+
+class Testimonial {
+  int id;
+  String title;
+  String content;
+  String name;
+  String image;
+
+  Testimonial({this.id, this.title, this.content, this.name, this.image});
+
+  Testimonial.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    content = json['content'];
+    name = json['name'];
+    image = json['image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['content'] = this.content;
+    data['name'] = this.name;
+    data['image'] = this.image;
+    return data;
+  }
+}
+
+class Questions {
+  String postTitle;
+  int postId;
+  String mark;
+  String type;
+  int questionId;
+  int order;
+  String itemId;
+  List<Options> options;
+
+  Questions(
+      {this.postTitle,
+      this.postId,
+      this.mark,
+      this.type,
+      this.questionId,
+      this.order,
+      this.itemId,
+      this.options});
+
+  Questions.fromJson(Map<String, dynamic> json) {
+    postTitle = json['postTitle'];
+    postId = json['postId'];
+    mark = json['mark'];
+    type = json['type'];
+    questionId = json['questionId'];
+    order = json['order'];
+    itemId = json['itemId'];
+    if (json['options'] != null) {
+      options = new List<Options>();
+      json['options'].forEach((v) {
+        options.add(new Options.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['postTitle'] = this.postTitle;
+    data['postId'] = this.postId;
+    data['mark'] = this.mark;
+    data['type'] = this.type;
+    data['questionId'] = this.questionId;
+    data['order'] = this.order;
+    data['itemId'] = this.itemId;
+    if (this.options != null) {
+      data['options'] = this.options.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Options {
+  int order;
+  OptionsData data;
+
+  Options({this.order, this.data});
+
+  Options.fromJson(Map<String, dynamic> json) {
+    order = json['order'];
+    data = json['data'] != null ? new OptionsData.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['order'] = this.order;
+    if (this.data != null) {
+      data['data'] = this.data.toJson();
+    }
+    return data;
+  }
+}
+
+class OptionsData {
+  String text;
+  String value;
+  String isTrue;
+
+  OptionsData({this.text, this.value, this.isTrue});
+
+  OptionsData.fromJson(Map<String, dynamic> json) {
+    text = json['text'];
+    value = json['value'];
+    isTrue = json['is_true'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['text'] = this.text;
+    data['value'] = this.value;
+    data['is_true'] = this.isTrue;
+    return data;
+  }
+}
+
+class ViewedCourses {
+  int userItemId;
+  int userId;
+  int itemId;
+  String startTime;
+  String startTimeGmt;
+  String endTime;
+  String endTimeGmt;
+  String itemType;
+  String status;
+  int refId;
+  String refType;
+  int parentId;
+
+  ViewedCourses(
+      {this.userItemId,
+      this.userId,
+      this.itemId,
+      this.startTime,
+      this.startTimeGmt,
+      this.endTime,
+      this.endTimeGmt,
+      this.itemType,
+      this.status,
+      this.refId,
+      this.refType,
+      this.parentId});
+
+  ViewedCourses.fromJson(Map<String, dynamic> json) {
+    userItemId = json['user_item_id'];
+    userId = json['user_id'];
+    itemId = json['item_id'];
+    startTime = json['start_time'];
+    startTimeGmt = json['start_time_gmt'];
+    endTime = json['end_time'];
+    endTimeGmt = json['end_time_gmt'];
+    itemType = json['item_type'];
+    status = json['status'];
+    refId = json['ref_id'];
+    refType = json['ref_type'];
+    parentId = json['parent_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_item_id'] = this.userItemId;
+    data['user_id'] = this.userId;
+    data['item_id'] = this.itemId;
+    data['start_time'] = this.startTime;
+    data['start_time_gmt'] = this.startTimeGmt;
+    data['end_time'] = this.endTime;
+    data['end_time_gmt'] = this.endTimeGmt;
+    data['item_type'] = this.itemType;
+    data['status'] = this.status;
+    data['ref_id'] = this.refId;
+    data['ref_type'] = this.refType;
+    data['parent_id'] = this.parentId;
+    return data;
+  }
 }

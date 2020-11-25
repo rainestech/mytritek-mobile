@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tritek_lms/pages/home/home_component/category_list.dart';
-import 'package:tritek_lms/pages/home/home_component/instructors_slide.dart';
 import 'package:tritek_lms/pages/home/home_component/main_slider.dart';
-import 'package:tritek_lms/pages/home/home_component/new_courses.dart';
-import 'package:tritek_lms/pages/home/home_component/popular_courses.dart';
 import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
 import 'package:tritek_lms/pages/home/home_component/testimonials_slide.dart';
 import 'package:tritek_lms/pages/notifications.dart';
 import 'package:tritek_lms/pages/settings/account_settings.dart';
 
-import '../../appTheme/appTheme.dart';
 import '../../appTheme/appTheme.dart';
 
 class HomeMain extends StatefulWidget {
@@ -53,7 +48,7 @@ class _HomeMainState extends State<HomeMain> {
                     ),
                   ),
                   Text(
-                    'Tritek Consulting',
+                    appName,
                     style: TextStyle(
                       fontFamily: 'Signika Negative',
                       fontWeight: FontWeight.w700,

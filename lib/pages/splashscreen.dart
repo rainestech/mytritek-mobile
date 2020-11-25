@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/pages/onboarding/onboarding.dart';
+import 'package:tritek_lms/pages/home/home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -15,10 +15,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(
-        Duration(seconds: 3),
+        Duration(seconds: 5),
         () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => OnBoarding()),
+              MaterialPageRoute(builder: (context) => Home()),
             ));
   }
 
@@ -28,19 +28,59 @@ class _SplashScreenState extends State<SplashScreen> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: themeBlue,
       body: Container(
         height: height,
         width: width,
-        color: textColor,
+        color: themeBlue,
+        margin: EdgeInsets.all(10.0),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image:
+        //     AssetImage('assets/appbar_bg.png'),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: Center(
-          child: Text(
-            'Welcome!',
-            style: TextStyle(
-              fontFamily: 'Signika Negative',
-              fontSize: 60.0,
-              color: Colors.white,
-            ),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // InkWell(
+                //   child: Container(
+                //     height: 150.0,
+                //     width: 150.0,
+                //     margin: EdgeInsets.all(10.0),
+                //     decoration: BoxDecoration(
+                //       image: DecorationImage(
+                //         image:
+                //         AssetImage('assets/icon.png'),
+                //         fit: BoxFit.contain,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                Text(
+                  "Welcome to",
+                  style: TextStyle(
+                    fontFamily: 'Signika Negative',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  appName,
+                  style: TextStyle(
+                    fontFamily: 'Signika Negative',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 30.0,
+                    color: themeGold,
+                  ),
+                ),
+              ]
           ),
         ),
       ),

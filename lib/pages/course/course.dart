@@ -1,17 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/data/passDataToCoursePage.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/pages/course/lessons.dart';
 import 'package:tritek_lms/pages/course/overview.dart';
 import 'package:tritek_lms/pages/payment/select_plan.dart';
 import 'package:tritek_lms/pages/video_play/video_play.dart';
 
 class CoursePage extends StatefulWidget {
-  final PassData courseData;
+  final Course courseData;
   final int lang;
 
   CoursePage({Key key, @required this.courseData, this.lang}) : super(key: key);
+
   @override
   _CoursePageState createState() => _CoursePageState();
 }
@@ -32,9 +33,20 @@ class _CoursePageState extends State<CoursePage> {
     });
   }
 
+  getRatings(Course course) {
+    int r = 0;
+    if (course.comments.length > 0) {
+      course.comments.forEach((c) {
+        r = r + int.parse(c.rating.replaceAll(RegExp('[^0-9]'), ''));
+      });
+      return ((r / course.comments.length).round()).toString() + '/5';
+    }
+    return '0/5';
+  }
+
   @override
   Widget build(BuildContext context) {
-    PassData courseData = widget.courseData;
+    Course courseData = widget.courseData;
     double width = MediaQuery.of(context).size.width;
 
     nestedAppBar(_scaffoldKey) {
@@ -57,31 +69,17 @@ class _CoursePageState extends State<CoursePage> {
                   Navigator.pop(context);
                 },
               ),
-              actions: <Widget>[
-                InkWell(
-                  onTap: () {
-                    onAddedInWishlist();
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        (wishlist) ? Icons.check : Icons.add,
-                        color: iconColor,
-                      ),
-                      SizedBox(width: 5.0),
-                      Text(
-                        (wishlist) ? 'Added to Wishlist' : 'Add to Wishlist',
-                        style: TextStyle(
-                            color: textColor,
-                            fontFamily: 'Signika Negative',
-                            fontSize: 16.0),
-                      ),
-                      SizedBox(width: 10.0),
-                    ],
-                  ),
-                )
-              ],
+              title: AutoSizeText(
+                courseData.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: themeGold,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Signika Negative',
+                ),
+              ),
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   children: <Widget>[
@@ -95,7 +93,7 @@ class _CoursePageState extends State<CoursePage> {
                         alignment: Alignment.bottomCenter,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(courseData.image),
+                            image: NetworkImage(courseData.image),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.only(
@@ -130,7 +128,7 @@ class _CoursePageState extends State<CoursePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Instructor - Tritek Team',
+                              'Instructor - ' + courseData.author,
                               style: TextStyle(
                                 color: themeGold,
                                 fontSize: 14.0,
@@ -140,10 +138,10 @@ class _CoursePageState extends State<CoursePage> {
                             // SizedBox(height: 5.0),
                             Spacer(),
                             AutoSizeText(
-                               'Course Title with more text to break the line and test autosize till it overflows. I think we\'re good!',// c
+                              courseData.title,
                               minFontSize: 20,
                               maxLines: 2,
-                              overflow: TextOverflow.ellipsis,// ourseData.courseTitle,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: themeGold,
                                 fontSize: 30.0,
@@ -163,7 +161,7 @@ class _CoursePageState extends State<CoursePage> {
                                           MainAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          '5/5',
+                                          getRatings(courseData),
                                           style: TextStyle(
                                             color: textColor,
                                             fontSize: 14.0,
@@ -178,7 +176,8 @@ class _CoursePageState extends State<CoursePage> {
                                         ),
                                         SizedBox(width: 5.0),
                                         Text(
-                                          '(${51} Reviews)',
+                                          '(${courseData.comments
+                                              .length} Reviews)',
                                           style: TextStyle(
                                             color: textColor,
                                             fontSize: 14.0,
@@ -192,7 +191,7 @@ class _CoursePageState extends State<CoursePage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      '\$${20}',
+                                      'Buy Membership',
                                       style: TextStyle(
                                         color: textColor,
                                         fontWeight: FontWeight.w700,
@@ -213,9 +212,7 @@ class _CoursePageState extends State<CoursePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SelectPlan(
-                                              courseName: courseData.courseTitle,
-                                              image: courseData.image,
-                                              price: '50',
+                                            course: courseData
                                             )));
                               },
                               child: Container(
@@ -244,9 +241,7 @@ class _CoursePageState extends State<CoursePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => SelectPlan(
-                                              courseName: courseData.courseTitle,
-                                              image: courseData.image,
-                                              price: '50',
+                                          course: courseData,
                                             )));
                               },
                               child: Container(
@@ -337,11 +332,12 @@ class _CoursePageState extends State<CoursePage> {
           children: [
             ListView(
               children: <Widget>[
-                OverviewCoursePage(),
+                OverviewCoursePage(courseData),
               ],
             ),
-            Lessons(
+            LessonView(
               scaffoldKey: _scaffoldKey,
+              sections: courseData.sections,
             ),
           ],
         ),
@@ -357,35 +353,3 @@ class _CoursePageState extends State<CoursePage> {
     );
   }
 }
-
-
-// class CourseActions extends StatelessWidget {
-//   final bool activeSub;
-//   final bool trailer;
-//
-//   const CourseActions({Key key, this.activeSub, this.trailer}) : super(key: key);
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     throw UnimplementedError();
-//   }
-//
-// }
-
-// class ColoredTabBar extends Container implements PreferredSizeWidget {
-//   ColoredTabBar(this.color, this.tabBar);
-//
-//   final Color color;
-//   final TabBar tabBar;
-//
-//   @override
-//   Size get preferredSize => tabBar.preferredSize;
-//
-//   @override
-//   Widget build(BuildContext context) => Container(
-//     color: color,
-//     child: tabBar,
-//   );
-// }

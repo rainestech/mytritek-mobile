@@ -3,15 +3,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/data/passDataToCoursePage.dart';
 import 'package:tritek_lms/pages/course/course.dart';
 
 class CarouselImageItem extends StatelessWidget {
-  final courseOwner;
-  final courseLink;
-  final courseTitle;
+  final course;
   final width;
-  final image;
+
   // final course;
 
   @override
@@ -22,12 +19,7 @@ class CarouselImageItem extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CoursePage(
-              courseData: PassData(
-                  courseTitle,
-                  courseOwner,
-                  courseLink,
-                  image
-              ),
+              courseData: course,
             ),
           ),
         );
@@ -38,7 +30,7 @@ class CarouselImageItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           image: DecorationImage(
-            image: AssetImage(image),
+            image: NetworkImage(course.image),
             fit: BoxFit.cover,
           ),
         ),
@@ -51,24 +43,25 @@ class CarouselImageItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  courseTitle,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25.0,
-                    fontFamily: 'Signika Negative',
-                    fontWeight: FontWeight.w700,
+                  Text(
+                    course.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25.0,
+                      fontFamily: 'Signika Negative',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                Text(
-                  courseOwner,
-                  style: TextStyle(
-                    color: themeGold,
-                    fontSize: 15.0,
-                    fontFamily: 'Signika Negative',
+                  Text(
+                    course.author,
+                    style: TextStyle(
+                      color: themeGold,
+                      fontSize: 15.0,
+                      fontFamily: 'Signika Negative',
+                    ),
                   ),
-                ),
-              ],
+                ],
             ),
           )
           // Column(
@@ -79,5 +72,5 @@ class CarouselImageItem extends StatelessWidget {
     );
   }
 
-  CarouselImageItem(this.width, this.courseTitle, this.courseOwner, this.image, this.courseLink);
+  CarouselImageItem(this.course, this.width);
 }

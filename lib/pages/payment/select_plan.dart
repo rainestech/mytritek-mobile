@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/pages/home/home.dart';
 import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
 
 class SelectPlan extends StatefulWidget {
-  final String courseName, image, price;
-  SelectPlan({Key key, this.courseName, this.image, this.price})
-      : super(key: key);
+  final Course course;
+
+  SelectPlan({Key key, this.course}) : super(key: key);
+
   @override
   _SelectPlanState createState() => _SelectPlanState();
 }
@@ -20,9 +22,7 @@ class _SelectPlanState extends State<SelectPlan> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    String courseName = widget.courseName;
-    String courseImage = widget.image;
-    String coursePrice = widget.price;
+    Course course = widget.course;
 
     thanksDialog() {
       showDialog(
@@ -175,33 +175,6 @@ class _SelectPlanState extends State<SelectPlan> {
                           ),
                         ),
                       ),
-                      Divider(
-                        height: 1.0,
-                      ),
-                      Container(
-                        width: width - 40.0,
-                        margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: RadioListTile(
-                          value: 4,
-                          groupValue: selectedRadioPayment,
-                          title: Text(
-                            "Google Wallet",
-                            style: TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold),
-                          ),
-                          onChanged: (val) {
-                            setSelectedRadioPayment(val);
-                          },
-                          activeColor: textColor,
-                          secondary: Image(
-                            image: AssetImage(
-                              'assets/payment_icon/google_wallet.png',
-                            ),
-                            height: 40.0,
-                            width: 40.0,
-                          ),
-                        ),
-                      ),
                       SizedBox(height: 20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -317,7 +290,7 @@ class _SelectPlanState extends State<SelectPlan> {
                     ),
                   ),
                   Text(
-                    'MyTritek',
+                    appName,
                     style: TextStyle(
                       fontFamily: 'Signika Negative',
                       fontWeight: FontWeight.w700,

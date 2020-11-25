@@ -1,52 +1,52 @@
 class Users {
   int id;
+  String email;
   String username;
+  String name;
   String firstName;
   String lastName;
-  String email;
-  String phoneNo;
-  String token;
-  String passport;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String status;
+  String startDate;
+  String endDate;
+  String subscription;
 
-  Users({
-    this.id,
-    this.username,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.phoneNo,
-    this.token,
-    this.passport,
-  });
+  Users(
+      {this.id,
+      this.email,
+      this.username,
+      this.name,
+      this.firstName,
+      this.lastName,
+      this.status,
+      this.startDate,
+      this.endDate,
+      this.subscription});
 
-  // Create a Note from JSON data
-  factory Users.fromJson(Map<String, dynamic> json) => new Users(
-        id: json["id"],
-        username: json["username"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        email: json["email"],
-        phoneNo: json["phoneNo"],
-        token: json["token"],
-        passport: json["passport"],
-      );
+  Users.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    username = json['username'];
+    name = json['name'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    status = json['status'];
+    startDate = json['startDate'];
+    endDate = json['endDate'];
+    subscription = json['subscription'];
+  }
 
-  // Convert our Note to JSON to make it easier when we store it in the database
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "username": username,
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "phoneNo": phoneNo,
-        "token": token,
-        "passport": passport,
-      };
-
-  // Converting the date time object into int representing seconds passed after midnight 1st Jan, 1970 UTC
-  int epochFromDate(DateTime dt) {
-    return dt.millisecondsSinceEpoch ~/ 1000;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['email'] = this.email;
+    data['username'] = this.username;
+    data['name'] = this.name;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
+    data['status'] = this.status;
+    data['startDate'] = this.startDate;
+    data['endDate'] = this.endDate;
+    data['subscription'] = this.subscription;
+    return data;
   }
 }
