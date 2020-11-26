@@ -1,15 +1,15 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
 
 class CarouselTestimonial extends StatelessWidget {
-  final testimony;
-  final name;
+  final Testimonial data;
   final width;
-  final image;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +36,9 @@ class CarouselTestimonial extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   image: DecorationImage(
-                    image:
-                    AssetImage(image),
+                    image: data.image != null
+                        ? NetworkImage(data.image)
+                        : AssetImage(noPicture),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -53,8 +54,10 @@ class CarouselTestimonial extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(name,
+                  AutoSizeText(
+                    data.title,
                     textAlign: TextAlign.start,
+                    maxLines: 1,
                     style: TextStyle(
                       color: themeBlue,
                       fontSize: 18.0,
@@ -67,7 +70,7 @@ class CarouselTestimonial extends StatelessWidget {
                     width: (width - 160),
                     // height: 70,
                     child:
-                    Text(testimony,
+                    Text(data.content,
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.start,
@@ -75,7 +78,7 @@ class CarouselTestimonial extends StatelessWidget {
                         fontSize: 12.0,
                         fontWeight: FontWeight.normal,
                       ),
-                        ),
+                    ),
                     ),
                 ],
               ),
@@ -86,5 +89,5 @@ class CarouselTestimonial extends StatelessWidget {
     );
   }
 
-  CarouselTestimonial(this.width, this.name, this.testimony, this.image);
+  CarouselTestimonial(this.width, this.data);
 }

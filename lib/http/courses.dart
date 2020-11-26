@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/http/endpoints.dart';
 
 class CoursesResponse {
   final List<Course> results;
@@ -17,14 +18,11 @@ class CoursesResponse {
 }
 
 class CoursesApiProvider {
-  final String _endpoint = "http://10.0.2.2/courses";
-
-  // final Uri uri = Uri.http("10.0.2.2", unencodedPath)
   final Dio _dio = Dio();
 
   Future<CoursesResponse> getCourses() async {
     try {
-      Response response = await _dio.get(_endpoint);
+      Response response = await _dio.get(coursesEndpoint);
       return CoursesResponse.fromJson(response.data);
     } catch (error, stacktrace) {
       // @todo

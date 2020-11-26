@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
 
 class WhatYouWillGet extends StatefulWidget {
+  final Course course;
+
+  WhatYouWillGet(this.course);
+
   @override
   _WhatYouWillGetState createState() => _WhatYouWillGetState();
 }
@@ -9,6 +14,8 @@ class WhatYouWillGet extends StatefulWidget {
 class _WhatYouWillGetState extends State<WhatYouWillGet> {
   @override
   Widget build(BuildContext context) {
+    Course course = widget.course;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -21,40 +28,40 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
             color: headingColor,
           ),
         ),
-        
-        ListTile(
-          dense: true,
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          leading: Icon(
-            Icons.menu,
-            color: themeGold,
-            size: 25.0,
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Quizzes',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                  color: themeBlue
-                ),
-              ),
-              Spacer(),
-              Text(
-                '250',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                ),
-              ),
-            ],
-          ),
-        ),
+
+        // ListTile(
+        //   dense: true,
+        //   visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        //   leading: Icon(
+        //     Icons.menu,
+        //     color: themeGold,
+        //     size: 25.0,
+        //   ),
+        //   title: Row(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Text(
+        //         'Quizzes',
+        //         style: TextStyle(
+        //           fontWeight: FontWeight.w700,
+        //           fontFamily: 'Signika Negative',
+        //           fontSize: 18.0,
+        //           color: themeBlue
+        //         ),
+        //       ),
+        //       Spacer(),
+        //       Text(
+        //         '250',
+        //         style: TextStyle(
+        //           fontWeight: FontWeight.w700,
+        //           fontFamily: 'Signika Negative',
+        //           fontSize: 18.0,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         ListTile(
           dense: true,
           visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -70,15 +77,15 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
               Text(
                 'Duration',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                  color: themeBlue
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Signika Negative',
+                    fontSize: 18.0,
+                    color: themeBlue
                 ),
               ),
               Spacer(),
               Text(
-                '45 Weeks',
+                course.duration,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Signika Negative',
@@ -103,15 +110,15 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
               Text(
                 'Enrolled',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                  color: themeBlue
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Signika Negative',
+                    fontSize: 18.0,
+                    color: themeBlue
                 ),
               ),
               Spacer(),
               Text(
-                '2034',
+                course.enrolled,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Signika Negative',
@@ -125,7 +132,7 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
           dense: true,
           visualDensity: VisualDensity(horizontal: 0, vertical: -4),
           leading: Icon(
-            Icons.redo,
+            Icons.redo_rounded,
             color: themeGold,
             size: 25.0,
           ),
@@ -136,15 +143,15 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
               Text(
                 'Re-Take Course',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                  color: themeBlue
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Signika Negative',
+                    fontSize: 18.0,
+                    color: themeBlue
                 ),
               ),
               Spacer(),
               Text(
-                '2034',
+                course.retake,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Signika Negative',
@@ -167,12 +174,12 @@ class _WhatYouWillGetState extends State<WhatYouWillGet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Re-Take Course',
+                'Assessment',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Signika Negative',
-                  fontSize: 18.0,
-                  color: themeBlue
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Signika Negative',
+                    fontSize: 18.0,
+                    color: themeBlue
                 ),
               ),
               Spacer(),

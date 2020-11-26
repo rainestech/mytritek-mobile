@@ -75,7 +75,7 @@ class _CoursePageState extends State<CoursePage> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: themeGold,
-                  fontSize: 25.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Signika Negative',
                 ),
@@ -120,7 +120,7 @@ class _CoursePageState extends State<CoursePage> {
                       bottom: 50.0,
                       left: 0.0,
                       child: Container(
-                        height: 250.0,
+                        height: 210.0,
                         width: width,
                         padding: EdgeInsets.all(15.0),
                         alignment: Alignment.bottomCenter,
@@ -139,7 +139,7 @@ class _CoursePageState extends State<CoursePage> {
                             Spacer(),
                             AutoSizeText(
                               courseData.title,
-                              minFontSize: 20,
+                              minFontSize: 16,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

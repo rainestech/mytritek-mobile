@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-Color textColor = const Color(0xFFFFC226);
-Color iconColor = const Color(0xFFFFC226);
-Color buttonColor = const Color(0xFFFFC226);
-Color headingColor = const Color(0xFF53588A);
+Color textColor = const Color.fromRGBO(204, 174, 44, 1);
+Color iconColor = const Color.fromRGBO(204, 174, 44, 1);
+Color buttonColor = const Color.fromRGBO(204, 174, 44, 1);
+Color headingColor = const Color.fromRGBO(41, 57, 134, 1);
 Color fbBgColor = const Color(0xFF3B5998);
-Color themeGold = const Color(0xFFFFC600);
-Color themeBlue = const Color(0xFF007cba);
+Color themeGold = const Color.fromRGBO(204, 174, 44, 1);
+Color themeBlue = const Color.fromRGBO(41, 57, 134, 1);
 Color themeBg = Colors.grey[100];
 
 String appName = 'MyTritek';
+String noPicture = 'assets/user_profile/profile.png';

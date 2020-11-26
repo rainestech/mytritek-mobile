@@ -24,7 +24,7 @@ class _OverviewCoursePageState extends State<OverviewCoursePage> with TickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          WhatYouWillGet(),
+          WhatYouWillGet(course),
           new AnimatedSize(
               vsync: this,
               duration: const Duration(milliseconds: 300),

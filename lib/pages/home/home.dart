@@ -78,6 +78,21 @@ class _HomeState extends State<Home> {
             ),
           ),
           BubbleBottomBarItem(
+              backgroundColor: themeBlue,
+              color: themeGold,
+              icon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              activeIcon: Icon(
+                Icons.search,
+                color: themeGold,
+              ),
+              title: Text(
+                'Search',
+                style: TextStyle(fontSize: 10.0),
+              )),
+          BubbleBottomBarItem(
             backgroundColor: themeBlue,
             color: themeGold,
             icon: Icon(
@@ -93,21 +108,6 @@ class _HomeState extends State<Home> {
               style: TextStyle(fontSize: 10.0),
             ),
           ),
-          BubbleBottomBarItem(
-              backgroundColor: themeBlue,
-              color: themeGold,
-              icon: Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              activeIcon: Icon(
-                Icons.search,
-                color: themeGold,
-              ),
-              title: Text(
-                'Search',
-                style: TextStyle(fontSize: 10.0),
-              )),
           BubbleBottomBarItem(
               backgroundColor: themeBlue,
               color: themeGold,

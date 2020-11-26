@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tritek_lms/pages/home/home_component/main_slider.dart';
 import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
 import 'package:tritek_lms/pages/home/home_component/testimonials_slide.dart';
+import 'package:tritek_lms/pages/login_signup/signup.dart';
 import 'package:tritek_lms/pages/notifications.dart';
 import 'package:tritek_lms/pages/settings/account_settings.dart';
 
@@ -29,10 +30,8 @@ class _HomeMainState extends State<HomeMain> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AccountSettings()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => SignUp()));
                     },
                     child: Container(
                       height: 26.0,
@@ -71,10 +70,7 @@ class _HomeMainState extends State<HomeMain> {
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
                   alignment: Alignment.bottomCenter,
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appbar_bg.png'),
-                      fit: BoxFit.cover,
-                    ),
+                    color: themeBlue,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
