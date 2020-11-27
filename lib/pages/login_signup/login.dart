@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/login_signup/forgot_password.dart';
 import 'package:tritek_lms/pages/login_signup/signup.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:tritek_lms/pages/profile/profile_home.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -92,10 +93,10 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.only(left: 20.0),
                     child: Text(
-                      'Login in your account',
+                      'Login',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16.0,
+                        fontSize: 12.0,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -183,7 +184,13 @@ class _LoginState extends State<Login> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: ProfileHome()));
+                          },
                           color: Colors.transparent,
                           child: Text(
                             'Login',
@@ -265,7 +272,7 @@ class _LoginState extends State<Login> {
                             ),
                             SizedBox(width: 10.0),
                             Text(
-                              'Log in with Google',
+                              'Login with Google',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.black,

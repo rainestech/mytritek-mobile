@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 // import 'package:international_phone_input/international_phone_input.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
-import 'package:tritek_lms/pages/login_signup/otp_screen.dart';
-import 'package:page_transition/page_transition.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -104,10 +103,10 @@ class _SignUpState extends State<SignUp> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Create new User Account',
+                          'Create New User Account',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -127,7 +126,7 @@ class _SignUpState extends State<SignUp> {
                               'Or Login Here',
                               style: TextStyle(
                                 color: themeGold,
-                                fontSize: 16.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -149,7 +148,7 @@ class _SignUpState extends State<SignUp> {
                       child: TextField(
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         decoration: InputDecoration(
@@ -157,7 +156,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'First Name',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -184,7 +183,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Last Name',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -203,7 +202,7 @@ class _SignUpState extends State<SignUp> {
                       child: TextField(
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         decoration: InputDecoration(
@@ -211,7 +210,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'E-mail',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -230,13 +229,13 @@ class _SignUpState extends State<SignUp> {
                       child: InternationalPhoneNumberInput(
                         textStyle: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         // autoValidate: false,
                         selectorTextStyle: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         selectorConfig: SelectorConfig(
@@ -248,7 +247,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Phone Number',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -267,7 +266,7 @@ class _SignUpState extends State<SignUp> {
                       child: TextField(
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         decoration: InputDecoration(
@@ -275,7 +274,7 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Username',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.w500,
                           ),
                           border: InputBorder.none,
@@ -295,7 +294,7 @@ class _SignUpState extends State<SignUp> {
                       TextField(
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                         obscureText: _obscureText,
@@ -345,7 +344,7 @@ class _SignUpState extends State<SignUp> {
                             'Sign Up',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

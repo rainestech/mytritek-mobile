@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tritek_lms/pages/settings/account_settings.dart';
+import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
 
 class Settings extends StatefulWidget {
@@ -15,35 +16,41 @@ class _SettingsState extends State<Settings> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 180,
+              expandedHeight: 150,
+              backgroundColor: themeBlue,
               pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding: EdgeInsets.all(20.0),
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appbar_bg.png'),
-                      fit: BoxFit.cover,
+              flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                // print('constraints=' + constraints.toString());
+                return FlexibleSpaceBar(
+                    centerTitle: false,
+                    title: AnimatedOpacity(
+                      duration: Duration(milliseconds: 300),
+                      //opacity: top == 80.0 ? 1.0 : 0.0,
+                      opacity: 1.0,
+                      child: Text(
+                        'Settings',
+                        style: TextStyle(
+                          fontFamily: 'Signika Negative',
+                          fontWeight: FontWeight.w700,
+                          color: themeGold,
+                          fontSize: 25.0,
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Settings',
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 25.0,
-                    ),
-                  ),
-                ),
-              ),
+                    background: Container(
+                      padding: EdgeInsets.all(20.0),
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(color: themeBlue),
+                    ));
+              }),
               automaticallyImplyLeading: false,
             ),
           ];
         },
         body: ListView(
           children: <Widget>[
-            SizedBox(height: 15.0),
+            SizedBox(height: 20.0),
             Container(
               margin: EdgeInsets.only(right: 15.0, left: 15.0),
               child: Column(
@@ -61,9 +68,10 @@ class _SettingsState extends State<Settings> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Acoount Settings',
+                          'Account Settings',
                           style: TextStyle(
                               fontSize: 16.0,
+                              color: themeBlue,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Signika Negative'),
                         ),
@@ -75,7 +83,91 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   Divider(),
-                  SizedBox(height: 15.0),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppSettings()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Membership Settings',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: themeBlue,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppSettings()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Progress Tracker',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: themeBlue,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppSettings()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Notification Settings',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: themeBlue,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -92,6 +184,35 @@ class _SettingsState extends State<Settings> {
                           style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AppSettings()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Contact Us',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
                               fontFamily: 'Signika Negative'),
                         ),
                         Icon(

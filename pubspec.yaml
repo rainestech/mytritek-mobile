@@ -30,7 +30,7 @@ dependencies:
   dio: ^3.0.10
   rxdart: ^0.24.1
   font_awesome_flutter: ^8.10.0
-  fluttertoast: ^7.1.4
+  fluttertoast: ^7.1.5
   custom_radio: ^0.1.2
   flutter_rating_bar: ^3.2.0+1
   page_transition: ^1.1.7+2
@@ -45,6 +45,8 @@ dependencies:
   auto_size_text: ^2.1.0
   flutter_html: ^1.0.2
   intl_phone_number_input: ^0.5.2+2
+  email_validator: ^1.0.6
+  image_picker: ^0.6.7+14
   custom_switch:
 
 dev_dependencies:

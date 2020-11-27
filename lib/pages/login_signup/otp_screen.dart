@@ -136,7 +136,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     Padding(
                       padding: EdgeInsets.only(left: 20.0),
                       child: Text(
-                        'Password Reset Rquest',
+                        'Password Reset Request',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
