@@ -10,6 +10,7 @@ class CourseBloc {
   getCourses() async {
     CoursesResponse response = await _repository.getCourses();
     _coursesSubject.sink.add(response);
+    // _repository.saveCourses(response.results);
   }
 
   dispose() {

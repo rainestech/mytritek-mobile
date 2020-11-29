@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@entity
 class Course {
+  @primaryKey
   int id;
   String title;
   String duration;
@@ -7,9 +11,13 @@ class Course {
   String enrolled;
   String author;
   String description;
+  int userId;
+  @ignore
   List<Sections> sections;
   String image;
+  @ignore
   Instructor instructor;
+  @ignore
   List<Comments> comments;
 
   Course(
@@ -21,6 +29,7 @@ class Course {
       this.enrolled,
       this.author,
       this.description,
+      this.userId,
       this.sections,
       this.image,
       this.instructor,
@@ -35,6 +44,7 @@ class Course {
     enrolled = json['enrolled'];
     author = json['author'];
     description = json['description'];
+    userId = json['userId'];
     if (json['sections'] != null) {
       sections = new List<Sections>();
       json['sections'].forEach((v) {
@@ -63,6 +73,7 @@ class Course {
     data['enrolled'] = this.enrolled;
     data['author'] = this.author;
     data['description'] = this.description;
+    data['userId'] = this.userId;
     if (this.sections != null) {
       data['sections'] = this.sections.map((v) => v.toJson()).toList();
     }
@@ -77,18 +88,33 @@ class Course {
   }
 }
 
+@Entity(
+  tableName: 'sections',
+  foreignKeys: [
+    ForeignKey(
+      childColumns: ['courseId'],
+      parentColumns: ['id'],
+      entity: Course,
+    )
+  ],
+)
 class Sections {
   String sectionName;
   int sectionOrder;
+  @primaryKey
   int id;
+  int courseId;
+  @ignore
   List<Lessons> lessons;
 
-  Sections({this.sectionName, this.sectionOrder, this.id, this.lessons});
+  Sections(
+      {this.sectionName, this.sectionOrder, this.id, this.courseId, this.lessons});
 
   Sections.fromJson(Map<String, dynamic> json) {
     sectionName = json['sectionName'];
     sectionOrder = json['sectionOrder'];
     id = json['id'];
+    courseId = json['courseId'];
     if (json['lessons'] != null) {
       lessons = new List<Lessons>();
       json['lessons'].forEach((v) {
@@ -102,6 +128,7 @@ class Sections {
     data['sectionName'] = this.sectionName;
     data['sectionOrder'] = this.sectionOrder;
     data['id'] = this.id;
+    data['courseId'] = this.courseId;
     if (this.lessons != null) {
       data['lessons'] = this.lessons.map((v) => v.toJson()).toList();
     }
@@ -109,7 +136,18 @@ class Sections {
   }
 }
 
+@Entity(
+  tableName: 'lessons',
+  foreignKeys: [
+    ForeignKey(
+      childColumns: ['sectionId'],
+      parentColumns: ['id'],
+      entity: Sections,
+    )
+  ],
+)
 class Lessons {
+  @primaryKey
   int itemId;
   int itemOrder;
   String postTitle;
@@ -119,15 +157,14 @@ class Lessons {
   String preview;
   int quizCount;
 
-  Lessons(
-      {this.itemId,
-      this.itemOrder,
-      this.postTitle,
-      this.postId,
-      this.sectionId,
-      this.duration,
-      this.preview,
-      this.quizCount});
+  Lessons({this.itemId,
+    this.itemOrder,
+    this.postTitle,
+    this.postId,
+    this.sectionId,
+    this.duration,
+    this.preview,
+    this.quizCount});
 
   Lessons.fromJson(Map<String, dynamic> json) {
     itemId = json['itemId'];
@@ -154,17 +191,20 @@ class Lessons {
   }
 }
 
+@entity
 class Instructor {
-  int id;
+  @primaryKey
+  int userId;
   String email;
   String username;
   String name;
   String description;
 
-  Instructor({this.id, this.email, this.username, this.name, this.description});
+  Instructor(
+      {this.userId, this.email, this.username, this.name, this.description});
 
   Instructor.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    userId = json['userId'];
     email = json['email'];
     username = json['username'];
     name = json['name'];
@@ -173,7 +213,7 @@ class Instructor {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+    data['userId'] = this.userId;
     data['email'] = this.email;
     data['username'] = this.username;
     data['name'] = this.name;
@@ -182,12 +222,15 @@ class Instructor {
   }
 }
 
+@entity
 class Comments {
+  @primaryKey
   int id;
   String author;
   String comment;
   String rating;
   String image;
+  int courseId;
 
   Comments({this.id, this.author, this.comment, this.rating, this.image});
 
@@ -197,6 +240,7 @@ class Comments {
     comment = json['comment'];
     rating = json['rating'];
     image = json['image'];
+    courseId = json['courseId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -206,11 +250,14 @@ class Comments {
     data['comment'] = this.comment;
     data['rating'] = this.rating;
     data['image'] = this.image;
+    data['courseId'] = this.courseId;
     return data;
   }
 }
 
+@entity
 class Testimonial {
+  @primaryKey
   int id;
   String title;
   String content;
@@ -240,23 +287,23 @@ class Testimonial {
 
 class Questions {
   String postTitle;
+  @primaryKey
   int postId;
   String mark;
   String type;
   int questionId;
   int order;
   String itemId;
-  List<Options> options;
+  List<QuizOptions> options;
 
-  Questions(
-      {this.postTitle,
-      this.postId,
-      this.mark,
-      this.type,
-      this.questionId,
-      this.order,
-      this.itemId,
-      this.options});
+  Questions({this.postTitle,
+    this.postId,
+    this.mark,
+    this.type,
+    this.questionId,
+    this.order,
+    this.itemId,
+    this.options});
 
   Questions.fromJson(Map<String, dynamic> json) {
     postTitle = json['postTitle'];
@@ -267,9 +314,9 @@ class Questions {
     order = json['order'];
     itemId = json['itemId'];
     if (json['options'] != null) {
-      options = new List<Options>();
+      options = new List<QuizOptions>();
       json['options'].forEach((v) {
-        options.add(new Options.fromJson(v));
+        options.add(new QuizOptions.fromJson(v));
       });
     }
   }
@@ -290,13 +337,15 @@ class Questions {
   }
 }
 
-class Options {
+class QuizOptions {
+  @primaryKey
+  int id;
   int order;
   OptionsData data;
 
-  Options({this.order, this.data});
+  QuizOptions({this.order, this.data});
 
-  Options.fromJson(Map<String, dynamic> json) {
+  QuizOptions.fromJson(Map<String, dynamic> json) {
     order = json['order'];
     data = json['data'] != null ? new OptionsData.fromJson(json['data']) : null;
   }
@@ -312,6 +361,8 @@ class Options {
 }
 
 class OptionsData {
+  @primaryKey
+  int id;
   String text;
   String value;
   String isTrue;
@@ -334,6 +385,7 @@ class OptionsData {
 }
 
 class ViewedCourses {
+  @primaryKey
   int userItemId;
   int userId;
   int itemId;
@@ -347,19 +399,18 @@ class ViewedCourses {
   String refType;
   int parentId;
 
-  ViewedCourses(
-      {this.userItemId,
-      this.userId,
-      this.itemId,
-      this.startTime,
-      this.startTimeGmt,
-      this.endTime,
-      this.endTimeGmt,
-      this.itemType,
-      this.status,
-      this.refId,
-      this.refType,
-      this.parentId});
+  ViewedCourses({this.userItemId,
+    this.userId,
+    this.itemId,
+    this.startTime,
+    this.startTimeGmt,
+    this.endTime,
+    this.endTimeGmt,
+    this.itemType,
+    this.status,
+    this.refId,
+    this.refType,
+    this.parentId});
 
   ViewedCourses.fromJson(Map<String, dynamic> json) {
     userItemId = json['user_item_id'];

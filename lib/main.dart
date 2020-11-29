@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Tritek LMS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.amber,
         primaryColor: themeGold,
         cursorColor: Colors.black,
       ),
