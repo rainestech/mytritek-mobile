@@ -181,7 +181,8 @@ class _EditProfileState extends State<EditProfile> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
-                      return Validator.required(value, 'Last Name is required');
+                      return Validator.required(
+                          value, 3, 'Last Name is required');
                     },
                     style: TextStyle(
                       fontSize: 16.0,
@@ -212,8 +213,8 @@ class _EditProfileState extends State<EditProfile> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
-                      return Validator.username(
-                          value, 'First Name is required');
+                      return Validator.required(
+                          value, 3, 'First Name is required');
                     },
                     style: TextStyle(
                       fontSize: 16.0,

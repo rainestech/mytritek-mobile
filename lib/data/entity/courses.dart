@@ -398,8 +398,11 @@ class ViewedCourses {
   int refId;
   String refType;
   int parentId;
+  int sectionId;
+  String grade;
 
-  ViewedCourses({this.userItemId,
+  ViewedCourses({
+    this.userItemId,
     this.userId,
     this.itemId,
     this.startTime,
@@ -410,7 +413,10 @@ class ViewedCourses {
     this.status,
     this.refId,
     this.refType,
-    this.parentId});
+    this.parentId,
+    this.sectionId,
+    this.grade,
+  });
 
   ViewedCourses.fromJson(Map<String, dynamic> json) {
     userItemId = json['user_item_id'];
@@ -425,6 +431,8 @@ class ViewedCourses {
     refId = json['ref_id'];
     refType = json['ref_type'];
     parentId = json['parent_id'];
+    parentId = json['sectionId'];
+    parentId = json['grade'];
   }
 
   Map<String, dynamic> toJson() {
@@ -441,6 +449,8 @@ class ViewedCourses {
     data['ref_id'] = this.refId;
     data['ref_type'] = this.refType;
     data['parent_id'] = this.parentId;
+    data['sectionId'] = this.parentId;
+    data['grade'] = this.parentId;
     return data;
   }
 }

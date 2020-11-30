@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-// import 'package:international_phone_input/international_phone_input.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/custom/form.validators.dart';
+import 'package:tritek_lms/data/repository/user.repository.dart';
+import 'package:tritek_lms/http/user.dart';
+import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
+import 'package:tritek_lms/pages/login_signup/otp_screen.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -14,7 +18,18 @@ class _SignUpState extends State<SignUp> {
   // Initially password is obscure
   bool _obscureText = true;
   bool _obscureConfirmText = true;
-  String phoneNumber;
+  String _firstName, _lastName, _email, _username, _password, _phoneNo = '';
+
+  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  final UserRepository _repository = UserRepository();
+
+  FocusNode _usernameFocusNode = FocusNode();
+  FocusNode _firstNameFocusNode = FocusNode();
+  FocusNode _lastNameFocusNode = FocusNode();
+  FocusNode _emailFocusNode = FocusNode();
+  FocusNode _phoneNoFocusNode = FocusNode();
+  FocusNode _passwordFocusNode = FocusNode();
 
   get onPhoneNumberChange => null;
 
@@ -34,12 +49,24 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    double height = MediaQuery
+        .of(context)
+        .size
+        .height;
+
+    void fieldFocusChange(BuildContext context, FocusNode currentFocus,
+        FocusNode nextFocus) {
+      currentFocus.unfocus();
+      FocusScope.of(context).requestFocus(nextFocus);
+    }
+
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/appbar_bg.png'), fit: BoxFit.cover),
+        color: themeBlue,
       ),
       child: Stack(
         children: <Widget>[
@@ -68,298 +95,406 @@ class _SignUpState extends State<SignUp> {
           Positioned(
             child: Scaffold(
               backgroundColor: Colors.transparent,
-              body: ListView(
-                physics: BouncingScrollPhysics(),
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 50.0, left: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Welcome to',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          appName,
-                          style: TextStyle(
-                            color: themeGold,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Create New User Account',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Spacer(),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: Login()));
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(1.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
+              body: Form(
+                key: _formKey,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 50.0, left: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome to',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w600,
                             ),
-                            child:
-                            Text(
-                              'Or Login Here',
-                              style: TextStyle(
-                                color: themeGold,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            appName,
+                            style: TextStyle(
+                              color: themeGold,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Create New User Account',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Spacer(),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(context, PageTransition(
+                                  type: PageTransitionType.leftToRight,
+                                  child: Login()));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(1.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                              ),
+                              child:
+                              Text(
+                                'Or Login Here',
+                                style: TextStyle(
+                                  color: themeGold,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                           ),
-                        ),
 
-                        SizedBox(width: 30)
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 50.0),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'First Name',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                        ),
+                          SizedBox(width: 30)
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'Last Name',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'E-mail',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: InternationalPhoneNumberInput(
-                        textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        // autoValidate: false,
-                        selectorTextStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        selectorConfig: SelectorConfig(
-                          selectorType: PhoneInputSelectorType.DIALOG,
-                        ),
-                        inputBorder: InputBorder.none,
-                        inputDecoration: InputDecoration(
-                          // contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'Phone Number',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                        onInputChanged: (PhoneNumber value) {  },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0),
-                          hintText: 'Username',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200].withOpacity(0.3),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child:
-                      TextField(
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: 20.0, top: 13.0, bottom: 12.0),
-                          hintText: 'Password',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            // fontSize: 16.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          border: InputBorder.none,
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.remove_red_eye),
-                            onPressed: _viewPassword,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30.0),
-                  Padding(
-                    padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                    child: SizedBox(
-                      height: 50.0,
+                    SizedBox(height: 50.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30.0),
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.bottomRight,
-                            stops: [0.1, 0.5, 0.9],
-                            colors: [
-                              Colors.yellow[300].withOpacity(0.6),
-                              Colors.yellow[500].withOpacity(0.8),
-                              Colors.yellow[600].withOpacity(1.0),
-                            ],
-                          ),
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
                         ),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
+                        child: TextFormField(
+                          focusNode: _firstNameFocusNode,
+                          autofocus: true,
+                          textCapitalization: TextCapitalization.words,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            return Validator.required(
+                                value, 3, 'First Name is required');
+                          },
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
                           ),
-                          onPressed: () {},
-                          color: Colors.transparent,
-                          child: Text(
-                            'Sign Up',
-                            style: TextStyle(
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 20.0),
+                            hintText: 'First Name',
+                            hintStyle: TextStyle(
                               color: Colors.white,
                               fontSize: 14.0,
                               fontWeight: FontWeight.w500,
                             ),
+                            border: InputBorder.none,
+                          ),
+                          onSaved: (firstName) => _firstName = firstName,
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _firstNameFocusNode,
+                                _lastNameFocusNode);
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        child: TextFormField(
+                          focusNode: _lastNameFocusNode,
+                          textCapitalization: TextCapitalization.words,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            return Validator.required(
+                                value, 3, 'Last Name is required');
+                          },
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 20.0),
+                            hintText: 'Last Name',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          onSaved: (lastName) => _lastName = lastName,
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _lastNameFocusNode, _emailFocusNode);
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        child: TextFormField(
+                          focusNode: _emailFocusNode,
+                          textCapitalization: TextCapitalization.none,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            return Validator.email(value);
+                          },
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 20.0),
+                            hintText: 'E-mail',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          onSaved: (email) => _email = email,
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _emailFocusNode, _phoneNoFocusNode);
+                          },
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        child: InternationalPhoneNumberInput(
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          // autoValidate: false,
+                          selectorTextStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          selectorConfig: SelectorConfig(
+                            selectorType: PhoneInputSelectorType.DIALOG,
+                          ),
+                          inputBorder: InputBorder.none,
+                          inputDecoration: InputDecoration(
+                            // contentPadding: EdgeInsets.only(left: 20.0),
+                            hintText: 'Phone Number',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            return Validator.required(
+                                value, 5, 'Phone number is required');
+                          },
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _phoneNoFocusNode, _usernameFocusNode);
+                          },
+                          onInputChanged: (PhoneNumber value) {
+                            _phoneNo = value.phoneNumber;
+                          },
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        child: TextFormField(
+                          focusNode: _usernameFocusNode,
+                          textCapitalization: TextCapitalization.none,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            return Validator.required(
+                                value, 5, 'Username is required');
+                          },
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 20.0),
+                            hintText: 'Username',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          onSaved: (username) => _username = username,
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _usernameFocusNode,
+                                _passwordFocusNode);
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200].withOpacity(0.3),
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        ),
+                        child:
+                        TextFormField(
+                          focusNode: _passwordFocusNode,
+                          textCapitalization: TextCapitalization.none,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            return Validator.email(value);
+                          },
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          obscureText: _obscureText,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(
+                                left: 20.0, top: 13.0, bottom: 12.0),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              // fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.remove_red_eye),
+                              onPressed: _viewPassword,
+                            ),
+                          ),
+                          onSaved: (password) => _password = password,
+                          onFieldSubmitted: (_) {
+                            fieldFocusChange(
+                                context, _usernameFocusNode,
+                                _passwordFocusNode);
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                      child: SizedBox(
+                        height: 50.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.bottomRight,
+                              stops: [0.1, 0.5, 0.9],
+                              colors: [
+                                Colors.yellow[300].withOpacity(0.6),
+                                Colors.yellow[500].withOpacity(0.8),
+                                Colors.yellow[600].withOpacity(1.0),
+                              ],
+                            ),
+                          ),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                                submitDetails(context);
+                              }
+                            },
+                            color: Colors.transparent,
+                            child: Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 30.0),
-                ],
+                    SizedBox(height: 30.0),
+                  ],
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> submitDetails(BuildContext context,) async {
+    try {
+      MyDialogs.showLoadingDialog(
+          context, _keyLoader, 'Processing your details'); //invoking login
+      UserResponse _response = await _repository.register(
+          _username, _password, _firstName, _lastName, _phoneNo, _email);
+      if (_response.error.length > 0) {
+        //todo - parse error
+      } else {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop(); //close the dialoge
+        Navigator.push(context, PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: OTPScreen(_response.results, 1)));
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 
 }

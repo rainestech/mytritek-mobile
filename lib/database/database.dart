@@ -3,14 +3,21 @@ import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/data/entity/users.dart';
 
 import 'dao.dart';
 
 part 'database.g.dart'; // the generated code will be there
 
-@Database(
-    version: 1,
-    entities: [Course, Sections, Lessons, Instructor, Comments, Testimonial])
+@Database(version: 1, entities: [
+  Course,
+  Sections,
+  Lessons,
+  Instructor,
+  Comments,
+  Testimonial,
+  Users
+])
 abstract class AppDatabase extends FloorDatabase {
   CourseDao get courseDao;
 
@@ -23,4 +30,6 @@ abstract class AppDatabase extends FloorDatabase {
   CommentsDao get commentsDao;
 
   TestimonialDao get testimonialDao;
+
+  UserDao get userDao;
 }

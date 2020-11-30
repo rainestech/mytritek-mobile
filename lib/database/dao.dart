@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/data/entity/users.dart';
 
 @dao
 abstract class CourseDao {
@@ -91,5 +92,17 @@ abstract class TestimonialDao {
   Future<void> save(Testimonial lessons);
 
   @Query('Delete FROM testimonial')
+  Future<void> deleteAll();
+}
+
+@dao
+abstract class UserDao {
+  @Query('SELECT * FROM users LIMIT 1')
+  Future<Users> findAll();
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> save(Users user);
+
+  @Query('Delete FROM users')
   Future<void> deleteAll();
 }

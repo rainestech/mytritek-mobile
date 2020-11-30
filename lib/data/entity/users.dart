@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@Entity(tableName: 'users')
 class Users {
+  @primaryKey
   int id;
   String email;
   String username;
@@ -9,6 +13,7 @@ class Users {
   String startDate;
   String endDate;
   String subscription;
+  String image;
 
   Users(
       {this.id,
@@ -20,7 +25,8 @@ class Users {
       this.status,
       this.startDate,
       this.endDate,
-      this.subscription});
+      this.subscription,
+      this.image});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +39,7 @@ class Users {
     startDate = json['startDate'];
     endDate = json['endDate'];
     subscription = json['subscription'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +54,7 @@ class Users {
     data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;
     data['subscription'] = this.subscription;
+    data['image'] = this.image;
     return data;
   }
 }

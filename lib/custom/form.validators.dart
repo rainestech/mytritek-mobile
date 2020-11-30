@@ -27,7 +27,11 @@ class Validator {
     return null;
   }
 
-  static required(String value, String s) {
-    return value.isEmpty || value == null ? s : null;
+  static required(String value, int minLength, String s) {
+    return value.isEmpty || value == null
+        ? s
+        : value.length > minLength
+            ? null
+            : 'length must be more than $minLength';
   }
 }

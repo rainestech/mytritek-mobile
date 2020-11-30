@@ -6,6 +6,11 @@ import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/home/home.dart';
 
 class OTPScreen extends StatefulWidget {
+  final data;
+  final mode;
+
+  OTPScreen(this.data, this.mode);
+
   @override
   _OTPScreenState createState() => _OTPScreenState();
 }

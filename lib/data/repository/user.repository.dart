@@ -1,59 +1,50 @@
-// import 'package:sqflite/sqflite.dart';
-// import 'package:tritek_lms/data/entity/users.dart';
-// import 'package:tritek_lms/database/database.dart';
-//
-// class UserRepository {
-//   Future<Users> createUser(Users user) async {
-//     final db = await DBProvider.db.database;
-//     var res = await db.insert('users', user.toJson(),
-//         conflictAlgorithm: ConflictAlgorithm.replace);
-//
-//     user.id = res;
-//     return user;
-//   }
-//
-//   Future<Users> editUser(Users user) async {
-//     final db = await DBProvider.db.database;
-//     // var res = await db.update('users', user.toJson(), where: 'id = ?', whereArgs: [user.id]);
-//     await db.update('users', user.toJson(),
-//         conflictAlgorithm: ConflictAlgorithm.replace);
-//
-//     return user;
-//   }
-//
-//   // deleteUser(Users user) async {
-//   //   if (user.id != -1) {
-//   //     final db = await DBProvider.db.database;
-//   //     db.delete('users', where: 'id = ?', whereArgs: [user.id]);
-//   //   }
-//   // }
-//
-//   Future<bool> deleteUser(Users user) async {
-//     if (user.id != -1) {
-//       final Database db = await DBProvider.db.database;
-//       try {
-//         await db.delete("users", where: "id = ?", whereArgs: [user.id]);
-//         return true;
-//       } catch (Error) {
-//         print("Error deleting ${user.id}: ${Error.toString()}");
-//         return false;
-//       }
-//     }
-//   }
-//
-//   Future<Users> getUser() async {
-//     final Database db = await DBProvider.db.database;
-//     var one = await db.query("users", orderBy: "id asc", limit: 1);
-//
-//     return Users.fromJson(one.first);
-//   }
-//
-//   Future<List<Users>> getUsers() async {
-//     final Database db = await DBProvider.db.database;
-//     var res = await db.query('users');
-//     List<Users> users =
-//         res.isNotEmpty ? res.map((note) => Users.fromJson(note)).toList() : [];
-//
-//     return users;
-//   }
-// }
+import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/database/database.dart';
+import 'package:tritek_lms/http/user.dart';
+
+class UserRepository {
+  UserApiProvider _apiProvider = UserApiProvider();
+
+  Future<UserResponse> login(String username, String password) async {
+    UserResponse response = await _apiProvider.loginUser(username, password);
+
+    await saveUser(response.results);
+    return response;
+  }
+
+  register(String username, String password, String firstName, String lastName,
+      String phoneNo, String email) async {
+    UserResponse response = await _apiProvider.register(
+        username, password, firstName, lastName, phoneNo, email);
+
+    if (response.error.length < 1) {
+      await saveUser(response.results);
+    }
+    return response;
+  }
+
+  Future<UserResponse> getDbUser() async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final userDao = database.userDao;
+
+    final Users user = await userDao.findAll();
+
+    UserResponse response = UserResponse(user, '', 0);
+    return response;
+  }
+
+  Future<void> saveUser(Users user) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final userDao = database.userDao;
+
+    await userDao.deleteAll();
+    userDao.save(user);
+  }
+
+  Future<void> refreshUser() async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final userDao = database.userDao;
+    await userDao.deleteAll();
+  }
+}

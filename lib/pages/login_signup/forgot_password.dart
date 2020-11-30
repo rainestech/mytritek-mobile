@@ -188,7 +188,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           onPressed: () {
-                            Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: OTPScreen()));
+                            // @todo
+                            Navigator.push(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: OTPScreen(null, 2)));
                           },
                           color: Colors.transparent,
                           child: Text(
