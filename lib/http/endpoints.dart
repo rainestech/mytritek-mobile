@@ -1,4 +1,4 @@
-String _endpoint = "http://10.0.2.2";
+String _endpoint = "http://10.0.2.2/api";
 
 /*
  * Get all available courses
@@ -14,6 +14,26 @@ String myCoursesEndpoint = "$_endpoint/my/courses/";
  * Post Login request
  */
 String loginEndpoint = "$_endpoint/login";
+
+/*
+ * Post Login request
+ */
+String registerEndpoint = "$_endpoint/signup";
+
+/*
+ * Post Login request
+ */
+String resetPasswordEndpoint = "$_endpoint/reset";
+
+/*
+ * Post Login request
+ */
+String passwordEndpoint = "$_endpoint/password";
+
+/*
+ * Post Login request
+ */
+String verifyEndpoint = "$_endpoint/verify";
 
 /*
  * Get all testimonials

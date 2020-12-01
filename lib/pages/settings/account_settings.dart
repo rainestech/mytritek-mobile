@@ -426,7 +426,10 @@ class _AccountSettingsState extends State<AccountSettings> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Login(null, null)));
                         },
                         child: Container(
                           width: (width / 3.5),

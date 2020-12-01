@@ -87,7 +87,7 @@ class _Profile1State extends State<Profile1> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         return Validator.required(
-                            value, 'Last Name is required');
+                            value, 1, 'Last Name is required');
                       },
                       style: TextStyle(
                         fontSize: 16.0,
@@ -475,8 +475,10 @@ class _Profile1State extends State<Profile1> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Login()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Login(null, null)));
                         },
                         child: Container(
                           width: (width / 3.5),

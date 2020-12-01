@@ -1,15 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/custom/form.validators.dart';
+import 'package:tritek_lms/data/repository/user.repository.dart';
+import 'package:tritek_lms/http/user.dart';
+import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/home/home.dart';
 
 class OTPScreen extends StatefulWidget {
   final data;
+  final email;
   final mode;
 
-  OTPScreen(this.data, this.mode);
+  OTPScreen(this.data, this.email, this.mode);
 
   @override
   _OTPScreenState createState() => _OTPScreenState();
@@ -23,64 +28,19 @@ class _OTPScreenState extends State<OTPScreen> {
   FocusNode secondFocusNode = FocusNode();
   FocusNode thirdFocusNode = FocusNode();
   FocusNode fourthFocusNode = FocusNode();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  final UserRepository _repository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
-    loadingDialog() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return Dialog(
-            elevation: 0.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Container(
-              height: 150.0,
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SpinKitRing(
-                    color: textColor,
-                    size: 40.0,
-                    lineWidth: 2.0,
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    'Please Wait..',
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontSize: 21.0,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.grey[400],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-      Timer(
-          Duration(seconds: 3),
-              () =>
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-              ));
-    }
+    int mode = widget.mode;
 
     otp() {
       return Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/appbar_bg.png'), fit: BoxFit.cover),
+          color: themeBlue,
         ),
         child: Stack(
           children: <Widget>[
@@ -141,10 +101,12 @@ class _OTPScreenState extends State<OTPScreen> {
                     Padding(
                       padding: EdgeInsets.only(left: 20.0),
                       child: Text(
-                        'Password Reset Request',
+                        mode == 1 ?
+                        'Email Verification'
+                            : 'Password Reset Request',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -154,10 +116,10 @@ class _OTPScreenState extends State<OTPScreen> {
                       padding: EdgeInsets.only(
                           left: 25.0, right: 25, bottom: 20),
                       child: Text(
-                        'Enter the OTP your received on your mobile number:',
+                        'Enter the OTP your received on your registered mobile:',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -186,7 +148,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                               ],
                             ),
-                            child: TextField(
+                            child: TextFormField(
                               controller: firstController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
@@ -196,6 +158,9 @@ class _OTPScreenState extends State<OTPScreen> {
                               onChanged: (v) {
                                 FocusScope.of(context)
                                     .requestFocus(secondFocusNode);
+                              },
+                              validator: (value) {
+                                return Validator.required(value, 0, '');
                               },
                             ),
                           ),
@@ -216,7 +181,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                               ],
                             ),
-                            child: TextField(
+                            child: TextFormField(
                               focusNode: secondFocusNode,
                               controller: secondController,
                               keyboardType: TextInputType.number,
@@ -224,6 +189,9 @@ class _OTPScreenState extends State<OTPScreen> {
                                 contentPadding: EdgeInsets.all(18.0),
                                 border: InputBorder.none,
                               ),
+                              validator: (value) {
+                                return Validator.required(value, 0, '');
+                              },
                               onChanged: (v) {
                                 FocusScope.of(context).requestFocus(
                                     thirdFocusNode);
@@ -247,7 +215,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                               ],
                             ),
-                            child: TextField(
+                            child: TextFormField(
                               focusNode: thirdFocusNode,
                               controller: thirdController,
                               keyboardType: TextInputType.number,
@@ -255,6 +223,9 @@ class _OTPScreenState extends State<OTPScreen> {
                                 contentPadding: EdgeInsets.all(18.0),
                                 border: InputBorder.none,
                               ),
+                              validator: (value) {
+                                return Validator.required(value, 0, '');
+                              },
                               onChanged: (v) {
                                 FocusScope.of(context)
                                     .requestFocus(fourthFocusNode);
@@ -278,7 +249,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                               ],
                             ),
-                            child: TextField(
+                            child: TextFormField(
                               focusNode: fourthFocusNode,
                               controller: fourthController,
                               keyboardType: TextInputType.number,
@@ -286,8 +257,11 @@ class _OTPScreenState extends State<OTPScreen> {
                                 contentPadding: EdgeInsets.all(18.0),
                                 border: InputBorder.none,
                               ),
+                              validator: (value) {
+                                return Validator.required(value, 0, '');
+                              },
                               onChanged: (v) {
-                                loadingDialog();
+                                checkPin(v, context);
                               },
                             ),
                           ),
@@ -374,5 +348,47 @@ class _OTPScreenState extends State<OTPScreen> {
     return Scaffold(
       body: otp(),
     );
+  }
+
+  Future<void> checkPin(String v, BuildContext context) async {
+    try {
+      if (v.length < 1) {
+        return;
+      }
+      String otp = firstController.value.text + secondController.value.text +
+          thirdController.value.text + fourthController.value.text;
+      if (otp == widget.data) {
+        LoadingDialogs.showLoadingDialog(
+            context, _keyLoader, 'Processing your details'); //invoking login
+        if (widget.mode == 1) {
+          UserResponse _response = await _repository.verify(
+              otp, widget.email);
+
+          if (_response.error.length > 0) {
+            ServerValidationDialog.errorDialog(
+                context, _response.error, ""); //invoking log
+          } else {
+            Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                .pop(); //close the dialoge
+            Navigator.push(context, PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: Home()));
+          }
+        } else {
+          Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              .pop();
+
+          //todo - create reset Password page
+          Navigator.push(context, PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child: Home()));
+        }
+      } else {
+        ServerValidationDialog.errorDialog(
+            context, 'Please check again.', 'Invalid input'); //invoking log
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 }

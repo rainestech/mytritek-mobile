@@ -123,8 +123,10 @@ class _OnBoardingState extends State<OnBoarding> {
               )
             : InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Login()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Login(null, null)));
                 },
                 child: Container(
                   height: Platform.isIOS ? 70 : 60,

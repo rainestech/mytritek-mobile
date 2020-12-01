@@ -9,18 +9,41 @@ class UserRepository {
   Future<UserResponse> login(String username, String password) async {
     UserResponse response = await _apiProvider.loginUser(username, password);
 
-    await saveUser(response.results);
+    if (response.error.length < 1) {
+      await saveUser(response.results);
+    }
     return response;
   }
 
-  register(String username, String password, String firstName, String lastName,
-      String phoneNo, String email) async {
-    UserResponse response = await _apiProvider.register(
+  Future<RegisterResponse> register(String username, String password,
+      String firstName, String lastName, String phoneNo, String email) async {
+    RegisterResponse response = await _apiProvider.register(
         username, password, firstName, lastName, phoneNo, email);
+
+    return response;
+  }
+
+  Future<RegisterResponse> resetPassword(String email) async {
+    RegisterResponse response = await _apiProvider.resetPassword(email);
+
+    return response;
+  }
+
+  Future<RegisterResponse> setNewPassword(
+      String email, String password, String otp) async {
+    RegisterResponse response =
+        await _apiProvider.setNewPassword(email, password, otp);
+
+    return response;
+  }
+
+  Future<UserResponse> verify(String otp, String email) async {
+    UserResponse response = await _apiProvider.verify(otp, email);
 
     if (response.error.length < 1) {
       await saveUser(response.results);
     }
+
     return response;
   }
 
@@ -30,7 +53,7 @@ class UserRepository {
 
     final Users user = await userDao.findAll();
 
-    UserResponse response = UserResponse(user, '', 0);
+    UserResponse response = UserResponse(user, '', 0, '');
     return response;
   }
 

@@ -17,7 +17,6 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   // Initially password is obscure
   bool _obscureText = true;
-  bool _obscureConfirmText = true;
   String _firstName, _lastName, _email, _username, _password, _phoneNo = '';
 
   final _formKey = GlobalKey<FormState>();
@@ -37,13 +36,6 @@ class _SignUpState extends State<SignUp> {
   void _viewPassword() {
     setState(() {
       _obscureText = !_obscureText;
-    });
-  }
-
-  // Toggles the confirm password show status
-  void _viewConfirmPassword() {
-    setState(() {
-      _obscureConfirmText = !_obscureConfirmText;
     });
   }
 
@@ -144,7 +136,7 @@ class _SignUpState extends State<SignUp> {
                             onTap: () {
                               Navigator.push(context, PageTransition(
                                   type: PageTransitionType.leftToRight,
-                                  child: Login()));
+                                  child: Login(null, null)));
                             },
                             child: Container(
                               padding: EdgeInsets.all(1.0),
@@ -392,7 +384,8 @@ class _SignUpState extends State<SignUp> {
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
                           validator: (value) {
-                            return Validator.email(value);
+                            return Validator.required(
+                                value, 6, 'Password is required');
                           },
                           style: TextStyle(
                             color: Colors.white,
@@ -416,11 +409,6 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                           onSaved: (password) => _password = password,
-                          onFieldSubmitted: (_) {
-                            fieldFocusChange(
-                                context, _usernameFocusNode,
-                                _passwordFocusNode);
-                          },
                         ),
                       ),
                     ),
@@ -479,18 +467,21 @@ class _SignUpState extends State<SignUp> {
 
   Future<void> submitDetails(BuildContext context,) async {
     try {
-      MyDialogs.showLoadingDialog(
+      LoadingDialogs.showLoadingDialog(
           context, _keyLoader, 'Processing your details'); //invoking login
-      UserResponse _response = await _repository.register(
+      RegisterResponse _response = await _repository.register(
           _username, _password, _firstName, _lastName, _phoneNo, _email);
       if (_response.error.length > 0) {
-        //todo - parse error
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+        ServerValidationDialog.errorDialog(
+            context, _response.error, _response.eTitle); //invoking log
       } else {
         Navigator.of(_keyLoader.currentContext, rootNavigator: true)
             .pop(); //close the dialoge
         Navigator.push(context, PageTransition(
             type: PageTransitionType.rightToLeft,
-            child: OTPScreen(_response.results, 1)));
+            child: OTPScreen(_response.otp, _email, 1)));
       }
     } catch (error) {
       print(error);
