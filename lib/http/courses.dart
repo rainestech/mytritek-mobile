@@ -7,18 +7,42 @@ import 'package:tritek_lms/http/endpoints.dart';
 class CoursesResponse {
   final List<Course> results;
   final String error;
+  final String eTitle;
   final int length;
 
-  CoursesResponse(this.results, this.error, this.length);
+  CoursesResponse(this.results, this.error, this.eTitle, this.length);
 
   CoursesResponse.fromJson(json, len)
       : results = (json as List).map((i) => new Course.fromJson(i)).toList(),
         error = "",
+        eTitle = "",
         length = len;
 
-  CoursesResponse.withError(String errorValue)
+  CoursesResponse.withError(String error, String title)
       : results = List(),
-        error = errorValue,
+        error = error,
+        eTitle = title,
+        length = 0;
+}
+
+class CourseResponse {
+  final Course result;
+  final String error;
+  final String eTitle;
+  final int length;
+
+  CourseResponse(this.result, this.error, this.eTitle, this.length);
+
+  CourseResponse.fromJson(json, len)
+      : result = new Course.fromJson(json),
+        error = "",
+        eTitle = "",
+        length = len;
+
+  CourseResponse.withError(String error, String title)
+      : result = null,
+        error = error,
+        eTitle = title,
         length = 0;
 }
 
@@ -32,10 +56,44 @@ class CoursesApiProvider {
       print(response.data.length);
       return CoursesResponse.fromJson(
           json.decode(response.data), response.data.length);
-    } catch (error, stacktrace) {
-      // @todo
-      print("Exception occurred: $error stackTrace: $stacktrace");
-      return CoursesResponse.withError("$error");
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return CoursesResponse.withError(error['message'], error['error']);
+      }
+      return CoursesResponse.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<CoursesResponse> getMyCourses(int userId) async {
+    print('getting my courses....');
+    try {
+      Response response = await _dio.get(myCoursesEndpoint + userId.toString(),
+          options: Options(method: 'GET', responseType: ResponseType.plain));
+      print(response.data.length);
+      return CoursesResponse.fromJson(
+          json.decode(response.data), response.data.length);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return CoursesResponse.withError(error['message'], error['error']);
+      }
+      return CoursesResponse.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<CourseResponse> getMyCourse(int userId, int courseId) async {
+    try {
+      print(myCoursesEndpoint + userId.toString() + '/' + courseId.toString());
+      Response response = await _dio.get(
+          myCoursesEndpoint + userId.toString() + '/' + courseId.toString());
+      return CourseResponse.fromJson(response.data, response.data.length);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return CourseResponse.withError(error['message'], error['error']);
+      }
+      return CourseResponse.withError(e.message, "Network Error");
     }
   }
 }

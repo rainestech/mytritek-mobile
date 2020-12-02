@@ -57,6 +57,11 @@ class UserRepository {
     return response;
   }
 
+  Future<UserResponse> logout() async {
+    await refreshUser();
+    return null;
+  }
+
   Future<void> saveUser(Users user) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final userDao = database.userDao;

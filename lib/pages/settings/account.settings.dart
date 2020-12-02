@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
+import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/settings/edit.profile.dart';
 
@@ -12,6 +14,27 @@ class AccountSettings extends StatefulWidget {
 
 class _AccountSettingsState extends State<AccountSettings> {
   File _image;
+  Users _user;
+
+  @override
+  void initState() {
+    super.initState();
+    userBloc.userSubject.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      if (value == null) {
+        logout();
+        return;
+      }
+      setState(() {
+        _user = value.results;
+      });
+    });
+
+    userBloc.getUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,83 +181,84 @@ class _AccountSettingsState extends State<AccountSettings> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          // return object of type Dialog
-          return Dialog(
-            elevation: 0.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Container(
-              height: 200.0,
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "You sure want to logout?",
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontSize: 21.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+          return WillPopScope(
+              onWillPop: () async => false,
+              child: Dialog(
+                elevation: 0.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Container(
+                  height: 200.0,
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: (width / 3.5),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                      Text(
+                        "You sure want to logout?",
+                        style: TextStyle(
+                          fontFamily: 'Signika Negative',
+                          fontSize: 21.0,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Login(null, null)));
-                        },
-                        child: Container(
-                          width: (width / 3.5),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: textColor,
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Text(
-                            'Log out',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: (width / 3.5),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontFamily: 'Signika Negative',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          InkWell(
+                            onTap: () {
+                              userBloc.logout();
+                              Navigator.pop(context);
+                              logout();
+                            },
+                            child: Container(
+                              width: (width / 3.5),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: textColor,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Text(
+                                'Log out',
+                                style: TextStyle(
+                                  fontFamily: 'Signika Negative',
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              )
           );
         },
       );
@@ -355,7 +379,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                       ),
                       SizedBox(height: 10.0),
                       Text(
-                        'Ellison Perry'.toUpperCase(),
+                        ("${_user?.firstName} ${_user?.lastName}")
+                            .toUpperCase(),
                         style: TextStyle(
                           color: themeGold,
                           fontSize: 18.0,
@@ -365,109 +390,18 @@ class _AccountSettingsState extends State<AccountSettings> {
                     ],
                   ),
                 ),
-                // Positioned(
-                //   bottom: 3.0,
-                //   left: 0.0,
-                //   child: Padding(
-                //     padding: EdgeInsets.symmetric(horizontal: 20.0),
-                //     child: Material(
-                //       elevation: 3.0,
-                //       borderRadius: BorderRadius.circular(10.0),
-                //       child: Container(
-                //         height: 100.0,
-                //         width: MediaQuery.of(context).size.width - 40.0,
-                //         alignment: Alignment.center,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(10.0),
-                //           color: Colors.white,
-                //         ),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //           crossAxisAlignment: CrossAxisAlignment.start,
-                //           children: [
-                //             Column(
-                //               mainAxisAlignment: MainAxisAlignment.center,
-                //               crossAxisAlignment: CrossAxisAlignment.center,
-                //               children: [
-                //                 Text(
-                //                   'Courses',
-                //                   style: TextStyle(
-                //                     color: Colors.black,
-                //                     fontSize: 15.0,
-                //                   ),
-                //                 ),
-                //                 SizedBox(height: 5.0),
-                //                 Text(
-                //                   '160',
-                //                   style: TextStyle(
-                //                     color: themeBlue,
-                //                     fontSize: 18.0,
-                //                     fontWeight: FontWeight.bold,
-                //                   ),
-                //                 ),
-                //               ],
-                //             ),
-                //             Column(
-                //               mainAxisAlignment: MainAxisAlignment.center,
-                //               crossAxisAlignment: CrossAxisAlignment.center,
-                //               children: [
-                //                 Text(
-                //                   'Lessons Views',
-                //                   style: TextStyle(
-                //                     color: Colors.black,
-                //                     fontSize: 15.0,
-                //                   ),
-                //                 ),
-                //                 SizedBox(height: 5.0),
-                //                 Text(
-                //                   '2254',
-                //                   style: TextStyle(
-                //                     color: themeBlue,
-                //                     fontSize: 18.0,
-                //                     fontWeight: FontWeight.bold,
-                //                   ),
-                //                 ),
-                //               ],
-                //             ),
-                //             Column(
-                //               mainAxisAlignment: MainAxisAlignment.center,
-                //               crossAxisAlignment: CrossAxisAlignment.center,
-                //               children: [
-                //                 Text(
-                //                   'Quizzes',
-                //                   style: TextStyle(
-                //                     color: Colors.black,
-                //                     fontSize: 15.0,
-                //                   ),
-                //                 ),
-                //                 SizedBox(height: 5.0),
-                //                 Text(
-                //                   '520',
-                //                   style: TextStyle(
-                //                     color: themeBlue,
-                //                     fontSize: 18.0,
-                //                     fontWeight: FontWeight.bold,
-                //                   ),
-                //                 ),
-                //               ],
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                Positioned(
-                  bottom: 3.0,
-                  left: 0.0,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Material(
-                      elevation: 3.0,
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Container(
-                        height: 100.0,
-                        padding: EdgeInsets.all(20.0),
+                if (_user != null)
+                  Positioned(
+                    bottom: 3.0,
+                    left: 0.0,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Material(
+                        elevation: 3.0,
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Container(
+                          height: 100.0,
+                          padding: EdgeInsets.all(20.0),
                         width: MediaQuery.of(context).size.width - 40.0,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
@@ -508,62 +442,99 @@ class _AccountSettingsState extends State<AccountSettings> {
                             ),
                           ],
                         ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+
+                if (_user == null)
+                  Positioned(
+                    bottom: 3.0,
+                    left: 0.0,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Material(
+                        elevation: 3.0,
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Container(
+                          height: 100.0,
+                          padding: EdgeInsets.all(20.0),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width - 40.0,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            'You are yet to login',
+                            style: TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold,
+                              color: themeBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
           SizedBox(height: 10.0),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 5, 20, 5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 10.0),
-                itemTile(width, Icons.person, 'Username', 'Ellison Perry'),
-                itemTile(width, Icons.phone, 'Mobile', '+1 123456789'),
-                itemTile(width, Icons.email, 'Email', 'developer@flutter.io'),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      itemTile(width - 100, Icons.lock, 'Password',
-                          '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'),
-                      // Spacer(),
-                      Container(
-                        height: 56.0,
-                        width: 56.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(28.0),
-                          color: themeBlue,
+          if (_user != null)
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 5, 20, 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10.0),
+                  itemTile(width, Icons.person, 'Username', _user?.username),
+                  itemTile(width, Icons.phone, 'Mobile', '+1 123456789'),
+                  itemTile(width, Icons.email, 'Email', _user?.email),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        itemTile(width - 100, Icons.lock, 'Password',
+                            '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'),
+                        // Spacer(),
+                        Container(
+                          height: 56.0,
+                          width: 56.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28.0),
+                            color: themeBlue,
+                          ),
+                          alignment: Alignment.center,
+                          child: IconButton(
+                            onPressed: () {
+                              changePassword();
+                            },
+                            iconSize: 48,
+                            icon:
+                            Icon(Icons.warning, size: 28.0, color: themeGold),
+                          ),
                         ),
-                        alignment: Alignment.center,
-                        child: IconButton(
-                          onPressed: () {
-                            changePassword();
-                          },
-                          iconSize: 48,
-                          icon:
-                              Icon(Icons.warning, size: 28.0, color: themeGold),
-                        ),
-                      ),
-                    ])
-              ],
+                      ])
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: InkWell(
-              onTap: () {
-                logoutDialogue();
-              },
-              borderRadius: BorderRadius.circular(30.0),
-              child: Material(
-                elevation: 1.0,
+
+          if (_user != null)
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  logoutDialogue();
+                },
                 borderRadius: BorderRadius.circular(30.0),
+                child: Material(
+                  elevation: 1.0,
+                  borderRadius: BorderRadius.circular(30.0),
                 child: Container(
                   padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
                   decoration: BoxDecoration(
@@ -579,9 +550,40 @@ class _AccountSettingsState extends State<AccountSettings> {
                     ),
                   ),
                 ),
+                ),
               ),
             ),
-          ),
+
+          if (_user == null)
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  logout();
+                },
+                borderRadius: BorderRadius.circular(30.0),
+                child: Material(
+                  elevation: 1.0,
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      color: themeGold,
+                    ),
+                    child: Text(
+                      'Login'.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           SizedBox(height: 10)
         ],
       ),
@@ -611,5 +613,19 @@ class _AccountSettingsState extends State<AccountSettings> {
         ],
       ),
     );
+  }
+
+  void logout() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Login(null, null)));
+    // Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //             Login(null, null)),
+    //         (Route<dynamic> route) => false
+    // );
   }
 }

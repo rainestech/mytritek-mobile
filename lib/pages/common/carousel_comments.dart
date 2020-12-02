@@ -31,7 +31,7 @@ class CarouselComments extends StatelessWidget {
               child: Container(
                 height: 90.0,
                 width: 90.0,
-                margin: EdgeInsets.fromLTRB(20, 10, 5, 10),
+                margin: EdgeInsets.fromLTRB(10, 5, 5, 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   image: DecorationImage(

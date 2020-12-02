@@ -4,7 +4,7 @@ import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
 import 'package:tritek_lms/pages/home/home_component/testimonials_slide.dart';
 import 'package:tritek_lms/pages/login_signup/signup.dart';
 import 'package:tritek_lms/pages/notifications.dart';
-import 'package:tritek_lms/pages/settings/account_settings.dart';
+import 'package:tritek_lms/pages/settings/account.settings.dart';
 
 import '../../appTheme/appTheme.dart';
 

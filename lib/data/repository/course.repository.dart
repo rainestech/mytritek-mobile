@@ -18,13 +18,48 @@ class CourseRepository {
       print('no connection');
       return getDbCourses();
     }
-    // return getDbCourses();
-
     CoursesResponse response = await _apiProvider.getCourses();
 
     if (response.length != courseResp && response.results.length > 0) {
       await saveCourses(response.results);
       await prefs.setInt('courseResp', response.length);
+    }
+
+    return response;
+  }
+
+  Future<CoursesResponse> getMyCourses(int userId) async {
+    bool conn = await DataConnectionChecker().hasConnection;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int courseResp = prefs.getInt('myCourseResp') ?? 0;
+
+    if (!conn && courseResp > 0) {
+      return getDbMyCourses(userId);
+    }
+    // return getDbCourses();
+
+    CoursesResponse response = await _apiProvider.getMyCourses(userId);
+    if (response.length != courseResp && response.results.length > 0) {
+      await updateMyCourses(response.results, userId);
+      await prefs.setInt('myCourseResp', response.length);
+    }
+
+    return response;
+  }
+
+  Future<CourseResponse> getMyCourse(int userId, int courseId) async {
+    bool conn = await DataConnectionChecker().hasConnection;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int myCourseResp = prefs.getInt('myCourseResp') ?? 0;
+    int courseResp = prefs.getInt('courseResp') ?? 0;
+
+    if (!conn && (courseResp > 0 || myCourseResp > 0)) {
+      return getDbMyCourse(userId, courseId);
+    }
+
+    CourseResponse response = await _apiProvider.getMyCourse(userId, courseId);
+    if (response != null && response.result != null) {
+      await updateMyCourse(response.result, userId);
     }
 
     return response;
@@ -58,7 +93,67 @@ class CourseRepository {
       course.sections = sections;
     }
 
-    CoursesResponse response = CoursesResponse(courses, '', 0);
+    CoursesResponse response = CoursesResponse(courses, '', '', 0);
+    return response;
+  }
+
+  Future<CoursesResponse> getDbMyCourses(int userId) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+    final sectionsDao = database.sectionsDao;
+    final lessonsDao = database.lessonsDao;
+    final instructorDao = database.instructorDao;
+    final commentDao = database.commentsDao;
+
+    final List<Course> courses = await courseDao.findMyCourses(userId);
+
+    for (Course course in courses) {
+      final List<Sections> sections =
+          await sectionsDao.findByCourseId(course.id);
+      for (Sections section in sections) {
+        final List<Lessons> lessons =
+            await lessonsDao.findBySectionId(section.id);
+        section.lessons = lessons;
+      }
+
+      final Instructor instructor = await instructorDao.findById(course.userId);
+      final List<Comments> comments =
+          await commentDao.findByCourseId(course.id);
+
+      course.comments = comments;
+      course.instructor = instructor;
+      course.sections = sections;
+    }
+
+    CoursesResponse response = CoursesResponse(courses, '', '', 0);
+    return response;
+  }
+
+  Future<CourseResponse> getDbMyCourse(int userId, int courseId) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+    final sectionsDao = database.sectionsDao;
+    final lessonsDao = database.lessonsDao;
+    final instructorDao = database.instructorDao;
+    final commentDao = database.commentsDao;
+
+    final Course course = await courseDao.findById(courseId);
+
+    final List<Sections> sections = await sectionsDao.findByCourseId(course.id);
+    for (Sections section in sections) {
+      final List<Lessons> lessons =
+          await lessonsDao.findBySectionId(section.id);
+      section.lessons = lessons;
+    }
+
+    final Instructor instructor = await instructorDao.findById(course.userId);
+    final List<Comments> comments = await commentDao.findByCourseId(course.id);
+
+    course.comments = comments;
+    course.instructor = instructor;
+    course.sections = sections;
+
+    CourseResponse response = CourseResponse(course, '', '', 0);
     return response;
   }
 
@@ -90,6 +185,38 @@ class CourseRepository {
       instructorDao.save(course.instructor);
       for (Comments comment in course.comments) {
         commentDao.save(comment);
+      }
+    }
+  }
+
+  Future<void> updateMyCourses(List<Course> courses, int userId) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+    final lessonsDao = database.lessonsDao;
+
+    for (Course course in courses) {
+      courseDao.update(course);
+      final List<Sections> sections = course.sections;
+      for (Sections section in sections) {
+        final List<Lessons> lessons = section.lessons;
+        for (Lessons lesson in lessons) {
+          lessonsDao.update(lesson);
+        }
+      }
+    }
+  }
+
+  Future<void> updateMyCourse(Course course, int userId) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+    final lessonsDao = database.lessonsDao;
+
+    courseDao.update(course);
+    final List<Sections> sections = course.sections;
+    for (Sections section in sections) {
+      final List<Lessons> lessons = section.lessons;
+      for (Lessons lesson in lessons) {
+        lessonsDao.update(lesson);
       }
     }
   }

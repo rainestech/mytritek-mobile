@@ -8,10 +8,16 @@ abstract class CourseDao {
   Future<List<Course>> findAll();
 
   @Query('SELECT * FROM course WHERE id = :id')
-  Stream<Course> findById(int id);
+  Future<Course> findById(int id);
+
+  @Query('SELECT * FROM course WHERE subId = :id')
+  Future<List<Course>> findMyCourses(int id);
 
   @insert
   Future<void> save(Course course);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> update(Course course);
 
   @Query('Delete FROM course')
   Future<void> deleteAll();
@@ -48,6 +54,9 @@ abstract class LessonsDao {
 
   @insert
   Future<void> save(Lessons lessons);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> update(Lessons lessons);
 
   @Query('Delete FROM lessons')
   Future<void> deleteAll();

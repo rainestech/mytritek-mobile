@@ -19,6 +19,7 @@ class Course {
   Instructor instructor;
   @ignore
   List<Comments> comments;
+  int subId;
 
   Course(
       {this.id,
@@ -33,7 +34,8 @@ class Course {
       this.sections,
       this.image,
       this.instructor,
-      this.comments});
+      this.comments,
+      this.subId});
 
   Course.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -61,6 +63,7 @@ class Course {
         comments.add(new Comments.fromJson(v));
       });
     }
+    subId = json['subId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -84,6 +87,7 @@ class Course {
     if (this.comments != null) {
       data['comments'] = this.comments.map((v) => v.toJson()).toList();
     }
+    data['subId'] = this.subId;
     return data;
   }
 }
@@ -153,18 +157,24 @@ class Lessons {
   String postTitle;
   int postId;
   int sectionId;
+  int courseId;
   String duration;
   String preview;
+  bool viewed;
   int quizCount;
+  String grade;
 
   Lessons({this.itemId,
     this.itemOrder,
     this.postTitle,
     this.postId,
     this.sectionId,
+    this.courseId,
     this.duration,
     this.preview,
-    this.quizCount});
+    this.viewed,
+    this.quizCount,
+    this.grade});
 
   Lessons.fromJson(Map<String, dynamic> json) {
     itemId = json['itemId'];
@@ -172,9 +182,12 @@ class Lessons {
     postTitle = json['postTitle'];
     postId = json['postId'];
     sectionId = json['sectionId'];
+    courseId = json['courseId'];
     duration = json['duration'];
     preview = json['preview'];
+    viewed = json['viewed'];
     quizCount = json['quizCount'];
+    grade = json['grade'];
   }
 
   Map<String, dynamic> toJson() {
@@ -184,9 +197,12 @@ class Lessons {
     data['postTitle'] = this.postTitle;
     data['postId'] = this.postId;
     data['sectionId'] = this.sectionId;
+    data['courseId'] = this.courseId;
     data['duration'] = this.duration;
     data['preview'] = this.preview;
+    data['viewed'] = this.viewed;
     data['quizCount'] = this.quizCount;
+    data['grade'] = this.grade;
     return data;
   }
 }

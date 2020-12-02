@@ -1,22 +1,38 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/pages/video_play/video_play.dart';
 
 class LessonView extends StatefulWidget {
   final scaffoldKey;
   final List<Sections> sections;
+  final Users user;
 
-  LessonView({Key key, this.scaffoldKey, this.sections}) : super(key: key);
+  LessonView({Key key, this.scaffoldKey, this.sections, this.user})
+      : super(key: key);
 
   @override
   _LessonViewState createState() => _LessonViewState();
 }
 
 class _LessonViewState extends State<LessonView> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   userBloc.userSubject.listen((value) {
+  //     setState(() {
+  //       _user = value.results;
+  //     });
+  //   });
+  //
+  //   userBloc.getUser();
+  // }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    Users user = widget.user;
 
     _checkStatus(String status) {
       if (status == 'no') {
@@ -104,7 +120,7 @@ class _LessonViewState extends State<LessonView> {
                                     Spacer(),
                                     if (les.quizCount != null)
                                       Icon(
-                                        Icons.edit_off,
+                                        Icons.description,
                                         size: 20.0,
                                       ),
                                     if (les.quizCount != null)
@@ -119,12 +135,32 @@ class _LessonViewState extends State<LessonView> {
                                         ),
                                       ),
                                     SizedBox(width: 3.0),
-                                    Icon(
-                                      (les.preview == 'no')
-                                          ? Icons.lock
-                                          : Icons.lock_open,
-                                      size: 20.0,
-                                    ),
+                                    if (user == null)
+                                      Icon(
+                                        (les.preview == 'no')
+                                            ? Icons.lock
+                                            : Icons.lock_open,
+                                        size: 20.0,
+                                      ),
+                                    if (_checkViewed(user, les))
+                                      Icon(
+                                        Icons.check,
+                                        size: 20.0,
+                                      ),
+                                    if (!_checkViewed(user, les) &&
+                                        les.quizCount == null)
+                                      Icon(
+                                        Icons.check_box_outline_blank,
+                                        size: 20.0,
+                                      ),
+                                    if (checkGrade(user, les))
+                                      Icon(
+                                        (les.grade == 'failed') ?
+                                        Icons.close : Icons.check,
+                                        color: (les.grade == 'failed') ?
+                                        Colors.deepOrange : Colors.green,
+                                        size: 20.0,
+                                      ),
                                   ],
                                 ),
                               ),
@@ -151,4 +187,28 @@ class _LessonViewState extends State<LessonView> {
     }
     return '${parts[0]} hours, ${parts[1]} minutes';
   }
+
+  checkGrade(Users user, Lessons les) {
+    if (user == null) {
+      return false;
+    } else if (les.viewed == null) {
+      return false;
+    } else if (les.viewed && les.quizCount != null) {
+      return true;
+    }
+    return false;
+  }
+
+  _checkViewed(Users user, Lessons les) {
+    if (user == null) {
+      return false;
+    } else if (les.viewed == null) {
+      return false;
+    } else if (les.viewed && les.quizCount == null) {
+      return true;
+    }
+
+    return false;
+  }
 }
+

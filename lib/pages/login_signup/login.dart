@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/subscription.plans.dart';
 import 'package:tritek_lms/data/repository/user.repository.dart';
+import 'package:tritek_lms/http/google.login.dart';
 import 'package:tritek_lms/http/user.dart';
 import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/course/course.dart';
@@ -30,7 +32,9 @@ class _LoginState extends State<Login> {
   // Initially password is obscure
   bool _obscureText = true;
   DateTime currentBackPressTime;
+  GoogleSignInAccount _currentUser;
 
+  final GoogleLogin _googleLogin = GoogleLogin();
   final _formKey = GlobalKey<FormState>();
   final UserRepository _repository = UserRepository();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
@@ -321,7 +325,15 @@ class _LoginState extends State<Login> {
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(30.0),
-                        onTap: () {},
+                        onTap: () {
+                          _googleLogin.handleSignIn().then((acc) => {
+                                if (acc != null)
+                                  {
+                                    _currentUser = acc,
+                                    _googleLogin.handleGetContact(acc)
+                                  }
+                              });
+                        },
                         child: Container(
                           padding: EdgeInsets.all(15.0),
                           alignment: Alignment.center,
@@ -412,13 +424,15 @@ class _LoginState extends State<Login> {
                           course: widget._course
                       )));
         } else if (_response.results.status != 'active') {
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                   builder: (context) =>
                       SelectPlan(
                           course: widget._course
-                      )));
+                      )),
+              ModalRoute.withName("/Home")
+          );
         } else {
           Navigator.push(context, PageTransition(
               type: PageTransitionType.rightToLeft,
