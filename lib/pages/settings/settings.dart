@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
+import 'package:tritek_lms/pages/settings/membership.settings.dart';
+import 'package:tritek_lms/pages/settings/progress.settings.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -89,7 +91,7 @@ class _SettingsState extends State<Settings> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AppSettings()));
+                              builder: (context) => MembershipSettings()));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,10 +116,8 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AppSettings()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Progress()));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

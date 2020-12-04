@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/users.dart';
@@ -23,17 +24,34 @@ class _AccountSettingsState extends State<AccountSettings> {
       if (!mounted) {
         return;
       }
-
-      if (value == null) {
-        logout();
-        return;
-      }
       setState(() {
         _user = value.results;
       });
     });
 
+    userBloc.userStatus.listen((value) {
+      if (!mounted) {
+        return;
+      }
+      if (value == false) {
+        logout();
+        return;
+      }
+    });
+
     userBloc.getUser();
+    getImage();
+  }
+
+  Future<void> getImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String path = prefs.getString('profileImage') ?? null;
+
+    if (path != null) {
+      setState(() {
+        _image = File(path);
+      });
+    }
   }
 
   @override
@@ -430,10 +448,12 @@ class _AccountSettingsState extends State<AccountSettings> {
                               alignment: Alignment.center,
                               child: IconButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditProfile()));
+                                  if (_user != null)
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditProfile(_user, _image)));
                                 },
                                 iconSize: 48,
                                 icon: Icon(Icons.edit,
@@ -523,6 +543,7 @@ class _AccountSettingsState extends State<AccountSettings> {
               ),
             ),
 
+          SizedBox(height: 20),
           if (_user != null)
             Container(
               width: double.infinity,

@@ -9,6 +9,9 @@ class CourseBloc {
   final BehaviorSubject<CoursesResponse> _coursesSubject =
       BehaviorSubject<CoursesResponse>();
 
+  final BehaviorSubject<CoursesResponse> _myCoursesSubject =
+      BehaviorSubject<CoursesResponse>();
+
   final BehaviorSubject<CourseResponse> _courseSubject =
       BehaviorSubject<CourseResponse>();
 
@@ -30,7 +33,7 @@ class CourseBloc {
 
   getMyCourses(int userId) async {
     CoursesResponse response = await _repository.getMyCourses(userId);
-    _coursesSubject.sink.add(response);
+    _myCoursesSubject.sink.add(response);
   }
 
   getMyCourseById(int userId, int courseId) async {
@@ -45,6 +48,8 @@ class CourseBloc {
   }
 
   BehaviorSubject<CoursesResponse> get subject => _coursesSubject;
+
+  BehaviorSubject<CoursesResponse> get myCourses => _myCoursesSubject;
 
   BehaviorSubject<CourseResponse> get course => _courseSubject;
 }

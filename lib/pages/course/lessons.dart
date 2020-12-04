@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/users.dart';
-import 'package:tritek_lms/pages/video_play/video_play.dart';
+import 'package:tritek_lms/pages/course/video.view.dart';
 
 class LessonView extends StatefulWidget {
   final scaffoldKey;
@@ -34,16 +34,24 @@ class _LessonViewState extends State<LessonView> {
     double width = MediaQuery.of(context).size.width;
     Users user = widget.user;
 
-    _checkStatus(String status) {
-      if (status == 'no') {
+    _checkStatus(Lessons status) {
+      if (user == null && status.preview == 'no') {
         widget.scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
-          'First Subscribe to one of the membership plans, then you can view the course.',
+          'First Login and Subscribe to one of the membership plans, then you can view the course.',
+          style: TextStyle(fontSize: 14.0),
+        )));
+      } else if (user != null && user.status != 'active') {
+        widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+          'First Login and Subscribe to one of the membership plans, then you can view the course.',
           style: TextStyle(fontSize: 14.0),
         )));
       } else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => VideoPlay()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => VideoViewLesson(status.postId)));
       }
     }
 
@@ -64,7 +72,7 @@ class _LessonViewState extends State<LessonView> {
               for (var les in item.lessons)
                 InkWell(
                   onTap: () {
-                    _checkStatus(les.preview);
+                    _checkStatus(les);
                   },
                   child: Container(
                     padding: EdgeInsets.all(10.0),

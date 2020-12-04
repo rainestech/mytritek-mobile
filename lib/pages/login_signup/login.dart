@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/subscription.plans.dart';
@@ -45,6 +46,26 @@ class _LoginState extends State<Login> {
   FocusNode _usernameFocusNode = FocusNode();
   FocusNode _passwordFocusNode = FocusNode();
 
+  @override
+  void initState() {
+    super.initState();
+    userBloc.userStatus.listen((value) {
+      if (!mounted) {
+        return;
+      }
+      if (value == true) {
+        userBloc.dispose();
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.rightToLeft, child: Home()));
+        return;
+      }
+    });
+
+    userBloc.getUser();
+  }
+
   // Toggles the password show status
   void _viewPassword() {
     setState(() {
@@ -52,8 +73,8 @@ class _LoginState extends State<Login> {
     });
   }
 
-  void fieldFocusChange(BuildContext context, FocusNode currentFocus,
-      FocusNode nextFocus) {
+  void fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }

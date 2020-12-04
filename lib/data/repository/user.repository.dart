@@ -1,4 +1,6 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/custom/helper.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/database/database.dart';
 import 'package:tritek_lms/http/user.dart';
@@ -11,6 +13,11 @@ class UserRepository {
 
     if (response.error.length < 1) {
       await saveUser(response.results);
+      getUserLevel(response.results.id);
+    }
+
+    if (response.results.image != null && response.results.image.length > 0) {
+      SaveFile().saveImage(response.results.image);
     }
     return response;
   }
@@ -29,10 +36,9 @@ class UserRepository {
     return response;
   }
 
-  Future<RegisterResponse> setNewPassword(
-      String email, String password, String otp) async {
+  Future<RegisterResponse> setNewPassword(String email, String password, String otp) async {
     RegisterResponse response =
-        await _apiProvider.setNewPassword(email, password, otp);
+    await _apiProvider.setNewPassword(email, password, otp);
 
     return response;
   }
@@ -42,6 +48,24 @@ class UserRepository {
 
     if (response.error.length < 1) {
       await saveUser(response.results);
+    }
+
+    if (response.results.image != null && response.results.image.length > 0) {
+      SaveFile().saveImage(response.results.image);
+    }
+
+    return response;
+  }
+
+  Future<UserResponse> editUser(Users _user) async {
+    UserResponse response = await _apiProvider.editUser(_user);
+
+    if (response.error.length < 1) {
+      await saveUser(response.results);
+    }
+
+    if (response.results.image != null && response.results.image.length > 0) {
+      SaveFile().saveImage(response.results.image);
     }
 
     return response;
@@ -57,8 +81,28 @@ class UserRepository {
     return response;
   }
 
+  Future<UserLevelResponse> getUserLevel(int userId) async {
+    bool conn = await DataConnectionChecker().hasConnection;
+    if (!conn) {
+      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final userLevelDao = database.userLevelDao;
+
+      final UserLevel level = await userLevelDao.findAll();
+
+      UserLevelResponse response = UserLevelResponse(level, '', 0, '');
+      return response;
+    }
+
+    final UserLevelResponse level = await _apiProvider.getLevel(userId);
+    if (level.data != null) {
+      saveUserLevel(level.data);
+    }
+    return level;
+  }
+
   Future<UserResponse> logout() async {
     await refreshUser();
+    SaveFile().deleteImage();
     return null;
   }
 
@@ -70,9 +114,19 @@ class UserRepository {
     userDao.save(user);
   }
 
+  Future<void> saveUserLevel(UserLevel level) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final userDao = database.userLevelDao;
+
+    await userDao.deleteAll();
+    userDao.save(level);
+  }
+
   Future<void> refreshUser() async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final userDao = database.userDao;
+    final userLevelDao = database.userLevelDao;
     await userDao.deleteAll();
+    await userLevelDao.deleteAll();
   }
 }

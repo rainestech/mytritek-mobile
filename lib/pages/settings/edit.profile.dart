@@ -4,34 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/form.validators.dart';
+import 'package:tritek_lms/custom/helper.dart';
+import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/data/repository/user.repository.dart';
+import 'package:tritek_lms/http/user.dart';
+import 'package:tritek_lms/pages/common/dialog.dart';
 
 class EditProfile extends StatefulWidget {
+  final Users user;
+  final File profile;
+
+  EditProfile(this.user, this.profile);
+
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  String number = '9603456878';
-  String email = 'test@abc.com';
-  String username = 'test@abc.com';
-  String password = 'test@abc.com';
-  var phoneController = TextEditingController();
-  var emailController = TextEditingController();
+  String phoneNo;
+  String firstNme;
+  String lastName;
   final ImagePicker picker = ImagePicker();
   File _image;
 
   final _formKey = GlobalKey<FormState>();
-  FocusNode _usernameFocusNode = FocusNode();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  final UserRepository _repository = UserRepository();
   FocusNode _firstNameFocusNode = FocusNode();
   FocusNode _lastNameFocusNode = FocusNode();
-  FocusNode _emailFocusNode = FocusNode();
   FocusNode _phoneNoFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    phoneController.text = number;
-    emailController.text = email;
+    firstNme = widget.user.firstName;
+    lastName = widget.user.lastName;
+    phoneNo = widget.user.phoneNo;
+    _image = widget.profile;
   }
 
   @override
@@ -44,23 +53,29 @@ class _EditProfileState extends State<EditProfile> {
       FocusScope.of(context).requestFocus(nextFocus);
     }
 
+    saveImage(PickedFile file) async {
+      setState(() {
+        _image = File(file.path);
+        // _image = Image.file(File(image.path));
+      });
+
+      SaveFile().saveFile(_image, 'profileImage');
+    }
+
     _imgFromCamera() async {
       PickedFile image =
           await picker.getImage(source: ImageSource.camera, imageQuality: 50);
 
-      setState(() {
-        _image = File(image.path);
-      });
+      if (image == null) return;
+      saveImage(image);
     }
 
     _imgFromGallery() async {
       PickedFile image =
-          await picker.getImage(source: ImageSource.gallery, imageQuality: 50);
+      await picker.getImage(source: ImageSource.gallery, imageQuality: 50);
 
-      setState(() {
-        _image = File(image.path);
-        // _image = Image.file(File(image.path));
-      });
+      if (image == null) return;
+      saveImage(image);
     }
 
     void _showPicker(context) {
@@ -184,6 +199,7 @@ class _EditProfileState extends State<EditProfile> {
                       return Validator.required(
                           value, 3, 'Last Name is required');
                     },
+                    initialValue: lastName,
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w700,
@@ -216,6 +232,7 @@ class _EditProfileState extends State<EditProfile> {
                       return Validator.required(
                           value, 3, 'First Name is required');
                     },
+                    initialValue: firstNme,
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w700,
@@ -232,68 +249,66 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     onFieldSubmitted: (_) {
                       fieldFocusChange(
-                          context, _firstNameFocusNode, _usernameFocusNode);
+                          context, _firstNameFocusNode, _phoneNoFocusNode);
                     },
                   ),
-                  TextFormField(
-                    focusNode: _usernameFocusNode,
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.words,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      return Validator.username(value, 'Invalid Username');
-                    },
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter Username',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Signika Negative',
-                      ),
-                    ),
-                    onFieldSubmitted: (_) {
-                      fieldFocusChange(
-                          context, _usernameFocusNode, _emailFocusNode);
-                    },
-                  ),
-                  TextFormField(
-                    focusNode: _emailFocusNode,
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.words,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      return Validator.username(value, 'Invalid Email');
-                    },
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter Email',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Signika Negative',
-                      ),
-                    ),
-                    onFieldSubmitted: (_) {
-                      fieldFocusChange(
-                          context, _emailFocusNode, _phoneNoFocusNode);
-                    },
-                  ),
-                  SizedBox(
-                    height: 15.0,
-                  ),
+                  // TextFormField(
+                  //   focusNode: _usernameFocusNode,
+                  //   autofocus: true,
+                  //   textCapitalization: TextCapitalization.words,
+                  //   keyboardType: TextInputType.text,
+                  //   textInputAction: TextInputAction.next,
+                  //   validator: (value) {
+                  //     return Validator.username(value, 'Invalid Username');
+                  //   },
+                  //   style: TextStyle(
+                  //     fontSize: 16.0,
+                  //     fontWeight: FontWeight.w700,
+                  //     fontFamily: 'Signika Negative',
+                  //   ),
+                  //   decoration: InputDecoration(
+                  //     hintText: 'Enter Username',
+                  //     hintStyle: TextStyle(
+                  //       color: Colors.grey[400],
+                  //       fontSize: 16.0,
+                  //       fontWeight: FontWeight.w700,
+                  //       fontFamily: 'Signika Negative',
+                  //     ),
+                  //   ),
+                  //   onFieldSubmitted: (_) {
+                  //     fieldFocusChange(
+                  //         context, _usernameFocusNode, _emailFocusNode);
+                  //   },
+                  // ),
+                  // TextFormField(
+                  //   focusNode: _emailFocusNode,
+                  //   autofocus: true,
+                  //   textCapitalization: TextCapitalization.words,
+                  //   keyboardType: TextInputType.text,
+                  //   textInputAction: TextInputAction.next,
+                  //   validator: (value) {
+                  //     return Validator.username(value, 'Invalid Email');
+                  //   },
+                  //   style: TextStyle(
+                  //     fontSize: 16.0,
+                  //     fontWeight: FontWeight.w700,
+                  //     fontFamily: 'Signika Negative',
+                  //   ),
+                  //   decoration: InputDecoration(
+                  //     hintText: 'Enter Email',
+                  //     hintStyle: TextStyle(
+                  //       color: Colors.grey[400],
+                  //       fontSize: 16.0,
+                  //       fontWeight: FontWeight.w700,
+                  //       fontFamily: 'Signika Negative',
+                  //     ),
+                  //   ),
+                  //   onFieldSubmitted: (_) {
+                  //     fieldFocusChange(
+                  //         context, _emailFocusNode, _phoneNoFocusNode);
+                  //   },
+                  // ),
+                  SizedBox(height: 15.0),
                   TextFormField(
                     focusNode: _phoneNoFocusNode,
                     autofocus: true,
@@ -303,6 +318,7 @@ class _EditProfileState extends State<EditProfile> {
                     validator: (value) {
                       return Validator.phone(value, 'Invalid Phone Number');
                     },
+                    initialValue: phoneNo,
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w700,
@@ -317,7 +333,7 @@ class _EditProfileState extends State<EditProfile> {
                         fontFamily: 'Signika Negative',
                       ),
                     ),
-                    onSaved: (phoneNo) => number = phoneNo,
+                    onSaved: (_phoneNo) => phoneNo = _phoneNo,
                   ),
                   SizedBox(height: 15.0),
                   Row(
@@ -348,7 +364,8 @@ class _EditProfileState extends State<EditProfile> {
                         onTap: () {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
-                            Navigator.pop(context);
+                            _saveEdit(context);
+                            // Navigator.pop(context);
                           }
                         },
                         child: Container(
@@ -379,5 +396,31 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
     );
+  }
+
+  void _saveEdit(BuildContext context) async {
+    Users _user = widget.user;
+    _user.firstName = firstNme;
+    _user.lastName = lastName;
+    _user.phoneNo = phoneNo;
+
+    try {
+      LoadingDialogs.showLoadingDialog(
+          context, _keyLoader, 'Processing your update...'); //invoking login
+      UserResponse _response = await _repository.editUser(_user);
+      if (_response.error.length > 0) {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+        ServerValidationDialog.errorDialog(
+            context, _response.error, _response.eTitle); //invoking log
+      } else {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+
+        Navigator.pop(context);
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 }

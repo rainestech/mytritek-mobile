@@ -115,3 +115,15 @@ abstract class UserDao {
   @Query('Delete FROM users')
   Future<void> deleteAll();
 }
+
+@dao
+abstract class UserLevelDao {
+  @Query('SELECT * FROM userLevel LIMIT 1')
+  Future<UserLevel> findAll();
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> save(UserLevel level);
+
+  @Query('Delete FROM userLevel')
+  Future<void> deleteAll();
+}

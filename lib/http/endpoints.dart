@@ -23,6 +23,11 @@ String registerEndpoint = "$_endpoint/signup";
 /*
  * Post Login request
  */
+String editUserEndpoint = "$_endpoint/edit";
+
+/*
+ * Post Login request
+ */
 String resetPasswordEndpoint = "$_endpoint/reset";
 
 /*
@@ -49,6 +54,10 @@ String quizEndpoint = "$_endpoint/questions/";
  * Get all user viewed lessons. course Id must be supplied
  */
 String viewedEndpoint = "$_endpoint/views/";
+/*
+ * Get all user viewed lessons. course Id must be supplied
+ */
+String levelEndpoint = "$_endpoint/level/";
 
 /*
  * Get all user viewed lessons. course Id must be supplied

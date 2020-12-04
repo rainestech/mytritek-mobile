@@ -25,6 +25,27 @@ class UserResponse {
         length = 0;
 }
 
+class UserLevelResponse {
+  final UserLevel data;
+  final String error;
+  final String eTitle;
+  final int length;
+
+  UserLevelResponse(this.data, this.error, this.length, this.eTitle);
+
+  UserLevelResponse.fromJson(resp, len)
+      : data = new UserLevel.fromJson(resp),
+        error = "",
+        eTitle = "",
+        length = len;
+
+  UserLevelResponse.withError(String msg, title)
+      : data = null,
+        error = msg,
+        eTitle = title,
+        length = 0;
+}
+
 class RegisterResponse {
   final String otp;
   final String error;
@@ -58,6 +79,19 @@ class UserApiProvider {
         return UserResponse.withError(error['message'], error['error']);
       }
       return UserResponse.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<UserLevelResponse> getLevel(int userId) async {
+    try {
+      Response response = await _dio.get(levelEndpoint + userId.toString());
+      return UserLevelResponse.fromJson(response.data, response.data.length);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return UserLevelResponse.withError(error['message'], error['error']);
+      }
+      return UserLevelResponse.withError(e.message, "Network Error");
     }
   }
 
@@ -120,6 +154,20 @@ class UserApiProvider {
     try {
       Response response =
           await _dio.post(registerEndpoint, data: {'otp': otp, 'email': email});
+
+      return UserResponse.fromJson(response.data, response.data.length);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return UserResponse.withError(error['message'], error['error']);
+      }
+      return UserResponse.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<UserResponse> editUser(Users _user) async {
+    try {
+      Response response = await _dio.put(editUserEndpoint, data: _user);
 
       return UserResponse.fromJson(response.data, response.data.length);
     } catch (e) {
