@@ -16,6 +16,7 @@ class AccountSettings extends StatefulWidget {
 class _AccountSettingsState extends State<AccountSettings> {
   File _image;
   Users _user;
+  bool routed = false;
 
   @override
   void initState() {
@@ -33,8 +34,9 @@ class _AccountSettingsState extends State<AccountSettings> {
       if (!mounted) {
         return;
       }
-      if (value == false) {
+      if (value == false && !routed) {
         logout();
+        routed = true;
         return;
       }
     });

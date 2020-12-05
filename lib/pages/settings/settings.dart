@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
+import 'package:tritek_lms/pages/settings/inapp.webview.dart';
 import 'package:tritek_lms/pages/settings/membership.settings.dart';
 import 'package:tritek_lms/pages/settings/progress.settings.dart';
+import 'package:tritek_lms/pages/settings/webview.navoff.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -152,34 +154,6 @@ class _SettingsState extends State<Settings> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Notification Settings',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: themeBlue,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Signika Negative'),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 18.0,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(),
-                  SizedBox(height: 20.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AppSettings()));
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
                           'App Settings',
                           style: TextStyle(
                               fontSize: 16.0,
@@ -194,6 +168,62 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NoNavWebView(
+                                  'https://mytritek.co.uk/about-us')));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'About Us',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NoNavWebView(
+                                  'https://mytritek.co.uk/terms-and-conditions/')));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Terms & Conditions',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
                   Divider(),
                   SizedBox(height: 20.0),
                   InkWell(
@@ -201,7 +231,7 @@ class _SettingsState extends State<Settings> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AppSettings()));
+                              builder: (context) => WebviewInApp('')));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

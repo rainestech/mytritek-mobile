@@ -9,7 +9,6 @@ import 'package:tritek_lms/pages/course/lessons.dart';
 import 'package:tritek_lms/pages/course/overview.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/payment/select_plan.dart';
-import 'package:tritek_lms/pages/video_play/video_play.dart';
 
 class CoursePage extends StatefulWidget {
   final Course courseData;
@@ -383,35 +382,35 @@ class _CoursePageState extends State<CoursePage> {
                                   ),
                                 ),
                               if (preview) SizedBox(height: 10.0),
-                              if (preview)
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => VideoPlay()));
-                                  },
-                                  child: Container(
-                                    width: width,
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.all(13.0),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(5.0)),
-                                    child: Text(
-                                      'Watch Trailer',
-                                      style: TextStyle(
-                                        fontFamily: 'Signika Negative',
-                                        fontSize: 16.0,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w700,
-                                        wordSpacing: 3.0,
-                                        letterSpacing: 0.6,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              // if (preview)
+                              //   InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) => VideoViewLesson(1)));
+                              //     },
+                              //     child: Container(
+                              //       width: width,
+                              //       alignment: Alignment.center,
+                              //       padding: EdgeInsets.all(13.0),
+                              //       decoration: BoxDecoration(
+                              //           color: Colors.white,
+                              //           borderRadius:
+                              //               BorderRadius.circular(5.0)),
+                              //       child: Text(
+                              //         'Watch Trailer',
+                              //         style: TextStyle(
+                              //           fontFamily: 'Signika Negative',
+                              //           fontSize: 16.0,
+                              //           color: Colors.black,
+                              //           fontWeight: FontWeight.w700,
+                              //           wordSpacing: 3.0,
+                              //           letterSpacing: 0.6,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
                             ],
                           ),
                         ),

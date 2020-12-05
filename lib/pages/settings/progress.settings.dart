@@ -21,6 +21,7 @@ class _ProgressState extends State<Progress> {
   Users _user;
   UserLevel _level;
   List<Course> courses;
+  bool routed = false;
 
   @override
   void initState() {
@@ -62,8 +63,9 @@ class _ProgressState extends State<Progress> {
       if (!mounted) {
         return;
       }
-      if (value == false) {
-        // logout();
+      if (value == false && !routed) {
+        logout();
+        routed = true;
         return;
       }
     });

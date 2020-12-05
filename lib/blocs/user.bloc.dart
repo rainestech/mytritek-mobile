@@ -41,7 +41,7 @@ class UserBloc {
 
   void logout() async {
     UserResponse resp = await _repository.logout();
-    _userSubject.sink.add(resp);
+    // _userSubject.sink.add(resp);
   }
 }
 

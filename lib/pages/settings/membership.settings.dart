@@ -18,6 +18,7 @@ class MembershipSettings extends StatefulWidget {
 class _MembershipSettingsState extends State<MembershipSettings> {
   File _image;
   Users _user;
+  bool routed = false;
 
   @override
   void initState() {
@@ -35,8 +36,9 @@ class _MembershipSettingsState extends State<MembershipSettings> {
       if (!mounted) {
         return;
       }
-      if (value == false) {
+      if (value == false && !routed) {
         logout();
+        routed = true;
         return;
       }
     });
