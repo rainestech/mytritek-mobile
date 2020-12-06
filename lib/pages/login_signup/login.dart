@@ -351,7 +351,10 @@ class _LoginState extends State<Login> {
                                 if (acc != null)
                                   {
                                     _currentUser = acc,
-                                    _googleLogin.handleGetContact(acc)
+                                    print('acc: $acc'),
+                                    _googleLogin.handleGetContact(acc).then(
+                                        (value) => print(
+                                            'Contact ${_currentUser.displayName}')),
                                   }
                               });
                         },

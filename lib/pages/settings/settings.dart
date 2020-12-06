@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/pages/notes/controller/HomePage.dart';
+import 'package:tritek_lms/pages/payment/stripe.pay.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
 import 'package:tritek_lms/pages/settings/inapp.webview.dart';
@@ -155,6 +157,56 @@ class _SettingsState extends State<Settings> {
                       children: <Widget>[
                         Text(
                           'App Settings',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => StripePay()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Pay',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePage()));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Notes',
                           style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w700,

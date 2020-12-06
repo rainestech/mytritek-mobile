@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/data/entity/note.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 
 @dao
@@ -126,4 +127,31 @@ abstract class UserLevelDao {
 
   @Query('Delete FROM userLevel')
   Future<void> deleteAll();
+}
+
+@dao
+abstract class NotesDao {
+  @Query('SELECT * FROM notes')
+  Future<List<Notes>> findAll();
+
+  @Query('SELECT * FROM notes WHERE sectionId = :sectionId')
+  Future<List<Notes>> findBySectionId(int sectionId);
+
+  @Query('SELECT * FROM notes WHERE sectionId = :courseId')
+  Future<List<Notes>> findByCourseId(int courseId);
+
+  @Query('SELECT * FROM notes WHERE lesson = :lessonId')
+  Future<List<Notes>> findByLessonId(int lessonId);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<int> save(Notes note);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<int> update(Notes note);
+
+  @Query('Delete FROM notes')
+  Future<void> deleteAll();
+
+  @Query('DELETE FROM notes WHERE id = :id')
+  Future<void> delete(int id);
 }
