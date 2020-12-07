@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:tritek_lms/blocs/notes.bloc.dart';
 import 'package:tritek_lms/data/entity/note.dart';
-import 'package:tritek_lms/data/repository/notes.repository.dart';
 import 'package:tritek_lms/pages/notes/views/StaggeredTiles.dart';
 
 import 'HomePage.dart';
@@ -16,9 +16,6 @@ class StaggeredGridPage extends StatefulWidget {
 }
 
 class _StaggeredGridPageState extends State<StaggeredGridPage> {
-  //instance of our Sqlite class
-  NoteRepository _repository = NoteRepository();
-
   //a map which will be used in inflating our staggered grid view
   List<Notes> _allNotesInQueryResult = [];
   viewType notesViewType;
@@ -27,13 +24,20 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   void initState() {
     super.initState();
     this.notesViewType = widget.notesViewType;
-  }
 
-  @override
-  void setState(fn) {
-    super.setState(fn);
-    this.notesViewType = widget.notesViewType;
-    retrieveAllNotesFromDatabase();
+    noteBloc.subject.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      if (value != null) {
+        setState(() {
+          _allNotesInQueryResult = value;
+        });
+      }
+    });
+
+    noteBloc.getNotes();
   }
 
   @override
@@ -41,7 +45,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
     GlobalKey _stagKey = GlobalKey();
 
     if (CentralStation.updateNeeded) {
-      retrieveAllNotesFromDatabase();
+      noteBloc.getNotes();
     }
     return Container(
         child: Padding(
@@ -90,12 +94,5 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 //gets the values of the notes for each of the fields in the grid
   MyStaggeredTile _tileGenerator(int n) {
     return MyStaggeredTile(_allNotesInQueryResult.elementAt(n));
-  }
-
-  //carries out the queries to get the notes from the database
-  void retrieveAllNotesFromDatabase() async {
-    // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
-    this._allNotesInQueryResult = await _repository.getNotes();
-    CentralStation.updateNeeded = false;
   }
 }

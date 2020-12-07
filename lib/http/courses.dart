@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/http/endpoints.dart';
+import 'package:tritek_lms/http/http.client.dart';
 
 class CoursesResponse {
   final List<Course> results;
@@ -47,10 +48,9 @@ class CourseResponse {
 }
 
 class CoursesApiProvider {
-  final Dio _dio = Dio();
-
   Future<CoursesResponse> getCourses() async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(coursesEndpoint,
           options: Options(method: 'GET', responseType: ResponseType.plain));
       print(response.data.length);
@@ -66,8 +66,8 @@ class CoursesApiProvider {
   }
 
   Future<CoursesResponse> getMyCourses(int userId) async {
-    print('getting my courses....');
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(myCoursesEndpoint + userId.toString(),
           options: Options(method: 'GET', responseType: ResponseType.plain));
       print(response.data.length);
@@ -84,7 +84,7 @@ class CoursesApiProvider {
 
   Future<CourseResponse> getMyCourse(int userId, int courseId) async {
     try {
-      print(myCoursesEndpoint + userId.toString() + '/' + courseId.toString());
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(
           myCoursesEndpoint + userId.toString() + '/' + courseId.toString());
       return CourseResponse.fromJson(response.data, response.data.length);

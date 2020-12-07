@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewInApp extends StatefulWidget {
   final String url;
@@ -15,16 +12,6 @@ class WebviewInApp extends StatefulWidget {
 }
 
 class _WebviewInApp extends State<WebviewInApp> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
-
-  @override
-  void initState() {
-    super.initState();
-    // Enable hybrid composition.
-    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
-
   InAppWebViewController _webViewController;
   String url = "";
   double progress = 0;
@@ -37,7 +24,7 @@ class _WebviewInApp extends State<WebviewInApp> {
           title: const Text('InAppWebView Example'),
         ),
         body: InAppWebView(
-          initialUrl: "https://mytritek.co.uk/terms-and-conditions/",
+          initialUrl: url,
           initialOptions: InAppWebViewGroupOptions(
               crossPlatform: InAppWebViewOptions(
             debuggingEnabled: true,

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/http/endpoints.dart';
+import 'package:tritek_lms/http/http.client.dart';
 
 class TestimonialResponse {
   final List<Testimonial> results;
@@ -19,10 +20,10 @@ class TestimonialResponse {
 }
 
 class TestimonialApiProvider {
-  final Dio _dio = Dio();
 
   Future<TestimonialResponse> getTestimonial() async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(testimonialEndpoint);
       return TestimonialResponse.fromJson(response.data);
     } catch (error, stacktrace) {

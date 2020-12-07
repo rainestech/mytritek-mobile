@@ -6,6 +6,11 @@ String _endpoint = "http://10.0.2.2/api";
 String coursesEndpoint = "$_endpoint/courses";
 
 /*
+ * Get all available courses
+ */
+String pingEndpoint = "$_endpoint/ping";
+
+/*
  * Get all User courses, user id must be supplied
  */
 String myCoursesEndpoint = "$_endpoint/my/courses/";

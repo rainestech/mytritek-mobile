@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/pages/home/home.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
+
+import 'home/home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,16 +13,43 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _ping = false;
+  bool _error = false;
+
   @override
   void initState() {
     super.initState();
 
-    Timer(
-        Duration(seconds: 5),
-        () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Home()),
-            ));
+    userBloc.pingSubject.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      if (value != null && value.data != null && !_ping) {
+        _ping = true;
+        Timer(
+            Duration(seconds: 1),
+            () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                ));
+      }
+
+      if (value.error != null && value.error.length > 0 && !_error) {
+        _error = true;
+      }
+    });
+
+    if (_ping) {
+      Timer(
+          Duration(seconds: 1),
+          () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+              ));
+    }
+
+    userBloc.pingServer();
   }
 
   @override
@@ -34,33 +64,12 @@ class _SplashScreenState extends State<SplashScreen> {
         width: width,
         color: themeBlue,
         margin: EdgeInsets.all(10.0),
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image:
-        //     AssetImage('assets/appbar_bg.png'),
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
         child: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // InkWell(
-                //   child: Container(
-                //     height: 150.0,
-                //     width: 150.0,
-                //     margin: EdgeInsets.all(10.0),
-                //     decoration: BoxDecoration(
-                //       image: DecorationImage(
-                //         image:
-                //         AssetImage('assets/icon.png'),
-                //         fit: BoxFit.contain,
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Text(
                   "Welcome to",
                   style: TextStyle(
@@ -82,6 +91,32 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ]
           ),
+        ),
+      ),
+      bottomSheet:
+      Container(
+        height: 20,
+        width: width,
+        color: themeBlue,
+        child:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            if(!_error)
+              SpinKitRipple(color: themeGold),
+            Text(
+              _error
+                  ? 'An error has occurred. Please check your internet connection'
+                  : '...loading',
+              style: TextStyle(
+                fontFamily: 'Signika Negative',
+                fontWeight: FontWeight.w700,
+                fontSize: 12.0,
+                color: themeGold,
+              ),
+            ),
+          ],
         ),
       ),
     );

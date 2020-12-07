@@ -11,21 +11,20 @@ class NotePage extends StatefulWidget {
   final Notes noteInEditing;
 
   //constructor that takes a Note object
-  NotePage(this.noteInEditing);
+  NotePage(
+    this.noteInEditing,
+  );
 
   @override
   _NotePageState createState() => _NotePageState();
 }
 
 class _NotePageState extends State<NotePage> {
-  final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   var noteColor;
   bool _isNewNote = false;
   final _contentFocus = FocusNode();
   final NoteRepository _repository = NoteRepository();
-
-  String _titleFrominitial;
 
   String _contentFromInitial;
   DateTime _lastEditedForUndo;
@@ -59,10 +58,6 @@ class _NotePageState extends State<NotePage> {
 
   @override
   Widget build(BuildContext context) {
-    // if(_editableNote.id == -1 && _editableNote.title.isEmpty) {
-    //   FocusScope.of(context).requestFocus(_titleFocus);
-    // }
-
     return WillPopScope(
       child: Scaffold(
         key: _globalKey,

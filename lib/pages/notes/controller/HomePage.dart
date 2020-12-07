@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/data/entity/note.dart';
 
 import 'NotePage.dart';
@@ -25,12 +26,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: themeGold, //change your color here
+        ),
         brightness: Brightness.light,
         actions: _appBarActions(),
         elevation: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: themeBlue,
         centerTitle: true,
-        title: Text("Notes"),
+        title: Text(
+          "My Notes",
+          style: TextStyle(
+              color: themeGold
+          ),
+        ),
       ),
       body: SafeArea(
         child: _body(),
@@ -44,7 +53,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _body() {
-    print(notesViewType);
     return Container(
         child: StaggeredGridPage(
       notesViewType: notesViewType,
@@ -79,7 +87,6 @@ class _HomePageState extends State<HomePage> {
   //sets the viewType to either grid or list based on the noteViewType value
   void _toggleViewType() {
     setState(() {
-      CentralStation.updateNeeded = true;
       if (notesViewType == viewType.List) {
         notesViewType = viewType.Staggered;
       } else {
@@ -99,7 +106,7 @@ class _HomePageState extends State<HomePage> {
               notesViewType == viewType.List
                   ? Icons.developer_board
                   : Icons.view_headline,
-              color: CentralStation.fontColor,
+              color: themeGold,
             ),
           ),
         ),

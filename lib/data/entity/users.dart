@@ -6,6 +6,8 @@ class Users {
   int id;
   String email;
   String username;
+  @ignore
+  String password;
   String name;
   String firstName;
   String lastName;
@@ -20,6 +22,7 @@ class Users {
       {this.id,
       this.email,
       this.username,
+      this.password,
       this.name,
       this.firstName,
       this.lastName,
@@ -34,6 +37,7 @@ class Users {
     id = json['id'];
     email = json['email'];
     username = json['username'];
+    password = json['password'];
     name = json['name'];
     firstName = json['firstName'];
     lastName = json['lastName'];
@@ -50,6 +54,7 @@ class Users {
     data['id'] = this.id;
     data['email'] = this.email;
     data['username'] = this.username;
+    data['password'] = this.username;
     data['name'] = this.name;
     data['firstName'] = this.firstName;
     data['lastName'] = this.lastName;

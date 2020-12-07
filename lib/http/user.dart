@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/http/endpoints.dart';
+import 'package:tritek_lms/http/http.client.dart';
 
 class UserResponse {
   final Users results;
@@ -65,10 +66,9 @@ class RegisterResponse {
 }
 
 class UserApiProvider {
-  final Dio _dio = Dio();
-
   Future<UserResponse> loginUser(String username, String password) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.post(loginEndpoint,
           data: {'username': username, 'password': password});
       print(response.data.length);
@@ -84,6 +84,7 @@ class UserApiProvider {
 
   Future<UserLevelResponse> getLevel(int userId) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(levelEndpoint + userId.toString());
       return UserLevelResponse.fromJson(response.data, response.data.length);
     } catch (e) {
@@ -98,6 +99,7 @@ class UserApiProvider {
   Future<RegisterResponse> register(String username, String password,
       String firstName, String lastName, String phoneNo, String email) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.post(registerEndpoint, data: {
         'username': username,
         'password': password,
@@ -118,6 +120,7 @@ class UserApiProvider {
   }
 
   Future<RegisterResponse> resetPassword(String email) async {
+    final Dio _dio = await HttpClient.http();
     try {
       print("Email: $email");
       Response response = await _dio.post(resetPasswordEndpoint, data: {
@@ -137,6 +140,7 @@ class UserApiProvider {
   Future<RegisterResponse> setNewPassword(
       String email, String password, String otp) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.post(passwordEndpoint,
           data: {'email': email, 'otp': otp, 'password': password});
 
@@ -152,6 +156,7 @@ class UserApiProvider {
 
   Future<UserResponse> verify(String otp, String email) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response =
           await _dio.post(registerEndpoint, data: {'otp': otp, 'email': email});
 
@@ -167,6 +172,7 @@ class UserApiProvider {
 
   Future<UserResponse> editUser(Users _user) async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.put(editUserEndpoint, data: _user);
 
       return UserResponse.fromJson(response.data, response.data.length);

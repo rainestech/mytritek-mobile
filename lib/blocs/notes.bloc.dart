@@ -1,0 +1,22 @@
+import 'package:rxdart/rxdart.dart';
+import 'package:tritek_lms/data/entity/note.dart';
+import 'package:tritek_lms/data/repository/notes.repository.dart';
+
+class NotesBloc {
+  final NoteRepository _repository = NoteRepository();
+  final BehaviorSubject<List<Notes>> _noteSubject =
+      BehaviorSubject<List<Notes>>();
+
+  getNotes() async {
+    List<Notes> response = await _repository.getNotes();
+    _noteSubject.sink.add(response);
+  }
+
+  dispose() {
+    _noteSubject.close();
+  }
+
+  BehaviorSubject<List<Notes>> get subject => _noteSubject;
+}
+
+final noteBloc = NotesBloc();

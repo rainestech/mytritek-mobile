@@ -1,4 +1,5 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/helper.dart';
 import 'package:tritek_lms/data/entity/users.dart';
@@ -10,9 +11,12 @@ class UserRepository {
 
   Future<UserResponse> login(String username, String password) async {
     UserResponse response = await _apiProvider.loginUser(username, password);
+    final storage = new FlutterSecureStorage();
 
     if (response.error.length < 1) {
       await saveUser(response.results);
+      print('Password Resp: ${response.results.password}');
+      await storage.write(key: 'token', value: response.results.password);
       getUserLevel(response.results.id);
     }
 

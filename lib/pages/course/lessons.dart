@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/pages/course/video.view.dart';
@@ -17,17 +18,19 @@ class LessonView extends StatefulWidget {
 }
 
 class _LessonViewState extends State<LessonView> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   userBloc.userSubject.listen((value) {
-  //     setState(() {
-  //       _user = value.results;
-  //     });
-  //   });
-  //
-  //   userBloc.getUser();
-  // }
+  String token;
+
+  @override
+  void initState() {
+    super.initState();
+    userBloc.token.listen((value) {
+      setState(() {
+        token = value;
+      });
+    });
+
+    userBloc.getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +47,25 @@ class _LessonViewState extends State<LessonView> {
       } else if (user != null && user.status != 'active') {
         widget.scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
-          'First Login and Subscribe to one of the membership plans, then you can view the course.',
-          style: TextStyle(fontSize: 14.0),
-        )));
-      } else {
+              'First Login and Subscribe to one of the membership plans, then you can view the course.',
+              style: TextStyle(fontSize: 14.0),
+            )));
+      } else if (token != null) {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => VideoViewLesson(status.postId)));
+                builder: (context) => VideoViewLesson(status.postId, token)));
+      } else {
+        widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(
+              'Unidentified Error, try again',
+              style: TextStyle(fontSize: 14.0),
+            )));
       }
+    }
+
+    if (token == null) {
+      userBloc.getToken();
     }
 
     return ListView(children: [

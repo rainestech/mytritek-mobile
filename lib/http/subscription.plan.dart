@@ -1,35 +1,43 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:tritek_lms/data/entity/subscription.plans.dart';
 import 'package:tritek_lms/http/endpoints.dart';
+import 'package:tritek_lms/http/http.client.dart';
 
 class SubscriptionPlanResponse {
   final List<SubscriptionPlans> results;
   final String error;
+  final String eTitle;
 
-  SubscriptionPlanResponse(this.results, this.error);
+  SubscriptionPlanResponse(this.results, this.error, this.eTitle);
 
   SubscriptionPlanResponse.fromJson(json)
       : results = (json as List)
             .map((i) => new SubscriptionPlans.fromJson(i))
             .toList(),
-        error = "";
+        error = "",
+        eTitle = "";
 
-  SubscriptionPlanResponse.withError(String errorValue)
+  SubscriptionPlanResponse.withError(String msg, String title)
       : results = List(),
-        error = errorValue;
+        error = msg,
+        eTitle = title;
 }
 
 class SubscriptionPlanApiProvider {
-  final Dio _dio = Dio();
-
   Future<SubscriptionPlanResponse> getSubscriptionPlans() async {
     try {
+      final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(subsEndpoint);
       return SubscriptionPlanResponse.fromJson(response.data);
-    } catch (error, stacktrace) {
-      // @todo
-      print("Exception occurred: $error stackTrace: $stacktrace");
-      return SubscriptionPlanResponse.withError("$error");
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return SubscriptionPlanResponse.withError(
+            error['message'], error['error']);
+      }
+      return SubscriptionPlanResponse.withError(e.message, "Network Error");
     }
   }
 }
