@@ -1,9 +1,15 @@
 String _endpoint = "http://10.0.2.2/api";
+// String _endpoint = "http://192.168.0.100/api";
 
 /*
  * Get all available courses
  */
 String coursesEndpoint = "$_endpoint/courses";
+
+/*
+ * Get all available courses
+ */
+String playEndpoint = "$_endpoint/video/";
 
 /*
  * Get all available courses

@@ -43,23 +43,23 @@ class _VideoViewLesson extends State<VideoViewLesson> {
           initialUrl: '$playEndpoint$_lesson?token=$_token',
           initialOptions: InAppWebViewGroupOptions(
               crossPlatform: InAppWebViewOptions(
-                  // debuggingEnabled: true,
-                  )),
+            debuggingEnabled: true,
+          )),
           onWebViewCreated: (InAppWebViewController controller) {
             _webViewController = controller;
 
-            controller.addJavaScriptHandler(
-              handlerName: "ping",
-              callback: (List<dynamic> payload) {
-                print(payload);
-              },
-            );
-
             _webViewController.addJavaScriptHandler(
-                handlerName: 'playVideo',
+                handlerName: 'handlerFoo',
                 callback: (args) {
                   // return data to JavaScript side!
-                  return 123;
+                  return {'bar': 'bar_value', 'baz': 'baz_value'};
+                });
+
+            _webViewController.addJavaScriptHandler(
+                handlerName: 'handlerFooWithArgs',
+                callback: (args) {
+                  print(args);
+                  // it will print: [1, true, [bar, 5], {foo: baz}, {bar: bar_value, baz: baz_value}]
                 });
             _webViewController.addJavaScriptHandler(
                 handlerName: 'playPause',
@@ -93,4 +93,3 @@ class _VideoViewLesson extends State<VideoViewLesson> {
     );
   }
 }
-
