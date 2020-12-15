@@ -31,6 +31,13 @@ class NoteRepository {
     return await noteDao.findByCourseId(id);
   }
 
+  Future<List<Notes>> search(String term) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final noteDao = database.notesDao;
+
+    return await noteDao.search('%' + term + '%');
+  }
+
   Future<Notes> save(Notes note) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final noteDao = database.notesDao;

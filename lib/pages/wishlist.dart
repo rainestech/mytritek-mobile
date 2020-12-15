@@ -1,7 +1,20 @@
+import 'dart:io';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/course.bloc.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
+import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/http/courses.dart';
+import 'package:tritek_lms/pages/settings/account.settings.dart';
+
+import 'common/utils.dart';
+import 'course/course.dart';
+import 'login_signup/login.dart';
 
 class Wishlist extends StatefulWidget {
   @override
@@ -9,221 +22,354 @@ class Wishlist extends StatefulWidget {
 }
 
 class _WishlistState extends State<Wishlist> {
-  int wishlistItem = 2;
+  Users _user = Users();
+  File _image;
 
-  final wishlistItemList = [
-    {
-      'title': 'Design Instruments for Communication',
-      'image': 'assets/new_course/new_course_1.png',
-      'price': '59',
-      'courseRating': '4.0'
-    },
-    {
-      'title': 'Weight Training Courses with Any Di',
-      'image': 'assets/new_course/new_course_2.png',
-      'price': '64',
-      'courseRating': '4.5'
+  @override
+  void initState() {
+    super.initState();
+    if (_user != null && _user.id == null) {
+      userBloc.userSubject.listen((value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _user = value.results;
+        });
+      });
+
+      userBloc.getUser();
     }
-  ];
+
+    bloc.getWishList();
+    getImage();
+  }
+
+  Future<void> getImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String path = prefs.getString('profileImage') ?? null;
+
+    if (path != null) {
+      setState(() {
+        _image = File(path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
-    nestedAppBar() {
-      return NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: 180,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding: EdgeInsets.all(20.0),
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appbar_bg.png'),
-                      fit: BoxFit.cover,
-                    ),
+    getCourseTile(Course course) {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CoursePage(
+                courseData: course,
+              ),
+            ),
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          margin: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                blurRadius: 1.5,
+                spreadRadius: 1.5,
+                color: Colors.grey[200],
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 100.0,
+                height: 100.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(course.image),
+                    fit: BoxFit.cover,
                   ),
-                  child: Text(
-                    'Wishlist',
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 25.0,
-                    ),
-                  ),
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
-              automaticallyImplyLeading: false,
-            ),
-          ];
-        },
-        body: (wishlistItem == 0)
-            ? Center(
+              Container(
+                width: width - 140.0,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Icon(
-                      FontAwesomeIcons.heartBroken,
-                      color: Colors.grey,
-                      size: 60.0,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, bottom: 4.0, right: 8.0, left: 8.0),
+                      child: AutoSizeText(
+                        course.title,
+                        maxLines: 2,
+                        style: TextStyle(
+                          color: themeGold,
+                          fontSize: 20.0,
+                          fontFamily: 'Signika Negative',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.7,
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 20.0,
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            course.duration,
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontFamily: 'Signika Negative',
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.7,
+                              color: headingColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      'No Item in Wishlist',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18.0,
-                        fontFamily: 'Signika Negative',
-                        fontWeight: FontWeight.w700,
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
+                      child: Text(
+                        "Instructor - ${course.author}",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontFamily: 'Signika Negative',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.7,
+                          color: headingColor,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              )
-            : ListView.builder(
-                itemCount: wishlistItemList.length,
-                itemBuilder: (context, index) {
-                  final item = wishlistItemList[index];
-                  return Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    secondaryActions: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 5.0,
-                          bottom: 5.0,
-                        ),
-                        child: IconSlideAction(
-                          caption: 'Delete',
-                          color: Colors.red,
-                          icon: Icons.delete,
-                          onTap: () {
-                            setState(() {
-                              wishlistItemList.removeAt(index);
-                              wishlistItem = wishlistItem - 1;
-                            });
-
-                            // Then show a snackbar.
-                            Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text('Item Removed')));
-                          },
-                        ),
-                      ),
-                    ],
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        right: 15.0,
-                        left: 15.0,
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.0),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            blurRadius: 1.5,
-                            spreadRadius: 1.5,
-                            color: Colors.grey[200],
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: 100.0,
-                            height: 100.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(item['image']),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
-                          Container(
-                            width: width - 150.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0,
-                                      bottom: 4.0,
-                                      right: 8.0,
-                                      left: 8.0),
-                                  child: Text(
-                                    item['title'],
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontFamily: 'Signika Negative',
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.7,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 0.0,
-                                      right: 8.0,
-                                      left: 8.0,
-                                      bottom: 8.0),
-                                  child: Text(
-                                    '\$${item['price']}',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      height: 1.6,
-                                      fontFamily: 'Signika Negative',
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0,
-                                      right: 8.0,
-                                      left: 8.0,
-                                      bottom: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        item['courseRating'],
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          fontFamily: 'Signika Negative',
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0.7,
-                                          color: headingColor,
-                                        ),
-                                      ),
-                                      SizedBox(width: 3.0),
-                                      Icon(Icons.star, size: 14.0),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
+            ],
+          ),
+        ),
       );
     }
 
+    Widget _listCoursesWidget(List<Course> data, double width, double height) {
+      return ListView(
+        children: <Widget>[
+          for (Course item in data) getCourseTile(item),
+        ],
+      );
+    }
+
+    Widget _noItemWidget(double width, double height) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              FontAwesomeIcons.heartBroken,
+              color: Colors.grey,
+              size: 60.0,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'No Item in Wishlist',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 18.0,
+                fontFamily: 'Signika Negative',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget _noLoginWidget(double width, double height) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.person_add_disabled,
+              color: Colors.grey,
+              size: 60.0,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            AutoSizeText(
+              'You are yet to login',
+              style: TextStyle(
+                color: themeBlue,
+                fontSize: 18.0,
+                fontFamily: 'Signika Negative',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Login(null, null)));
+                },
+                borderRadius: BorderRadius.circular(30.0),
+                child: Material(
+                  elevation: 1.0,
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      color: themeBlue,
+                    ),
+                    child: Text(
+                      'Login Here'.toUpperCase(),
+                      style: TextStyle(
+                        color: themeGold,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    nestedAppBar() {
+      return NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: 150,
+                pinned: true,
+                backgroundColor: themeBlue,
+                flexibleSpace: LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  // top = constraints.biggest.height;
+                  return FlexibleSpaceBar(
+                      centerTitle: false,
+                      title: AnimatedOpacity(
+                        duration: Duration(milliseconds: 300),
+                        //opacity: top == 80.0 ? 1.0 : 0.0,
+                        opacity: 1.0,
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(0, 10, 20, 0),
+                          alignment: Alignment.bottomCenter,
+                          decoration: BoxDecoration(
+                            color: themeBlue,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                'Wishlist',
+                                style: TextStyle(
+                                  fontFamily: 'Signika Negative',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18.0,
+                                  color: themeGold,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AccountSettings()));
+                                },
+                                child: _image != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Image.file(
+                                          _image,
+                                          width: 40.0,
+                                          height: 40.0,
+                                          fit: BoxFit.fitHeight,
+                                        ),
+                                      )
+                                    : Container(
+                                        height: 40.0,
+                                        width: 40.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/user_profile/profile.png'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      background: Container(
+                        padding: EdgeInsets.all(20.0),
+                        alignment: Alignment.bottomLeft,
+                        decoration: BoxDecoration(color: themeBlue),
+                      ));
+                }),
+                automaticallyImplyLeading: false,
+              ),
+            ];
+          },
+          body: StreamBuilder<CoursesResponse>(
+            stream: bloc.wishList.stream,
+            builder: (context, AsyncSnapshot<CoursesResponse> snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.error != null &&
+                    snapshot.data.error.length > 0) {
+                  return HttpErrorWidget(snapshot.data.error, width, height);
+                }
+
+                if (snapshot.data.results.length < 1) {
+                  return _noItemWidget(width, height);
+                }
+                return _listCoursesWidget(snapshot.data.results, width, height);
+              } else if (snapshot.hasError) {
+                return HttpErrorWidget(snapshot.error, width, height);
+              } else if (_user != null && _user.id == null) {
+                return LoadingWidget(width, height);
+              }
+
+              return _noItemWidget(width, height);
+            },
+          ));
+    }
+
     return Scaffold(
+      backgroundColor: themeBg,
       body: nestedAppBar(),
     );
   }

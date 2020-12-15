@@ -1,4 +1,5 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/repository/course.repository.dart';
 import 'package:tritek_lms/data/repository/user.repository.dart';
 import 'package:tritek_lms/http/courses.dart';
@@ -15,9 +16,16 @@ class CourseBloc {
   final BehaviorSubject<CourseResponse> _courseSubject =
       BehaviorSubject<CourseResponse>();
 
+  final BehaviorSubject<CoursesResponse> _wishList =
+      BehaviorSubject<CoursesResponse>();
+
   final UserRepository _userRepository = UserRepository();
+
   final BehaviorSubject<UserResponse> _userSubject =
       BehaviorSubject<UserResponse>();
+
+  final BehaviorSubject<List<LessonSearch>> _search =
+      BehaviorSubject<List<LessonSearch>>();
 
   BehaviorSubject<UserResponse> get userSubject => _userSubject;
 
@@ -26,9 +34,18 @@ class CourseBloc {
     _userSubject.sink.add(resp);
   }
 
+  void setWishlist(Course course, bool add) async {
+    await _repository.setWishList(course, add);
+  }
+
   getCourses() async {
     CoursesResponse response = await _repository.getCourses();
     _coursesSubject.sink.add(response);
+  }
+
+  getWishList() async {
+    CoursesResponse response = await _repository.getWishList();
+    _wishList.sink.add(response);
   }
 
   getMyCourses(int userId) async {
@@ -41,10 +58,18 @@ class CourseBloc {
     _courseSubject.sink.add(response);
   }
 
+  searchLessons(String term) async {
+    List<LessonSearch> response = await _repository.searchLesson(term);
+    _search.sink.add(response);
+  }
+
   dispose() {
     _coursesSubject.close();
     _courseSubject.close();
     _userSubject.close();
+    _myCoursesSubject.close();
+    _wishList.close();
+    _search.close();
   }
 
   BehaviorSubject<CoursesResponse> get subject => _coursesSubject;
@@ -52,6 +77,10 @@ class CourseBloc {
   BehaviorSubject<CoursesResponse> get myCourses => _myCoursesSubject;
 
   BehaviorSubject<CourseResponse> get course => _courseSubject;
+
+  BehaviorSubject<CoursesResponse> get wishList => _wishList;
+
+  BehaviorSubject<List<LessonSearch>> get search => _search;
 }
 
 final bloc = CourseBloc();

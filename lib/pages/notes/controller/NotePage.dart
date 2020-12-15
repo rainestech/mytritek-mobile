@@ -50,8 +50,8 @@ class _NotePageState extends State<NotePage> {
     }
     _persistenceTimer = new Timer.periodic(Duration(seconds: 5), (timer) {
       // call insert query here
-      print("5 seconds passed");
-      print("editable note id: ${_editableNote.id}");
+      // print("5 seconds passed");
+      // print("editable note id: ${_editableNote.id}");
       _persistData();
     });
   }

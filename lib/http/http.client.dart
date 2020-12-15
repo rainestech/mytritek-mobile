@@ -34,4 +34,12 @@ class HttpClient {
 
     return _dio;
   }
+
+  static Future<String> getToken() async {
+    if (_token == null) {
+      await init();
+    }
+
+    return _token;
+  }
 }

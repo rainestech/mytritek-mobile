@@ -1,8 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:tritek_lms/pages/home/home_component/main_slider.dart';
-import 'package:tritek_lms/pages/home/home_component/subscription_slide.dart';
-import 'package:tritek_lms/pages/home/home_component/testimonials_slide.dart';
-import 'package:tritek_lms/pages/login_signup/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tritek_lms/pages/home/home_component/courses.home.dart';
 import 'package:tritek_lms/pages/notifications.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 
@@ -14,6 +14,24 @@ class HomeMain extends StatefulWidget {
 }
 
 class _HomeMainState extends State<HomeMain> {
+  File _image;
+
+  @override
+  void initState() {
+    getImage();
+  }
+
+  Future<void> getImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String path = prefs.getString('profileImage') ?? null;
+
+    if (path != null) {
+      setState(() {
+        _image = File(path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     nestedAppBar() {
@@ -30,8 +48,8 @@ class _HomeMainState extends State<HomeMain> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SignUp()));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) => AccountSettings()));
                     },
                     child: Container(
                       height: 26.0,
@@ -39,8 +57,7 @@ class _HomeMainState extends State<HomeMain> {
                       margin: EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image:
-                          AssetImage('assets/icon.png'),
+                          image: AssetImage('assets/icon.png'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -60,8 +77,12 @@ class _HomeMainState extends State<HomeMain> {
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.notifications),
+                  color: themeGold,
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Notifications()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Notifications()));
                   },
                 ),
               ],
@@ -81,7 +102,7 @@ class _HomeMainState extends State<HomeMain> {
                         style: TextStyle(
                           fontFamily: 'Signika Negative',
                           fontWeight: FontWeight.w700,
-                          fontSize: 18.0,
+                          fontSize: 16.0,
                           color: Colors.white,
                         ),
                       ),
@@ -92,14 +113,25 @@ class _HomeMainState extends State<HomeMain> {
                               MaterialPageRoute(
                                   builder: (context) => AccountSettings()));
                         },
-                        child: Container(
+                        child: _image != null
+                            ? ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.file(
+                            _image,
+                            width: 40.0,
+                            height: 40.0,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        )
+                            :
+                        Container(
                           height: 40.0,
                           width: 40.0,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.0),
                             image: DecorationImage(
-                              image:
-                                  AssetImage('assets/user_profile/profile.png'),
+                              image: AssetImage(
+                                  'assets/user_profile/profile.png'),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -113,105 +145,7 @@ class _HomeMainState extends State<HomeMain> {
             ),
           ];
         },
-        body: ListView(
-          children: <Widget>[
-            MainSlider(),
-            SizedBox(height: 10.0),
-            SubscriptionSlider(),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                children: <Widget>[
-                  RaisedButton.icon(
-                    textColor: Colors.white,
-                    color: themeBlue, // .withOpacity(0.9),
-                    onPressed: () {
-                      // Respond to button press
-                    },
-                    icon: InkWell(
-                      child: Container(
-                        height: 30.0,
-                        width: 30.0,
-                        margin: EdgeInsets.fromLTRB(1.0, 10.0, 1.0, 10.0),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                            AssetImage('assets/whatsapp.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                    label: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("Need Help?",
-                          style: TextStyle(
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        Text("Chat With Us",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: themeGold,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  RaisedButton.icon(
-                    textColor: Colors.white,
-                    color: themeBlue, // .withOpacity(0.9),
-                    onPressed: () {
-                      // Respond to button press
-                    },
-                    icon: InkWell(
-                      child: Container(
-                        height: 30.0,
-                        width: 30.0,
-                        margin: EdgeInsets.fromLTRB(1.0, 10.0, 1.0, 10.0),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                            AssetImage('assets/icon.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                    label: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("About Us",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                          color: themeGold,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text("Tritek Consulting",
-                          style: TextStyle(
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 10.0),
-            TestimonialSlider()
-          ],
-        ),
+        body: HomeCourses(),
       );
     }
 

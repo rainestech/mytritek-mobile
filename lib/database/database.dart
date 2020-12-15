@@ -21,6 +21,8 @@ part 'database.g.dart'; // the generated code will be there
   Users,
   UserLevel,
   Notes
+], views: [
+  LessonSearch
 ])
 abstract class AppDatabase extends FloorDatabase {
   CourseDao get courseDao;
@@ -28,6 +30,8 @@ abstract class AppDatabase extends FloorDatabase {
   SectionsDao get sectionsDao;
 
   LessonsDao get lessonsDao;
+
+  LessonSearchDao get lessonSearchDao;
 
   InstructorDao get instructorDao;
 

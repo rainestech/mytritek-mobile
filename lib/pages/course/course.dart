@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:share/share.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
@@ -21,7 +23,7 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
-  bool wishlist = false;
+  bool wishlist;
   bool subscribed = false;
   bool preview = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -59,14 +61,30 @@ class _CoursePageState extends State<CoursePage> {
     });
 
     bloc.getUser();
+    wishlist = widget.courseData.wishList ?? false;
   }
 
   onAddedInWishlist() {
     setState(() {
       if (wishlist) {
         wishlist = false;
+        bloc.setWishlist(widget.courseData, false);
+        Fluttertoast.showToast(
+          msg: 'Course Removed from WishList',
+          backgroundColor: Colors.black,
+          textColor: Theme.of(context).appBarTheme.color,
+        );
       } else {
         wishlist = true;
+        bloc.setWishlist(widget.courseData, true);
+        Fluttertoast.showToast(
+          msg: 'Course Added to WishList',
+          backgroundColor: Colors.black,
+          textColor: Theme
+              .of(context)
+              .appBarTheme
+              .color,
+        );
       }
     });
   }
@@ -120,29 +138,34 @@ class _CoursePageState extends State<CoursePage> {
                   ),
                 ),
                 actions: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      onAddedInWishlist();
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child:
+                    InkWell(
+                      onTap: () {
+                        onAddedInWishlist();
+                      },
+                      child:
+                      Icon(
+                        (wishlist) ? Icons.favorite : Icons.favorite_border,
+                        color: iconColor,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child:
+                      InkWell(
+                        onTap: () {
+                          share();
+                        },
+                        child:
                         Icon(
-                          (wishlist) ? Icons.check : Icons.add,
+                          Icons.share,
                           color: iconColor,
                         ),
-                        SizedBox(width: 5.0),
-                        Text(
-                          (wishlist) ? 'Added to Wishlist' : 'Add to Wishlist',
-                          style: TextStyle(
-                              color: themeGold,
-                              fontFamily: 'Signika Negative',
-                              fontSize: 16.0),
-                        ),
-                        SizedBox(width: 10.0),
-                      ],
-                    ),
-                  )
+                      )
+                  ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
                   background: Stack(
@@ -382,35 +405,6 @@ class _CoursePageState extends State<CoursePage> {
                                   ),
                                 ),
                               if (preview) SizedBox(height: 10.0),
-                              // if (preview)
-                              //   InkWell(
-                              //     onTap: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) => VideoViewLesson(1)));
-                              //     },
-                              //     child: Container(
-                              //       width: width,
-                              //       alignment: Alignment.center,
-                              //       padding: EdgeInsets.all(13.0),
-                              //       decoration: BoxDecoration(
-                              //           color: Colors.white,
-                              //           borderRadius:
-                              //               BorderRadius.circular(5.0)),
-                              //       child: Text(
-                              //         'Watch Trailer',
-                              //         style: TextStyle(
-                              //           fontFamily: 'Signika Negative',
-                              //           fontSize: 16.0,
-                              //           color: Colors.black,
-                              //           fontWeight: FontWeight.w700,
-                              //           wordSpacing: 3.0,
-                              //           letterSpacing: 0.6,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
                             ],
                           ),
                         ),
@@ -468,5 +462,13 @@ class _CoursePageState extends State<CoursePage> {
         body: nestedAppBar(_scaffoldKey),
       ),
     );
+  }
+
+  void share() async {
+    final RenderBox box = context.findRenderObject();
+    await Share.share('Check out this amazing course: ${widget.courseData
+        .title} on https://mytritek.co.uk',
+        subject: widget.courseData.title,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

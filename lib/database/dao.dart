@@ -14,6 +14,9 @@ abstract class CourseDao {
   @Query('SELECT * FROM course WHERE subId = :id')
   Future<List<Course>> findMyCourses(int id);
 
+  @Query('SELECT * FROM course WHERE wishList = :id')
+  Future<List<Course>> getWishList(bool id);
+
   @insert
   Future<void> save(Course course);
 
@@ -61,6 +64,12 @@ abstract class LessonsDao {
 
   @Query('Delete FROM lessons')
   Future<void> deleteAll();
+}
+
+@dao
+abstract class LessonSearchDao {
+  @Query('SELECT * FROM lessonSearch WHERE lesson LIKE :term')
+  Future<List<LessonSearch>> search(String term);
 }
 
 @dao
@@ -142,6 +151,9 @@ abstract class NotesDao {
 
   @Query('SELECT * FROM notes WHERE lesson = :lessonId')
   Future<List<Notes>> findByLessonId(int lessonId);
+
+  @Query('SELECT * FROM notes WHERE lesson LIKE :lesson')
+  Future<List<Notes>> search(String lesson);
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<int> save(Notes note);

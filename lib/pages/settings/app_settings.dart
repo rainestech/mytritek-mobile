@@ -9,6 +9,7 @@ class AppSettings extends StatefulWidget {
 
 class _AppSettingsState extends State<AppSettings> {
   bool status = false;
+  bool notifications = false;
   bool standard = true;
   bool high = false;
   bool delete = true;
@@ -108,33 +109,48 @@ class _AppSettingsState extends State<AppSettings> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 180,
+              expandedHeight: 150,
+              backgroundColor: themeBlue,
               pinned: true,
               leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios),
+                  icon: Icon(Icons.arrow_back_ios, color: themeGold,),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding: EdgeInsets.all(20.0),
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/appbar_bg.png'),
-                      fit: BoxFit.cover,
+              flexibleSpace: LayoutBuilder(builder:
+                  (BuildContext context, BoxConstraints constraints) {
+                // top = constraints.biggest.height;
+                return FlexibleSpaceBar(
+                    centerTitle: false,
+                    title: AnimatedOpacity(
+                      duration: Duration(milliseconds: 300),
+                      //opacity: top == 80.0 ? 1.0 : 0.0,
+                      opacity: 1.0,
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(0, 10, 20, 0),
+                        alignment: Alignment.bottomLeft,
+                        decoration: BoxDecoration(
+                          color: themeBlue,
+                        ),
+                        child: Text(
+                          'App Settings',
+                          style: TextStyle(
+                            fontFamily: 'Signika Negative',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20.0,
+                            color: themeGold,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'App Settings',
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 25.0,
-                    ),
-                  ),
-                ),
-              ),
+                    background: Container(
+                      padding: EdgeInsets.all(20.0),
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                          color: themeBlue
+                      ),
+                    ));
+              }),
               automaticallyImplyLeading: false,
             ),
           ];
@@ -144,13 +160,14 @@ class _AppSettingsState extends State<AppSettings> {
             SizedBox(height: 15.0),
             Container(
               margin: EdgeInsets.only(right: 20.0, left: 20.0),
+              width: width - 20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     'Cellular Data',
                     style: TextStyle(
-                      color: Colors.grey[500],
+                      color: themeBlue,
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Signika Negative',
@@ -161,7 +178,7 @@ class _AppSettingsState extends State<AppSettings> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'Cellular Data for Downloads',
+                        'Cellular Data for Videos',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.w700,
@@ -182,9 +199,9 @@ class _AppSettingsState extends State<AppSettings> {
                   getDivider(Colors.grey[300]),
                   SizedBox(height: 10.0),
                   Text(
-                    'Video Quality for Downloads',
+                    'Video Quality',
                     style: TextStyle(
-                      color: Colors.grey[500],
+                      color: themeBlue,
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Signika Negative',
@@ -215,7 +232,7 @@ class _AppSettingsState extends State<AppSettings> {
                             ),
                             SizedBox(height: 8.0),
                             Text(
-                              'Downloads faster and uses less storage',
+                              'Load faster and uses less data',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w700,
@@ -257,7 +274,7 @@ class _AppSettingsState extends State<AppSettings> {
                             ),
                             SizedBox(height: 8.0),
                             Text(
-                              'Use more storage',
+                              'Use more data',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w700,
@@ -277,104 +294,81 @@ class _AppSettingsState extends State<AppSettings> {
                   getDivider(Colors.grey[300]),
                   SizedBox(height: 10.0),
                   Text(
-                    'Offline Downloads',
+                    'Notifications',
                     style: TextStyle(
-                      color: Colors.grey[500],
+                      color: themeBlue,
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Signika Negative',
                     ),
                   ),
                   SizedBox(height: 15.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Turn on Daily Notifications',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Signika Negative',
+                        ),
+                      ),
+                      CustomSwitch(
+                        activeColor: textColor,
+                        value: notifications,
+                        onChanged: (value) {
+                          setState(() {
+                            notifications = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  getDivider(Colors.grey[300]),
                   InkWell(
                     onTap: () {
                       setState(() {
-                        delete = !delete;
+                        standard = false;
+                        high = true;
                       });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          width: width - 80.0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Delete Completed Lessons',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Signika Negative',
-                                ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Notification Time',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Signika Negative',
                               ),
-                              SizedBox(height: 8.0),
-                              Text(
-                                'Lessons can automatically delete 24 hours after they are watched in full',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey[400],
-                                  fontFamily: 'Signika Negative',
-                                ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              '9:00 am',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.grey[400],
+                                fontFamily: 'Signika Negative',
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         Icon(
-                          (delete) ? Icons.check : null,
+                          (high) ? Icons.check : null,
                           size: 25.0,
                         ),
                       ],
                     ),
                   ),
                   getDivider(Colors.grey[300]),
-                  SizedBox(height: 10.0),
-                  InkWell(
-                    onTap: () {
-                      deleteLesson();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: width - 80.0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Delete All Downloads',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Signika Negative',
-                                  color: Colors.red,
-                                ),
-                              ),
-                              SizedBox(height: 8.0),
-                              Text(
-                                'This will remove all downloaded Lesson videos from your phone.',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey[400],
-                                  fontFamily: 'Signika Negative',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 25.0,
-                        ),
-                      ],
-                    ),
-                  ),
-                  getDivider(Colors.red),
+
                 ],
               ),
             ),

@@ -33,7 +33,7 @@ class UserBloc {
     _userLevel.close();
     _pingSubject.close();
     _token.close();
-    bool _isDisposed = true;
+    _isDisposed = true;
   }
 
   BehaviorSubject<UserResponse> get userSubject => _userSubject;

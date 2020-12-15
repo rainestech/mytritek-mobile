@@ -20,6 +20,7 @@ class Course {
   @ignore
   List<Comments> comments;
   int subId;
+  bool wishList = false;
 
   Course(
       {this.id,
@@ -35,7 +36,8 @@ class Course {
       this.image,
       this.instructor,
       this.comments,
-      this.subId});
+      this.subId,
+      this.wishList});
 
   Course.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -88,6 +90,7 @@ class Course {
       data['comments'] = this.comments.map((v) => v.toJson()).toList();
     }
     data['subId'] = this.subId;
+    data['wishList'] = this.wishList ?? false;
     return data;
   }
 }
@@ -203,6 +206,37 @@ class Lessons {
     data['viewed'] = this.viewed;
     data['quizCount'] = this.quizCount;
     data['grade'] = this.grade;
+    return data;
+  }
+}
+
+@DatabaseView(
+    'SELECT lessons.postTitle as lesson, lessons.itemId as itemId, sections.sectionName as section, course.title as course FROM lessons INNER JOIN sections ON lessons.sectionId = sections.id INNER JOIN course ON lessons.courseId = course.id',
+    viewName: 'lessonSearch')
+class LessonSearch {
+  int itemId;
+  String lesson;
+  String section;
+  String course;
+
+  LessonSearch({this.itemId,
+    this.lesson,
+    this.section,
+    this.course});
+
+  LessonSearch.fromJson(Map<String, dynamic> json) {
+    itemId = json['itemId'];
+    lesson = json['lesson'];
+    section = json['section'];
+    course = json['course'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['itemId'] = this.itemId;
+    data['lesson'] = this.lesson;
+    data['section'] = this.section;
+    data['course'] = this.course;
     return data;
   }
 }

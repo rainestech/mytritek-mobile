@@ -7,6 +7,7 @@ import 'package:tritek_lms/pages/home/home_main.dart';
 import 'package:tritek_lms/pages/my_course.dart';
 import 'package:tritek_lms/pages/search.dart';
 import 'package:tritek_lms/pages/settings/settings.dart';
+import 'package:tritek_lms/pages/wishlist.dart';
 
 import '../../appTheme/appTheme.dart';
 import '../my_course.dart';
@@ -133,7 +134,7 @@ class _HomeState extends State<Home> {
                     : (currentIndex == 2)
                     ? Search()
                     : (currentIndex == 3)
-                        ? MyCourse()
+                        ? Wishlist()
                         : Settings(),
             onWillPop: onWillPop,
           ),

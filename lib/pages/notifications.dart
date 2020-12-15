@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tritek_lms/appTheme/appTheme.dart';
 
 class Notifications extends StatefulWidget {
   @override
@@ -7,7 +8,7 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  int notification = 2;
+  int notification = 0;
 
   final notificationList = [
     {
@@ -28,14 +29,20 @@ class _NotificationsState extends State<Notifications> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: themeBlue,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.pop(context);
           },
+          color: themeGold,
         ),
-        title: Text('My Notifications'),
+        title: Text(
+          'My Notifications',
+          style: TextStyle(
+              color: themeGold
+          ),
+        ),
         titleSpacing: 0.0,
       ),
       backgroundColor: const Color(0xFFF1F3F6),

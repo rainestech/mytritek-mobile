@@ -89,4 +89,8 @@ class DateFormatter {
 
     return dateString;
   }
+
+  static DateTime stringToDate(String date) {
+    return new DateFormat("yyyy-MM-dd hh:mm:ss").parse(date);
+  }
 }

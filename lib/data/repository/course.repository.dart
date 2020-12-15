@@ -129,6 +129,46 @@ class CourseRepository {
     return response;
   }
 
+  Future<CoursesResponse> getWishList() async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+    final sectionsDao = database.sectionsDao;
+    final lessonsDao = database.lessonsDao;
+    final instructorDao = database.instructorDao;
+    final commentDao = database.commentsDao;
+
+    final List<Course> courses = await courseDao.getWishList(true);
+
+    for (Course course in courses) {
+      final List<Sections> sections =
+          await sectionsDao.findByCourseId(course.id);
+      for (Sections section in sections) {
+        final List<Lessons> lessons =
+            await lessonsDao.findBySectionId(section.id);
+        section.lessons = lessons;
+      }
+
+      final Instructor instructor = await instructorDao.findById(course.userId);
+      final List<Comments> comments =
+          await commentDao.findByCourseId(course.id);
+
+      course.comments = comments;
+      course.instructor = instructor;
+      course.sections = sections;
+    }
+
+    CoursesResponse response = CoursesResponse(courses, '', '', 0);
+    return response;
+  }
+
+  Future<List<LessonSearch>> searchLesson(String term) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final searchDao = database.lessonSearchDao;
+
+    final List<LessonSearch> search = await searchDao.search('%' + term + '%');
+    return search;
+  }
+
   Future<CourseResponse> getDbMyCourse(int userId, int courseId) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final courseDao = database.courseDao;
@@ -219,6 +259,14 @@ class CourseRepository {
         lessonsDao.update(lesson);
       }
     }
+  }
+
+  Future<void> setWishList(Course course, bool add) async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final courseDao = database.courseDao;
+
+    course.wishList = add;
+    courseDao.update(course);
   }
 
   Future<void> refreshCourses() async {
