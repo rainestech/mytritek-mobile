@@ -29,6 +29,7 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
 
   @override
   void initState() {
+    super.initState();
     noteColor = widget.color;
   }
 

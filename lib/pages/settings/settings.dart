@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/pages/notes/controller/HomePage.dart';
-import 'package:tritek_lms/pages/payment/stripe.pay.dart';
+import 'package:tritek_lms/pages/payment/select_plan.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
 import 'package:tritek_lms/pages/settings/inapp.webview.dart';
@@ -173,15 +173,17 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => StripePay()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SelectPlan()));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Pay',
+                          'Select Plan',
                           style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w700,

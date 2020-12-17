@@ -80,6 +80,8 @@ class _$AppDatabase extends AppDatabase {
 
   NotesDao _notesDaoInstance;
 
+  LevelLogsDao _levelLogsDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -102,7 +104,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `sections` (`sectionName` TEXT, `sectionOrder` INTEGER, `id` INTEGER, `courseId` INTEGER, FOREIGN KEY (`courseId`) REFERENCES `Course` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `lessons` (`itemId` INTEGER, `itemOrder` INTEGER, `postTitle` TEXT, `postId` INTEGER, `sectionId` INTEGER, `courseId` INTEGER, `duration` TEXT, `preview` TEXT, `viewed` INTEGER, `quizCount` INTEGER, `grade` TEXT, FOREIGN KEY (`sectionId`) REFERENCES `sections` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`itemId`))');
+            'CREATE TABLE IF NOT EXISTS `lessons` (`itemId` INTEGER, `itemOrder` INTEGER, `postTitle` TEXT, `postId` INTEGER, `sectionId` INTEGER, `courseId` INTEGER, `duration` TEXT, `preview` TEXT, `viewed` INTEGER, `quizCount` INTEGER, `grade` TEXT, PRIMARY KEY (`itemId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Instructor` (`userId` INTEGER, `email` TEXT, `username` TEXT, `name` TEXT, `description` TEXT, PRIMARY KEY (`userId`))');
         await database.execute(
@@ -112,9 +114,11 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER, `email` TEXT, `username` TEXT, `name` TEXT, `firstName` TEXT, `lastName` TEXT, `status` TEXT, `startDate` TEXT, `endDate` TEXT, `subscription` TEXT, `image` TEXT, `phoneNo` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `userLevel` (`level` TEXT, `award` TEXT, `points` TEXT, `newPoint` TEXT, `deduct` TEXT, `userId` TEXT, `badge` TEXT, PRIMARY KEY (`userId`))');
+            'CREATE TABLE IF NOT EXISTS `userLevel` (`points` TEXT, `award` TEXT, `newPoint` TEXT, `level` TEXT, `deducted` TEXT, `userId` INTEGER, `badge` TEXT, PRIMARY KEY (`userId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `notes` (`id` INTEGER, `time` TEXT, `course` TEXT, `courseId` INTEGER, `sectionId` INTEGER, `section` TEXT, `lessonId` INTEGER, `lesson` TEXT, `content` TEXT, `createdAt` TEXT, `updatedAt` TEXT, `noteColor` INTEGER, `isArchived` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `levelLogs` (`userEarningId` INTEGER, `title` TEXT, `userId` INTEGER, `postId` INTEGER, `postType` TEXT, `points` INTEGER, `pointsType` TEXT, `date` TEXT, PRIMARY KEY (`userEarningId`))');
 
         await database.execute(
             '''CREATE VIEW IF NOT EXISTS `lessonSearch` AS SELECT lessons.postTitle as lesson, lessons.itemId as itemId, sections.sectionName as section, course.title as course FROM lessons INNER JOIN sections ON lessons.sectionId = sections.id INNER JOIN course ON lessons.courseId = course.id''');
@@ -175,6 +179,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   NotesDao get notesDao {
     return _notesDaoInstance ??= _$NotesDao(database, changeListener);
+  }
+
+  @override
+  LevelLogsDao get levelLogsDao {
+    return _levelLogsDaoInstance ??= _$LevelLogsDao(database, changeListener);
   }
 }
 
@@ -720,12 +729,13 @@ class _$UserLevelDao extends UserLevelDao {
         _userLevelInsertionAdapter = InsertionAdapter(
             database,
             'userLevel',
-            (UserLevel item) => <String, dynamic>{
-                  'level': item.level,
-                  'award': item.award,
+            (UserLevel item) =>
+            <String, dynamic>{
                   'points': item.points,
+                  'award': item.award,
                   'newPoint': item.newPoint,
-                  'deduct': item.deduct,
+                  'level': item.level,
+                  'deducted': item.deducted,
                   'userId': item.userId,
                   'badge': item.badge
                 });
@@ -742,12 +752,12 @@ class _$UserLevelDao extends UserLevelDao {
   Future<UserLevel> findAll() async {
     return _queryAdapter.query('SELECT * FROM userLevel LIMIT 1',
         mapper: (Map<String, dynamic> row) => UserLevel(
-            level: row['level'] as String,
-            award: row['award'] as String,
             points: row['points'] as String,
+            award: row['award'] as String,
             newPoint: row['newPoint'] as String,
-            deduct: row['deduct'] as String,
-            userId: row['userId'] as String,
+            level: row['level'] as String,
+            deducted: row['deducted'] as String,
+            userId: row['userId'] as int,
             badge: row['badge'] as String));
   }
 
@@ -923,6 +933,64 @@ class _$NotesDao extends NotesDao {
   Future<int> update(Notes note) {
     return _notesInsertionAdapter.insertAndReturnId(
         note, OnConflictStrategy.replace);
+  }
+}
+
+class _$LevelLogsDao extends LevelLogsDao {
+  _$LevelLogsDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _levelLogsInsertionAdapter = InsertionAdapter(
+            database,
+            'levelLogs',
+                (LevelLogs item) =>
+            <String, dynamic>{
+              'userEarningId': item.userEarningId,
+              'title': item.title,
+              'userId': item.userId,
+              'postId': item.postId,
+              'postType': item.postType,
+              'points': item.points,
+              'pointsType': item.pointsType,
+              'date': item.date
+            });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<LevelLogs> _levelLogsInsertionAdapter;
+
+  @override
+  Future<List<LevelLogs>> findAll() async {
+    return _queryAdapter.queryList('SELECT * FROM levelLogs',
+        mapper: (Map<String, dynamic> row) =>
+            LevelLogs(
+                userEarningId: row['userEarningId'] as int,
+                title: row['title'] as String,
+                userId: row['userId'] as int,
+                postId: row['postId'] as int,
+                postType: row['postType'] as String,
+                points: row['points'] as int,
+                pointsType: row['pointsType'] as String,
+                date: row['date'] as String));
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    await _queryAdapter.queryNoReturn('Delete FROM levelLogs');
+  }
+
+  @override
+  Future<void> save(LevelLogs level) async {
+    await _levelLogsInsertionAdapter.insert(level, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> saveAll(List<LevelLogs> level) async {
+    await _levelLogsInsertionAdapter.insertList(
+        level, OnConflictStrategy.replace);
   }
 }
 

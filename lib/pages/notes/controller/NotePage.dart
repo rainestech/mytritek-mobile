@@ -38,6 +38,7 @@ class _NotePageState extends State<NotePage> {
 
   @override
   void initState() {
+    super.initState();
     _editableNote = widget.noteInEditing;
     _contentController.text = _editableNote.content;
     noteColor = _editableNote.noteColor;
@@ -85,24 +86,6 @@ class _NotePageState extends State<NotePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-//               Flexible(
-//                 child:
-//                 Container(
-//                   padding: EdgeInsets.all(5),
-// //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-//                   child: EditableText(
-//                       onChanged: (str) => {updateNoteObject()},
-//                       maxLines: null,
-//                       controller: _titleController,
-//                       focusNode: _titleFocus,
-//                       style: TextStyle(
-//                           color: Colors.black,
-//                           fontSize: 22,
-//                           fontWeight: FontWeight.bold),
-//                       cursorColor: Colors.blue,
-//                       backgroundCursorColor: Colors.blue),
-//                 ),
-//               ),
 
               Divider(),
 

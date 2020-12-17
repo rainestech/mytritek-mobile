@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
@@ -22,6 +21,8 @@ class _ProgressState extends State<Progress> {
   UserLevel _level;
   List<Course> courses;
   bool routed = false;
+
+  final userBloc = UserBloc();
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _ProgressState extends State<Progress> {
       if (!mounted) {
         return;
       }
+      print('UserLevel: ${value.data}');
       setState(() {
         _level = value.data;
       });
@@ -70,19 +72,24 @@ class _ProgressState extends State<Progress> {
       }
     });
 
+    userBloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _image = value;
+      });
+    });
+
     userBloc.getUser();
-    getImage();
+    userBloc.getImage();
   }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
-      setState(() {
-        _image = File(path);
-      });
-    }
+  @override
+  void dispose() {
+    userBloc.dispose();
+    super.dispose();
   }
 
   itemSummary(String item, String value, _width) {
@@ -445,7 +452,7 @@ class _ProgressState extends State<Progress> {
                 _level.award),
           if (_level != null)
             itemTile(
-                width, Icons.email, 'Total Points Deducted', _level.deduct),
+                width, Icons.email, 'Total Points Deducted', _level.deducted),
         ],
       ),
     );

@@ -80,27 +80,5 @@ class _SubscriptionSlider extends State<SubscriptionSlider> {
   }
 }
 
-class SubscriptionList {
-  int id;
-  String name;
-  String price;
-  List properties;
-
-  SubscriptionList(this.id, this.name, this.price, this.properties);
-}
-
-class MyBullet extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      height: 10.0,
-      width: 10.0,
-      decoration: new BoxDecoration(
-        color: themeGold,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-}
 
 

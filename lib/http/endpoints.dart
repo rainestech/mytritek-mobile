@@ -68,9 +68,12 @@ String viewedEndpoint = "$_endpoint/views/";
 /*
  * Get all user viewed lessons. course Id must be supplied
  */
-String levelEndpoint = "$_endpoint/level/";
+String levelEndpoint = "$_endpoint/points/";
 
 /*
  * Get all user viewed lessons. course Id must be supplied
  */
 String subsEndpoint = "$_endpoint/subs/";
+String agentsEndpoint = "$_endpoint/agents/";
+
+String secretEndpoint = "$_endpoint/stripe/secret";

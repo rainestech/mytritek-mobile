@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ));
       }
 
-      if (value.error != null && value.error.length > 0 && !_error) {
+      if (value?.error != null && value.error.length > 0 && !_error) {
         _error = true;
       }
     });

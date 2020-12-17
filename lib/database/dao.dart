@@ -139,6 +139,21 @@ abstract class UserLevelDao {
 }
 
 @dao
+abstract class LevelLogsDao {
+  @Query('SELECT * FROM levelLogs')
+  Future<List<LevelLogs>> findAll();
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> save(LevelLogs level);
+
+  @Insert(onConflict: OnConflictStrategy.replace)
+  Future<void> saveAll(List<LevelLogs> level);
+
+  @Query('Delete FROM levelLogs')
+  Future<void> deleteAll();
+}
+
+@dao
 abstract class NotesDao {
   @Query('SELECT * FROM notes')
   Future<List<Notes>> findAll();

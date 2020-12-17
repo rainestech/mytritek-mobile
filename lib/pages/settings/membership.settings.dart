@@ -43,19 +43,18 @@ class _MembershipSettingsState extends State<MembershipSettings> {
       }
     });
 
-    userBloc.getUser();
-    getImage();
-  }
+    userBloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
       setState(() {
-        _image = File(path);
+        _image = value;
       });
-    }
+    });
+
+    userBloc.getUser();
+    userBloc.getImage();
   }
 
   @override

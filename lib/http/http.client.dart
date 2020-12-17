@@ -42,4 +42,12 @@ class HttpClient {
 
     return _token;
   }
+
+  static Future<void> removeToken() async {
+    if (_token == null) {
+      await init();
+    }
+
+    await _secureStorage.delete(key: 'token');
+  }
 }

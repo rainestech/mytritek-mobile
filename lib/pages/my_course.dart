@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
@@ -28,6 +27,8 @@ class _MyCourseState extends State<MyCourse> {
   File _image;
   String _weeks = '..';
 
+  final bloc = CourseBloc();
+
   @override
   void initState() {
     super.initState();
@@ -51,18 +52,23 @@ class _MyCourseState extends State<MyCourse> {
 
       userBloc.getUser();
     }
-    getImage();
+    userBloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _image = value;
+      });
+    });
+
+    userBloc.getImage();
   }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
-      setState(() {
-        _image = File(path);
-      });
-    }
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   var top = 0.0;

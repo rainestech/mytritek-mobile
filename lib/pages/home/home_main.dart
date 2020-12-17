@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/pages/home/home_component/courses.home.dart';
 import 'package:tritek_lms/pages/notifications.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
@@ -15,21 +15,28 @@ class HomeMain extends StatefulWidget {
 
 class _HomeMainState extends State<HomeMain> {
   File _image;
+  final userBloc = UserBloc();
 
   @override
   void initState() {
-    getImage();
+    super.initState();
+    userBloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _image = value;
+      });
+    });
+
+    userBloc.getImage();
   }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
-      setState(() {
-        _image = File(path);
-      });
-    }
+  @override
+  void dispose() {
+    userBloc.dispose();
+    super.dispose();
   }
 
   @override

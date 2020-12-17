@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/settings/edit.profile.dart';
 
@@ -18,19 +18,23 @@ class _AccountSettingsState extends State<AccountSettings> {
   Users _user;
   bool routed = false;
 
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  final bloc = UserBloc();
+
   @override
   void initState() {
     super.initState();
-    userBloc.userSubject.listen((value) {
+
+    bloc.userSubject.listen((value) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _user = value.results;
+        _user = value?.results;
       });
     });
 
-    userBloc.userStatus.listen((value) {
+    bloc.userStatus.listen((value) {
       if (!mounted) {
         return;
       }
@@ -41,19 +45,23 @@ class _AccountSettingsState extends State<AccountSettings> {
       }
     });
 
-    userBloc.getUser();
-    getImage();
+    bloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _image = value;
+      });
+    });
+
+    bloc.getUser();
+    bloc.getImage();
   }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
-      setState(() {
-        _image = File(path);
-      });
-    }
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -251,9 +259,20 @@ class _AccountSettingsState extends State<AccountSettings> {
                           ),
                           InkWell(
                             onTap: () {
-                              userBloc.logout();
                               Navigator.pop(context);
-                              logout();
+                              LoadingDialogs.showLoadingDialog(
+                                  context, _keyLoader, 'Log out in process...');
+                              userBloc.logout().then((_) =>
+                              {
+                                setState(() {
+                                  _user = null;
+                                }),
+
+                                Navigator.of(_keyLoader.currentContext,
+                                    rootNavigator: true)
+                                    .pop(),
+                                logout(),
+                              });
                             },
                             child: Container(
                               width: (width / 3.5),
@@ -643,6 +662,7 @@ class _AccountSettingsState extends State<AccountSettings> {
         context,
         MaterialPageRoute(
             builder: (context) => Login(null, null)));
+
     // Navigator.pushAndRemoveUntil(
     //     context,
     //     MaterialPageRoute(

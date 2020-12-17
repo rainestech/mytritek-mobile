@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/helper.dart';
 import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/data/repository/course.repository.dart';
 import 'package:tritek_lms/database/database.dart';
+import 'package:tritek_lms/http/http.client.dart';
 import 'package:tritek_lms/http/user.dart';
 
 class UserRepository {
@@ -15,7 +20,6 @@ class UserRepository {
 
     if (response.error.length < 1) {
       await saveUser(response.results);
-      print('Password Resp: ${response.results.password}');
       await storage.write(key: 'token', value: response.results.password);
       getUserLevel(response.results.id);
     }
@@ -90,9 +94,12 @@ class UserRepository {
     if (!conn) {
       final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
       final userLevelDao = database.userLevelDao;
+      final logDao = database.levelLogsDao;
 
       final UserLevel level = await userLevelDao.findAll();
+      final logs = await logDao.findAll();
 
+      level.logs = logs;
       UserLevelResponse response = UserLevelResponse(level, '', 0, '');
       return response;
     }
@@ -106,7 +113,6 @@ class UserRepository {
 
   Future<UserResponse> logout() async {
     await refreshUser();
-    SaveFile().deleteImage();
     return null;
   }
 
@@ -121,16 +127,40 @@ class UserRepository {
   Future<void> saveUserLevel(UserLevel level) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final userDao = database.userLevelDao;
+    final levelLog = database.levelLogsDao;
 
     await userDao.deleteAll();
     userDao.save(level);
+
+    await levelLog.deleteAll();
+    await levelLog.saveAll(level.logs);
   }
 
   Future<void> refreshUser() async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final userDao = database.userDao;
+    final notesDao = database.notesDao;
     final userLevelDao = database.userLevelDao;
+    final levelLogDao = database.levelLogsDao;
+    final CourseRepository courseRepository = CourseRepository();
+
     await userDao.deleteAll();
+    await levelLogDao.deleteAll();
     await userLevelDao.deleteAll();
+    await notesDao.deleteAll();
+
+    await courseRepository.refreshCourses();
+    await HttpClient.removeToken();
+    await SaveFile().deleteImage();
+  }
+
+  Future<File> getImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String path = prefs.getString('profileImage') ?? null;
+
+    if (path != null) {
+      return File(path);
+    }
+    return null;
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 
 class Notifications extends StatefulWidget {
@@ -53,7 +52,7 @@ class _NotificationsState extends State<Notifications> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Icon(
-                    FontAwesomeIcons.bellSlash,
+                    Icons.notifications_off_outlined,
                     color: Colors.grey,
                     size: 60.0,
                   ),
@@ -102,7 +101,7 @@ class _NotificationsState extends State<Notifications> {
                             padding: EdgeInsets.all(10.0),
                             child: CircleAvatar(
                               child: Icon(
-                                FontAwesomeIcons.bell,
+                                Icons.notifications_none_outlined,
                                 size: 30.0,
                               ),
                               radius: 40.0,

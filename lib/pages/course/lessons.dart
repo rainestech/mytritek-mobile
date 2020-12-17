@@ -24,6 +24,9 @@ class _LessonViewState extends State<LessonView> {
   void initState() {
     super.initState();
     userBloc.token.listen((value) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         token = value;
       });

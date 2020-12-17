@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
@@ -41,19 +39,18 @@ class _WishlistState extends State<Wishlist> {
       userBloc.getUser();
     }
 
-    bloc.getWishList();
-    getImage();
-  }
+    userBloc.image.listen((value) {
+      if (!mounted) {
+        return;
+      }
 
-  Future<void> getImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String path = prefs.getString('profileImage') ?? null;
-
-    if (path != null) {
       setState(() {
-        _image = File(path);
+        _image = value;
       });
-    }
+    });
+
+    bloc.getWishList();
+    userBloc.getImage();
   }
 
   @override
@@ -178,7 +175,7 @@ class _WishlistState extends State<Wishlist> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Icon(
-              FontAwesomeIcons.heartBroken,
+              Icons.do_not_disturb_off,
               color: Colors.grey,
               size: 60.0,
             ),

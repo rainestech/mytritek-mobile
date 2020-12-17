@@ -40,6 +40,8 @@ class _LoginState extends State<Login> {
   final UserRepository _repository = UserRepository();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
+  final userBloc = UserBloc();
+
   String _username;
   var _password;
 
@@ -54,7 +56,7 @@ class _LoginState extends State<Login> {
         return;
       }
       if (value == true) {
-        userBloc.dispose();
+        // userBloc.dispose();
         Navigator.push(
             context,
             PageTransition(
@@ -64,6 +66,12 @@ class _LoginState extends State<Login> {
     });
 
     userBloc.getUser();
+  }
+
+  @override
+  void dispose() {
+    userBloc.dispose();
+    super.dispose();
   }
 
   // Toggles the password show status

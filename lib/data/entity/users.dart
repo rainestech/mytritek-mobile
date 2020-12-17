@@ -70,43 +70,101 @@ class Users {
 
 @Entity(tableName: 'userLevel')
 class UserLevel {
-  String level;
-  String award;
   String points;
+  String award;
   String newPoint;
-  String deduct;
-
+  String level;
+  String deducted;
   @primaryKey
-  String userId;
+  int userId;
   String badge;
+  @ignore
+  List<LevelLogs> logs;
 
-  UserLevel({this.level,
-    this.award,
-    this.points,
-    this.newPoint,
-    this.deduct,
-    this.userId,
-    this.badge});
+  UserLevel(
+      {this.points,
+      this.award,
+      this.newPoint,
+      this.level,
+      this.deducted,
+      this.userId,
+      this.badge,
+      this.logs});
 
   UserLevel.fromJson(Map<String, dynamic> json) {
-    level = json['level'];
-    award = json['award'];
     points = json['points'];
+    award = json['award'];
     newPoint = json['newPoint'];
-    deduct = json['deduct'];
+    level = json['level'];
+    deducted = json['deducted'];
     userId = json['userId'];
     badge = json['badge'];
+    if (json['logs'] != null) {
+      logs = new List<LevelLogs>();
+      json['logs'].forEach((v) {
+        logs.add(new LevelLogs.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['level'] = this.level;
-    data['award'] = this.award;
     data['points'] = this.points;
+    data['award'] = this.award;
     data['newPoint'] = this.newPoint;
-    data['deduct'] = this.deduct;
+    data['level'] = this.level;
+    data['deducted'] = this.deducted;
     data['userId'] = this.userId;
     data['badge'] = this.badge;
+    if (this.logs != null) {
+      data['logs'] = this.logs.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+@Entity(tableName: 'levelLogs')
+class LevelLogs {
+  @primaryKey
+  int userEarningId;
+  String title;
+  int userId;
+  int postId;
+  String postType;
+  int points;
+  String pointsType;
+  String date;
+
+  LevelLogs({this.userEarningId,
+    this.title,
+    this.userId,
+    this.postId,
+    this.postType,
+    this.points,
+    this.pointsType,
+    this.date});
+
+  LevelLogs.fromJson(Map<String, dynamic> json) {
+    userEarningId = json['user_earning_id'];
+    title = json['title'];
+    userId = json['user_id'];
+    postId = json['post_id'];
+    postType = json['post_type'];
+    points = json['points'];
+    pointsType = json['points_type'];
+    date = json['date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_earning_id'] = this.userEarningId;
+    data['title'] = this.title;
+    data['user_id'] = this.userId;
+    data['post_id'] = this.postId;
+    data['post_type'] = this.postType;
+    data['points'] = this.points;
+    data['points_type'] = this.pointsType;
+    data['date'] = this.date;
     return data;
   }
 }

@@ -145,13 +145,13 @@ class Sections {
 
 @Entity(
   tableName: 'lessons',
-  foreignKeys: [
-    ForeignKey(
-      childColumns: ['sectionId'],
-      parentColumns: ['id'],
-      entity: Sections,
-    )
-  ],
+  // foreignKeys: [
+  //   ForeignKey(
+  //     childColumns: ['sectionId'],
+  //     parentColumns: ['id'],
+  //     entity: Sections,
+  //   )
+  // ],
 )
 class Lessons {
   @primaryKey
