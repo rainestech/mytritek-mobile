@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/repository/course.repository.dart';
@@ -8,24 +9,24 @@ import 'package:tritek_lms/http/user.dart';
 class CourseBloc {
   final CourseRepository _repository = CourseRepository();
   final BehaviorSubject<CoursesResponse> _coursesSubject =
-      BehaviorSubject<CoursesResponse>();
+  BehaviorSubject<CoursesResponse>();
 
   final BehaviorSubject<CoursesResponse> _myCoursesSubject =
-      BehaviorSubject<CoursesResponse>();
+  BehaviorSubject<CoursesResponse>();
 
   final BehaviorSubject<CourseResponse> _courseSubject =
-      BehaviorSubject<CourseResponse>();
+  BehaviorSubject<CourseResponse>();
 
   final BehaviorSubject<CoursesResponse> _wishList =
-      BehaviorSubject<CoursesResponse>();
+  BehaviorSubject<CoursesResponse>();
 
   final UserRepository _userRepository = UserRepository();
 
   final BehaviorSubject<UserResponse> _userSubject =
-      BehaviorSubject<UserResponse>();
+  BehaviorSubject<UserResponse>();
 
   final BehaviorSubject<List<LessonSearch>> _search =
-      BehaviorSubject<List<LessonSearch>>();
+  BehaviorSubject<List<LessonSearch>>();
 
   BehaviorSubject<UserResponse> get userSubject => _userSubject;
 
@@ -60,6 +61,7 @@ class CourseBloc {
 
   searchLessons(String term) async {
     List<LessonSearch> response = await _repository.searchLesson(term);
+    debugPrint('Searching lesson...');
     _search.sink.add(response);
   }
 

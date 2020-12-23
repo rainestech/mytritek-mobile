@@ -5,7 +5,7 @@ class Validator {
     Pattern pattern = r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(password))
-      return 'Invalid password';
+      return 'Invalid password. Must contain at least a number, lower and uppercase letters';
     else
       return null;
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/http/endpoints.dart';
 import 'package:tritek_lms/http/http.client.dart';
@@ -71,7 +72,25 @@ class UserApiProvider {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.post(loginEndpoint,
           data: {'username': username, 'password': password});
-      print(response.data.length);
+      return UserResponse.fromJson(response.data, response.data.length);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return UserResponse.withError(error['message'], error['error']);
+      }
+      return UserResponse.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<UserResponse> loginGoogle(GoogleSignInAccount acc) async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      Response response = await _dio.post(loginGoogleEndpoint, data: {
+        'email': acc.email,
+        'id': acc.id,
+        'displayName': acc.displayName,
+        'photoUrl': acc.photoUrl
+      });
       return UserResponse.fromJson(response.data, response.data.length);
     } catch (e) {
       if (e.response != null) {
@@ -109,9 +128,12 @@ class UserApiProvider {
         'email': email
       });
 
+      print('Register Resp ' + response.data.toString());
+
       return RegisterResponse.fromJson(response.data);
     } catch (e) {
       if (e.response != null) {
+        print(e.response.toString());
         Map<String, dynamic> error = json.decode(e.response.toString());
         return RegisterResponse.withError(error['message'], error['error']);
       }
@@ -154,15 +176,39 @@ class UserApiProvider {
     }
   }
 
+  Future<RegisterResponse> changePassword(String email, String password,
+      String oldPassword) async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      Response response = await _dio.put(passwordChangeEndpoint,
+          data: {
+            'email': email,
+            'oldPassword': oldPassword,
+            'password': password
+          });
+
+      return RegisterResponse('', null, null);
+    } catch (e) {
+      if (e.response != null) {
+        Map<String, dynamic> error = json.decode(e.response.toString());
+        return RegisterResponse.withError(error['message'], error['error']);
+      }
+      return RegisterResponse.withError(e.message, "Network Error");
+    }
+  }
+
   Future<UserResponse> verify(String otp, String email) async {
     try {
       final Dio _dio = await HttpClient.http();
       Response response =
-          await _dio.post(registerEndpoint, data: {'otp': otp, 'email': email});
+      await _dio.post(verifyEndpoint, data: {'otp': otp, 'email': email});
+
+      print(response.data.toString());
 
       return UserResponse.fromJson(response.data, response.data.length);
     } catch (e) {
       if (e.response != null) {
+        print('Otp Error ' + e.response.toString());
         Map<String, dynamic> error = json.decode(e.response.toString());
         return UserResponse.withError(error['message'], error['error']);
       }
@@ -184,4 +230,5 @@ class UserApiProvider {
       return UserResponse.withError(e.message, "Network Error");
     }
   }
+
 }

@@ -1,4 +1,5 @@
-String _endpoint = "http://10.0.2.2/api";
+// String _endpoint = "http://10.0.2.2/api";
+String _endpoint = "https://tritek.rainestech.com/api";
 // String _endpoint = "http://192.168.0.100/api";
 
 /*
@@ -25,6 +26,7 @@ String myCoursesEndpoint = "$_endpoint/my/courses/";
  * Post Login request
  */
 String loginEndpoint = "$_endpoint/login";
+String loginGoogleEndpoint = "$_endpoint/google/login";
 
 /*
  * Post Login request
@@ -45,6 +47,7 @@ String resetPasswordEndpoint = "$_endpoint/reset";
  * Post Login request
  */
 String passwordEndpoint = "$_endpoint/password";
+String passwordChangeEndpoint = "$_endpoint/change/password";
 
 /*
  * Post Login request

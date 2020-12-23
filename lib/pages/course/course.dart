@@ -54,7 +54,7 @@ class _CoursePageState extends State<CoursePage> {
         return;
       }
       setState(() {
-        if (value.result != null) {
+        if (value.result != null && value.result.title != null) {
           _course = value.result;
         }
       });

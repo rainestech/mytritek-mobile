@@ -365,6 +365,9 @@ class _OTPScreenState extends State<OTPScreen> {
               otp, widget.email);
 
           if (_response.error.length > 0) {
+            Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                .pop(); //close the dialoge
+
             ServerValidationDialog.errorDialog(
                 context, _response.error, ""); //invoking log
           } else {
@@ -388,7 +391,11 @@ class _OTPScreenState extends State<OTPScreen> {
             context, 'Please check again.', 'Invalid input'); //invoking log
       }
     } catch (error) {
-      print(error);
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop(); //close the dialoge
+
+      ServerValidationDialog.errorDialog(
+          context, 'An Error Occurred. Pls try again', ""); //invoking log
     }
   }
 }

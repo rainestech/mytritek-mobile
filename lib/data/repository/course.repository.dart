@@ -58,7 +58,9 @@ class CourseRepository {
     }
 
     CourseResponse response = await _apiProvider.getMyCourse(userId, courseId);
-    if (response != null && response.result != null) {
+    if (response != null &&
+        response.result != null &&
+        response.result.title != null) {
       await updateMyCourse(response.result, userId);
     }
 

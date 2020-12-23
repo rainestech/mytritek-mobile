@@ -22,7 +22,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   String phoneNo;
-  String firstNme;
+  String firstName;
   String lastName;
   final ImagePicker picker = ImagePicker();
   File _image;
@@ -37,7 +37,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-    firstNme = widget.user.firstName;
+    firstName = widget.user.firstName;
     lastName = widget.user.lastName;
     phoneNo = widget.user.phoneNo;
     _image = widget.profile;
@@ -214,6 +214,7 @@ class _EditProfileState extends State<EditProfile> {
                         fontFamily: 'Signika Negative',
                       ),
                     ),
+                    onSaved: (_lastName) => lastName = _lastName,
                     onFieldSubmitted: (_) {
                       fieldFocusChange(
                           context, _lastNameFocusNode, _firstNameFocusNode);
@@ -232,7 +233,7 @@ class _EditProfileState extends State<EditProfile> {
                       return Validator.required(
                           value, 3, 'First Name is required');
                     },
-                    initialValue: firstNme,
+                    initialValue: firstName,
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w700,
@@ -247,94 +248,39 @@ class _EditProfileState extends State<EditProfile> {
                         fontFamily: 'Signika Negative',
                       ),
                     ),
+                    onSaved: (_firstName) => firstName = _firstName,
                     onFieldSubmitted: (_) {
                       fieldFocusChange(
                           context, _firstNameFocusNode, _phoneNoFocusNode);
                     },
                   ),
-                  // TextFormField(
-                  //   focusNode: _usernameFocusNode,
-                  //   autofocus: true,
-                  //   textCapitalization: TextCapitalization.words,
-                  //   keyboardType: TextInputType.text,
-                  //   textInputAction: TextInputAction.next,
-                  //   validator: (value) {
-                  //     return Validator.username(value, 'Invalid Username');
-                  //   },
-                  //   style: TextStyle(
-                  //     fontSize: 16.0,
-                  //     fontWeight: FontWeight.w700,
-                  //     fontFamily: 'Signika Negative',
-                  //   ),
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Enter Username',
-                  //     hintStyle: TextStyle(
-                  //       color: Colors.grey[400],
-                  //       fontSize: 16.0,
-                  //       fontWeight: FontWeight.w700,
-                  //       fontFamily: 'Signika Negative',
-                  //     ),
-                  //   ),
-                  //   onFieldSubmitted: (_) {
-                  //     fieldFocusChange(
-                  //         context, _usernameFocusNode, _emailFocusNode);
-                  //   },
-                  // ),
-                  // TextFormField(
-                  //   focusNode: _emailFocusNode,
-                  //   autofocus: true,
-                  //   textCapitalization: TextCapitalization.words,
-                  //   keyboardType: TextInputType.text,
-                  //   textInputAction: TextInputAction.next,
-                  //   validator: (value) {
-                  //     return Validator.username(value, 'Invalid Email');
-                  //   },
-                  //   style: TextStyle(
-                  //     fontSize: 16.0,
-                  //     fontWeight: FontWeight.w700,
-                  //     fontFamily: 'Signika Negative',
-                  //   ),
-                  //   decoration: InputDecoration(
-                  //     hintText: 'Enter Email',
-                  //     hintStyle: TextStyle(
-                  //       color: Colors.grey[400],
-                  //       fontSize: 16.0,
-                  //       fontWeight: FontWeight.w700,
-                  //       fontFamily: 'Signika Negative',
-                  //     ),
-                  //   ),
-                  //   onFieldSubmitted: (_) {
-                  //     fieldFocusChange(
-                  //         context, _emailFocusNode, _phoneNoFocusNode);
-                  //   },
-                  // ),
                   SizedBox(height: 15.0),
-                  TextFormField(
-                    focusNode: _phoneNoFocusNode,
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.words,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      return Validator.phone(value, 'Invalid Phone Number');
-                    },
-                    initialValue: phoneNo,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter Phone Number',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Signika Negative',
-                      ),
-                    ),
-                    onSaved: (_phoneNo) => phoneNo = _phoneNo,
-                  ),
+                  // TextFormField(
+                  //   focusNode: _phoneNoFocusNode,
+                  //   autofocus: true,
+                  //   textCapitalization: TextCapitalization.words,
+                  //   keyboardType: TextInputType.number,
+                  //   textInputAction: TextInputAction.next,
+                  //   validator: (value) {
+                  //     return Validator.phone(value, 'Invalid Phone Number');
+                  //   },
+                  //   initialValue: phoneNo,
+                  //   style: TextStyle(
+                  //     fontSize: 16.0,
+                  //     fontWeight: FontWeight.w700,
+                  //     fontFamily: 'Signika Negative',
+                  //   ),
+                  //   decoration: InputDecoration(
+                  //     hintText: 'Enter Phone Number',
+                  //     hintStyle: TextStyle(
+                  //       color: Colors.grey[400],
+                  //       fontSize: 16.0,
+                  //       fontWeight: FontWeight.w700,
+                  //       fontFamily: 'Signika Negative',
+                  //     ),
+                  //   ),
+                  //   onSaved: (_phoneNo) => phoneNo = _phoneNo,
+                  // ),
                   SizedBox(height: 15.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -400,7 +346,7 @@ class _EditProfileState extends State<EditProfile> {
 
   void _saveEdit(BuildContext context) async {
     Users _user = widget.user;
-    _user.firstName = firstNme;
+    _user.firstName = firstName;
     _user.lastName = lastName;
     _user.phoneNo = phoneNo;
 
@@ -409,8 +355,7 @@ class _EditProfileState extends State<EditProfile> {
           context, _keyLoader, 'Processing your update...'); //invoking login
       UserResponse _response = await _repository.editUser(_user);
       if (_response.error.length > 0) {
-        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-            .pop();
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
         ServerValidationDialog.errorDialog(
             context, _response.error, _response.eTitle); //invoking log
       } else {
@@ -420,6 +365,10 @@ class _EditProfileState extends State<EditProfile> {
         Navigator.pop(context);
       }
     } catch (error) {
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop();
+      ServerValidationDialog.errorDialog(
+          context, 'An Error Occurred! Please try again', ''); //invoking log
       print(error);
     }
   }

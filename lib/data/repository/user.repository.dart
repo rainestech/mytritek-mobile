@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/helper.dart';
@@ -18,15 +19,16 @@ class UserRepository {
     UserResponse response = await _apiProvider.loginUser(username, password);
     final storage = new FlutterSecureStorage();
 
-    if (response.error.length < 1) {
+    if (response.results != null) {
       await saveUser(response.results);
       await storage.write(key: 'token', value: response.results.password);
       getUserLevel(response.results.id);
+
+      if (response.results.image != null && response.results.image.length > 0) {
+        SaveFile().saveImage(response.results.image);
+      }
     }
 
-    if (response.results.image != null && response.results.image.length > 0) {
-      SaveFile().saveImage(response.results.image);
-    }
     return response;
   }
 
@@ -44,9 +46,18 @@ class UserRepository {
     return response;
   }
 
-  Future<RegisterResponse> setNewPassword(String email, String password, String otp) async {
+  Future<RegisterResponse> setNewPassword(
+      String email, String password, String otp) async {
     RegisterResponse response =
-    await _apiProvider.setNewPassword(email, password, otp);
+        await _apiProvider.setNewPassword(email, password, otp);
+
+    return response;
+  }
+
+  Future<RegisterResponse> changePassword(
+      String email, String password, String oldPassword) async {
+    RegisterResponse response =
+        await _apiProvider.changePassword(email, password, oldPassword);
 
     return response;
   }
@@ -54,12 +65,12 @@ class UserRepository {
   Future<UserResponse> verify(String otp, String email) async {
     UserResponse response = await _apiProvider.verify(otp, email);
 
-    if (response.error.length < 1) {
+    if (response.results != null) {
       await saveUser(response.results);
-    }
 
-    if (response.results.image != null && response.results.image.length > 0) {
-      SaveFile().saveImage(response.results.image);
+      if (response.results.image != null && response.results.image.length > 0) {
+        SaveFile().saveImage(response.results.image);
+      }
     }
 
     return response;
@@ -68,12 +79,12 @@ class UserRepository {
   Future<UserResponse> editUser(Users _user) async {
     UserResponse response = await _apiProvider.editUser(_user);
 
-    if (response.error.length < 1) {
+    if (response.results != null) {
       await saveUser(response.results);
-    }
 
-    if (response.results.image != null && response.results.image.length > 0) {
-      SaveFile().saveImage(response.results.image);
+      if (response.results.image != null && response.results.image.length > 0) {
+        SaveFile().saveImage(response.results.image);
+      }
     }
 
     return response;
@@ -162,5 +173,22 @@ class UserRepository {
       return File(path);
     }
     return null;
+  }
+
+  Future<UserResponse> googleLogin(GoogleSignInAccount acc) async {
+    UserResponse response = await _apiProvider.loginGoogle(acc);
+    final storage = new FlutterSecureStorage();
+
+    if (response.results != null) {
+      await saveUser(response.results);
+      await storage.write(key: 'token', value: response.results.password);
+      getUserLevel(response.results.id);
+
+      if (acc.photoUrl != null) {
+        SaveFile().saveImage(acc.photoUrl);
+      }
+    }
+
+    return response;
   }
 }

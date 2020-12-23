@@ -729,8 +729,7 @@ class _$UserLevelDao extends UserLevelDao {
         _userLevelInsertionAdapter = InsertionAdapter(
             database,
             'userLevel',
-            (UserLevel item) =>
-            <String, dynamic>{
+            (UserLevel item) => <String, dynamic>{
                   'points': item.points,
                   'award': item.award,
                   'newPoint': item.newPoint,

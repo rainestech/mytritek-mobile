@@ -33,7 +33,6 @@ class _LoginState extends State<Login> {
   // Initially password is obscure
   bool _obscureText = true;
   DateTime currentBackPressTime;
-  GoogleSignInAccount _currentUser;
 
   final GoogleLogin _googleLogin = GoogleLogin();
   final _formKey = GlobalKey<FormState>();
@@ -358,11 +357,7 @@ class _LoginState extends State<Login> {
                           _googleLogin.handleSignIn().then((acc) => {
                                 if (acc != null)
                                   {
-                                    _currentUser = acc,
-                                    print('acc: $acc'),
-                                    _googleLogin.handleGetContact(acc).then(
-                                        (value) => print(
-                                            'Contact ${_currentUser.displayName}')),
+                                    _loginGoogle(acc),
                                   }
                               });
                         },
@@ -438,41 +433,59 @@ class _LoginState extends State<Login> {
         ServerValidationDialog.errorDialog(
             context, _response.error, _response.eTitle); //invoking log
       } else {
-        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-            .pop();
-
-        if (widget._course != null && _response.results.status == 'active') {
-          Navigator.push(context, PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: CoursePage(courseData: widget._course,)));
-        } else if (_response.results.status != 'active' &&
-            widget._subscriptionPlans != null) {
-          // todo - navigate to payment page
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      SelectPlan(
-                          course: widget._course
-                      )));
-        } else if (_response.results.status != 'active') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      SelectPlan(
-                          course: widget._course
-                      )),
-              ModalRoute.withName("/Home")
-          );
-        } else {
-          Navigator.push(context, PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: Home()));
-        }
+        _successRoute(_response);
       }
     } catch (error) {
-      print(error);
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop();
+      ServerValidationDialog.errorDialog(
+          context, 'Invalid credentials', ''); //invoking log
+    }
+  }
+
+  _successRoute(UserResponse response) {
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+        .pop();
+
+    if (widget._course != null && response.results.status == 'active') {
+      Navigator.push(context, PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: CoursePage(courseData: widget._course,)));
+    } else if (response.results.status != 'active' &&
+        widget._subscriptionPlans != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  SelectPlan(
+                      course: widget._course
+                  )));
+    } else {
+      Navigator.push(context, PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: Home()));
+    }
+  }
+
+  _loginGoogle(GoogleSignInAccount acc) async {
+    LoadingDialogs.showLoadingDialog(
+        context, _keyLoader, 'Login you in...');
+    print(acc);
+    try {
+      final resp = await _repository.googleLogin(acc);
+
+      print(resp.results?.email);
+      if (resp.results != null) {
+        _successRoute(resp);
+      } else {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+      }
+    } catch (e) {
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop();
+      ServerValidationDialog.errorDialog(
+          context, 'An Error Occurred, Please try again', ''); //invoking log
     }
   }
 }

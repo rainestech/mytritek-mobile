@@ -53,7 +53,6 @@ class CoursesApiProvider {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(coursesEndpoint,
           options: Options(method: 'GET', responseType: ResponseType.plain));
-      print(response.data.length);
       return CoursesResponse.fromJson(
           json.decode(response.data), response.data.length);
     } catch (e) {
@@ -70,7 +69,6 @@ class CoursesApiProvider {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(myCoursesEndpoint + userId.toString(),
           options: Options(method: 'GET', responseType: ResponseType.plain));
-      print(response.data.length);
       return CoursesResponse.fromJson(
           json.decode(response.data), response.data.length);
     } catch (e) {
@@ -87,6 +85,7 @@ class CoursesApiProvider {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(
           myCoursesEndpoint + userId.toString() + '/' + courseId.toString());
+
       return CourseResponse.fromJson(response.data, response.data.length);
     } catch (e) {
       if (e.response != null) {

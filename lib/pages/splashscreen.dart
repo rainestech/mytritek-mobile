@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/notificationsBloc.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'home/home.dart';
 
@@ -56,6 +60,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    initNotifications();
 
     return Scaffold(
       backgroundColor: themeBlue,
@@ -120,5 +126,52 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  void initNotifications() async {
+    await _configureLocalTimeZone();
+
+    final NotificationAppLaunchDetails notificationAppLaunchDetails =
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    /// Note: permissions aren't requested here just to demonstrate that can be
+    /// done later
+    final IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(
+      // requestAlertPermission: false,
+      // requestBadgePermission: false,
+      // requestSoundPermission: false,
+        onDidReceiveLocalNotification:
+            (int id, String title, String body, String payload) async {
+          notificationsBloc.didReceiveLocalNotificationSubject.add(
+              ReceivedNotification(
+                  id: id, title: title, body: body, payload: payload));
+        });
+    const MacOSInitializationSettings initializationSettingsMacOS =
+    MacOSInitializationSettings(
+      // requestAlertPermission: false,
+      // requestBadgePermission: false,
+      // requestSoundPermission: false
+    );
+    final InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+        macOS: initializationSettingsMacOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String payload) async {
+          if (payload != null) {
+            debugPrint('notification payload: $payload');
+          }
+          notificationsBloc.selectNotificationSubject.add(payload);
+        });
+  }
+
+  Future<void> _configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    // final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    // tz.setLocalLocation(tz.getLocation(currentTimeZone));
   }
 }

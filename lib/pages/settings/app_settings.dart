@@ -1,6 +1,8 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/notificationsBloc.dart';
+import 'package:tritek_lms/blocs/settings.bloc.dart';
 
 class AppSettings extends StatefulWidget {
   @override
@@ -8,11 +10,59 @@ class AppSettings extends StatefulWidget {
 }
 
 class _AppSettingsState extends State<AppSettings> {
-  bool status = false;
+  bool cellularData = false;
   bool notifications = false;
+  String notificationTime = '..:..';
   bool standard = true;
   bool high = false;
   bool delete = true;
+
+  @override
+  void initState() {
+    super.initState();
+    settingsBloc.getSettings();
+
+    settingsBloc.notifications.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        notifications = value;
+      });
+    });
+
+    settingsBloc.cellularData.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        cellularData = value;
+      });
+    });
+
+    settingsBloc.notificationTime.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        notificationTime = value;
+      });
+    });
+
+    settingsBloc.videoQuality.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        high = value == 2;
+        standard = value == 1;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,83 +74,6 @@ class _AppSettingsState extends State<AppSettings> {
         width: width,
         margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
         color: color,
-      );
-    }
-
-    deleteLesson() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          // return object of type Dialog
-          return Dialog(
-            elevation: 0.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Container(
-              height: 280.0,
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Nothing to Delete",
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontSize: 21.0,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.red[400],
-                    ),
-                  ),
-                  SizedBox(height: 30.0),
-                  Icon(
-                    Icons.hourglass_empty,
-                    size: 60.0,
-                    color: textColor,
-                  ),
-                  SizedBox(height: 30.0),
-                  Text(
-                    'There are no downloaded lessons on your device',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontSize: 15.0,
-                      color: Colors.grey[400],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        Navigator.pop(context);
-                      });
-                    },
-                    child: Container(
-                      width: width - 40.0,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: textColor,
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      child: Text(
-                        'Okay',
-                        style: TextStyle(
-                          fontFamily: 'Signika Negative',
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
       );
     }
 
@@ -187,11 +160,9 @@ class _AppSettingsState extends State<AppSettings> {
                       ),
                       CustomSwitch(
                         activeColor: textColor,
-                        value: status,
+                        value: cellularData,
                         onChanged: (value) {
-                          setState(() {
-                            status = value;
-                          });
+                          settingsBloc.setCellularData(value);
                         },
                       ),
                     ],
@@ -210,10 +181,7 @@ class _AppSettingsState extends State<AppSettings> {
                   SizedBox(height: 15.0),
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        standard = true;
-                        high = false;
-                      });
+                      settingsBloc.setVideoQuality(1);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -252,10 +220,7 @@ class _AppSettingsState extends State<AppSettings> {
                   getDivider(Colors.grey[300]),
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        standard = false;
-                        high = true;
-                      });
+                      settingsBloc.setVideoQuality(2);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -318,9 +283,15 @@ class _AppSettingsState extends State<AppSettings> {
                         activeColor: textColor,
                         value: notifications,
                         onChanged: (value) {
-                          setState(() {
-                            notifications = value;
-                          });
+                          settingsBloc.setNotifications(value);
+                          if (value) {
+                            debugPrint(value.toString());
+                            notificationsBloc.displayNotification(
+                                'MyTritek Notifications',
+                                'Notifications turned On', '');
+                          } else {
+                            notificationsBloc.cancelAllNotifications();
+                          }
                         },
                       ),
                     ],
@@ -328,10 +299,10 @@ class _AppSettingsState extends State<AppSettings> {
                   getDivider(Colors.grey[300]),
                   InkWell(
                     onTap: () {
-                      setState(() {
-                        standard = false;
-                        high = true;
-                      });
+                      if (!notifications) {
+                        return;
+                      }
+                      setTime();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -350,7 +321,7 @@ class _AppSettingsState extends State<AppSettings> {
                             ),
                             SizedBox(height: 8.0),
                             Text(
-                              '9:00 am',
+                              notificationTime,
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w700,
@@ -380,5 +351,22 @@ class _AppSettingsState extends State<AppSettings> {
     return Scaffold(
       body: nestedAppBar(),
     );
+  }
+
+  void setTime() async {
+    Future<TimeOfDay> selectedTime = showTimePicker(
+      initialTime: TimeOfDay.now(),
+      context: context,
+    );
+
+    selectedTime.then((value) =>
+    {
+      settingsBloc.setNotificationTime(
+          value.hour.toString() + ':' + value.minute.toString()),
+      notificationsBloc.scheduleDailyTenAMNotification(
+          'Time to continue your lessons!',
+          'Continue your lessons on MyTritek App', value.hour, value.minute),
+      print(value.toString())
+    });
   }
 }

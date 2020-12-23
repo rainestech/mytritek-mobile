@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/users.dart';
@@ -149,7 +148,9 @@ class _MembershipSettingsState extends State<MembershipSettings> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Your Current Membership Plan is',
+                                _user.endDate != null
+                                    ? 'Your Current Membership Plan is'
+                                    : '',
                                 style: TextStyle(
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
@@ -226,7 +227,8 @@ class _MembershipSettingsState extends State<MembershipSettings> {
               alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
-                  SelectPlan();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SelectPlan()));
                 },
                 borderRadius: BorderRadius.circular(30.0),
                 child: Material(
@@ -239,7 +241,9 @@ class _MembershipSettingsState extends State<MembershipSettings> {
                       color: themeBlue,
                     ),
                     child: Text(
-                      'Renew Subscription'.toUpperCase(),
+                      _user.endDate != null
+                          ? 'Renew Subscription'.toUpperCase()
+                          : 'Buy Subscription'.toUpperCase(),
                       style: TextStyle(
                         color: themeGold,
                         fontSize: 15.0,
@@ -315,25 +319,28 @@ class _MembershipSettingsState extends State<MembershipSettings> {
   void logout() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Login(null, null)));
-    // Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             Login(null, null)),
-    //         (Route<dynamic> route) => false
-    // );
   }
 
   String getDate(Users user) {
+    if (user.endDate == null) {
+      return "..";
+    }
+
     DateTime tempDate =
-        new DateFormat("yyyy-MM-dd hh:mm:ss").parse(user.endDate);
+    new DateFormat("yyyy-MM-dd hh:mm:ss").parse(user.endDate);
     return DateFormat("MMMM dd, yyyy").format(tempDate);
   }
 
   bool dateDiff(Users user) {
+    if (user.endDate == null) {
+      return true;
+    }
+
     DateTime tempDate =
-        new DateFormat("yyyy-MM-dd hh:mm:ss").parse(user.endDate);
+    new DateFormat("yyyy-MM-dd hh:mm:ss").parse(user.endDate);
     DateTime n = DateTime.now();
-    return tempDate.difference(n).inDays > 40;
+    return tempDate
+        .difference(n)
+        .inDays < 40;
   }
 }

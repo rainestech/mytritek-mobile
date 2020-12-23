@@ -42,10 +42,13 @@ class _MyCourseState extends State<MyCourse> {
 
           if (value.results != null) {
             bloc.getMyCourses(_user.id);
-            _weeks = Jiffy(DateTime.now())
-                .diff(Jiffy(DateFormatter.stringToDate(_user.startDate)),
-                    Units.WEEK)
-                .toString();
+
+            if (_user.startDate != null) {
+              _weeks = Jiffy(DateTime.now())
+                  .diff(Jiffy(DateFormatter.stringToDate(_user.startDate)),
+                      Units.WEEK)
+                  .toString();
+            }
           }
         });
       });
@@ -296,7 +299,9 @@ class _MyCourseState extends State<MyCourse> {
               height: 20.0,
             ),
             AutoSizeText(
-              'Your subscription has expired',
+              _user.startDate != null
+                  ? 'Your subscription has expired'
+                  : 'You are yet to Buy Membership',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 18.0,
@@ -491,7 +496,8 @@ class _MyCourseState extends State<MyCourse> {
           StreamBuilder<CoursesResponse>(
             stream: bloc.myCourses.stream,
             builder: (context, AsyncSnapshot<CoursesResponse> snapshot) {
-              if (_user != null && _user.status != 'active') {
+              if (_user != null && _user.status != 'active' &&
+                  _user.startDate != null) {
                 return _subExpiredWidget(width, height);
               } else if (snapshot.hasData) {
                 if (snapshot.data.error != null &&

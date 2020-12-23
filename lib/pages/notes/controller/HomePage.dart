@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         top: true,
         bottom: true,
       ),
-      bottomSheet: _bottomBar(),
+      // bottomSheet: _bottomBar(),
     );
   }
 

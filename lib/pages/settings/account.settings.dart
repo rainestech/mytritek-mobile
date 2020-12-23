@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
+import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/entity/users.dart';
+import 'package:tritek_lms/data/repository/user.repository.dart';
+import 'package:tritek_lms/http/user.dart';
 import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/settings/edit.profile.dart';
@@ -18,8 +21,14 @@ class _AccountSettingsState extends State<AccountSettings> {
   Users _user;
   bool routed = false;
 
+  final _formKey = GlobalKey<FormState>();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   final bloc = UserBloc();
+  final UserRepository _repository = UserRepository();
+
+  String oldPassword;
+  String password;
+  String cPassword;
 
   @override
   void initState() {
@@ -81,122 +90,142 @@ class _AccountSettingsState extends State<AccountSettings> {
             child: Container(
               height: 295.0,
               padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Change Your Password",
-                    style: TextStyle(
-                      fontFamily: 'Signika Negative',
-                      fontSize: 21.0,
-                      fontWeight: FontWeight.w700,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Change Your Password",
+                      style: TextStyle(
+                        fontFamily: 'Signika Negative',
+                        fontSize: 21.0,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  TextField(
-                    obscureText: true,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
+                    SizedBox(
+                      height: 20.0,
                     ),
-                    decoration: InputDecoration(
-                      hintText: 'Old Password',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                    TextFormField(
+                      obscureText: true,
+                      style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Signika Negative',
                       ),
+                      validator: (value) {
+                        return Validator.required(
+                            value, 1, 'Old Password is required');
+                      },
+                      onSaved: (_op) => oldPassword = _op,
+                      decoration: InputDecoration(
+                        hintText: 'Old Password',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Signika Negative',
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    obscureText: true,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'New Password',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                    TextFormField(
+                      obscureText: true,
+                      style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Signika Negative',
                       ),
+                      validator: (value) {
+                        return Validator.password(value);
+                      },
+                      onSaved: (_password) => password = _password,
+                      decoration: InputDecoration(
+                        hintText: 'New Password',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Signika Negative',
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    obscureText: true,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Signika Negative',
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Confirm New Password',
-                      hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                    TextFormField(
+                      obscureText: true,
+                      style: TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Signika Negative',
                       ),
+                      validator: (value) {
+                        return Validator.password(value);
+                      },
+                      onSaved: (_cpassword) => cPassword = _cpassword,
+                      decoration: InputDecoration(
+                        hintText: 'Confirm New Password',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Signika Negative',
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: (width / 3.5),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
+                    SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: (width / 3.5),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontFamily: 'Signika Negative',
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: (width / 3.5),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: textColor,
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Text(
-                            'Okay',
-                            style: TextStyle(
-                              fontFamily: 'Signika Negative',
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                        InkWell(
+                          onTap: () {
+                            if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
+                              Navigator.pop(context);
+                              _changePassword();
+                            }
+                          },
+                          child: Container(
+                            width: (width / 3.5),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: textColor,
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Text(
+                              'Okay',
+                              style: TextStyle(
+                                fontFamily: 'Signika Negative',
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -534,7 +563,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                 children: [
                   SizedBox(height: 10.0),
                   itemTile(width, Icons.person, 'Username', _user?.username),
-                  itemTile(width, Icons.phone, 'Mobile', '+1 123456789'),
+                  // itemTile(width, Icons.phone, 'Mobile', '+1 123456789'),
                   itemTile(width, Icons.email, 'Email', _user?.email),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -662,13 +691,39 @@ class _AccountSettingsState extends State<AccountSettings> {
         context,
         MaterialPageRoute(
             builder: (context) => Login(null, null)));
+  }
 
-    // Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             Login(null, null)),
-    //         (Route<dynamic> route) => false
-    // );
+  Future<void> _changePassword() async {
+    if (password != cPassword) {
+      ServerValidationDialog.errorDialog(
+          context, 'Password does NOT match', '');
+      return;
+    }
+
+    try {
+      LoadingDialogs.showLoadingDialog(
+          context, _keyLoader, 'Processing your update...');
+
+      RegisterResponse _response = await _repository.changePassword(
+          _user.email, password, oldPassword);
+      if (_response.error.length > 0) {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+        ServerValidationDialog.errorDialog(
+            context, _response.error, _response.eTitle); //invoking log
+      } else {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop();
+
+        ServerValidationDialog.errorDialog(
+            context, 'Password Changed Successfully', ''); //invoking log
+      }
+    } catch (error) {
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+          .pop();
+      ServerValidationDialog.errorDialog(
+          context, 'An Error Occurred! Please try again', ''); //invoking log
+      print(error);
+    }
   }
 }
