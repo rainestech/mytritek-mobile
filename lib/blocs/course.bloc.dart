@@ -51,6 +51,7 @@ class CourseBloc {
 
   getMyCourses(int userId) async {
     CoursesResponse response = await _repository.getMyCourses(userId);
+
     _myCoursesSubject.sink.add(response);
   }
 

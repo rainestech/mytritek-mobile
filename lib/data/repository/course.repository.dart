@@ -1,4 +1,5 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
@@ -12,13 +13,13 @@ class CourseRepository {
     bool conn = await DataConnectionChecker().hasConnection;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int courseResp = prefs.getInt('courseResp') ?? 0;
-    print("CourseResp: $courseResp");
 
     if (!conn && courseResp > 0) {
       print('no connection');
       return getDbCourses();
     }
     CoursesResponse response = await _apiProvider.getCourses();
+    // print("CourseResp: ${response.error}");
 
     if (response.length != courseResp && response.results.length > 0) {
       await saveCourses(response.results);
@@ -200,34 +201,38 @@ class CourseRepository {
   }
 
   Future<void> saveCourses(List<Course> courses) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
-    final courseDao = database.courseDao;
-    final sectionsDao = database.sectionsDao;
-    final lessonsDao = database.lessonsDao;
-    final instructorDao = database.instructorDao;
-    final commentDao = database.commentsDao;
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final courseDao = database.courseDao;
+      final sectionsDao = database.sectionsDao;
+      final lessonsDao = database.lessonsDao;
+      final instructorDao = database.instructorDao;
+      final commentDao = database.commentsDao;
 
-    await instructorDao.deleteAll();
-    await commentDao.deleteAll();
-    await lessonsDao.deleteAll();
-    await sectionsDao.deleteAll();
-    await courseDao.deleteAll();
+      await instructorDao.deleteAll();
+      await commentDao.deleteAll();
+      await lessonsDao.deleteAll();
+      await sectionsDao.deleteAll();
+      await courseDao.deleteAll();
 
-    for (Course course in courses) {
-      courseDao.save(course);
-      final List<Sections> sections = course.sections;
-      for (Sections section in sections) {
-        sectionsDao.save(section);
-        final List<Lessons> lessons = section.lessons;
-        for (Lessons lesson in lessons) {
-          lessonsDao.save(lesson);
+      for (Course course in courses) {
+        courseDao.save(course);
+        final List<Sections> sections = course.sections;
+        for (Sections section in sections) {
+          sectionsDao.save(section);
+          final List<Lessons> lessons = section.lessons;
+          for (Lessons lesson in lessons) {
+            lessonsDao.save(lesson);
+          }
+        }
+
+        instructorDao.save(course.instructor);
+        for (Comments comment in course.comments) {
+          commentDao.save(comment);
         }
       }
-
-      instructorDao.save(course.instructor);
-      for (Comments comment in course.comments) {
-        commentDao.save(comment);
-      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

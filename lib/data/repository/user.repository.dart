@@ -20,12 +20,12 @@ class UserRepository {
     final storage = new FlutterSecureStorage();
 
     if (response.results != null) {
-      await saveUser(response.results);
       await storage.write(key: 'token', value: response.results.password);
+      await saveUser(response.results);
       getUserLevel(response.results.id);
 
       if (response.results.image != null && response.results.image.length > 0) {
-        SaveFile().saveImage(response.results.image);
+        await SaveFile().saveImage(response.results.image);
       }
     }
 

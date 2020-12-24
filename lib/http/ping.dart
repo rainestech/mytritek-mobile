@@ -50,12 +50,11 @@ class PingResponse {
 
   Future<PingServerResp> pingServer() async {
     try {
-      debugPrint('Ping url: $pingEndpoint');
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(pingEndpoint);
       Ping resp = Ping.fromJson(response.data);
       debugPrint('Ping: ${resp.uuid}');
-      _secureStorage.write(key: 'ping', value: resp.uuid);
+      await _secureStorage.write(key: 'ping', value: resp.uuid);
 
       return PingServerResp(resp, '');
     } catch (e) {

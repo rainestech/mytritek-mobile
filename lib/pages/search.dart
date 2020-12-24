@@ -24,13 +24,6 @@ class _SearchState extends State<Search> {
   }
 
   @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;

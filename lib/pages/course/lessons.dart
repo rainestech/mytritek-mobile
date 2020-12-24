@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/users.dart';
-import 'package:tritek_lms/pages/course/video.view.dart';
+import 'package:tritek_lms/pages/course/lesson.view.dart';
 
 class LessonView extends StatefulWidget {
   final scaffoldKey;
@@ -57,7 +57,7 @@ class _LessonViewState extends State<LessonView> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => VideoViewLesson(status.postId, token)));
+                builder: (context) => InAppLessonView(status.postId, token)));
       } else {
         widget.scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(

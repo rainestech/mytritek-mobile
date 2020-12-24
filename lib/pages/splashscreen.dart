@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (value != null && value.data != null && !_ping) {
         _ping = true;
         Timer(
-            Duration(seconds: 1),
+            Duration(seconds: 2),
             () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),

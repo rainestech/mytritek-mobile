@@ -76,9 +76,9 @@ class UserBloc {
   void getImage() async {
     var t = await _repository.getImage();
 
-    if (_image.isClosed) {
-      return;
-    }
+    // if (_image.isClosed) {
+    //   return;
+    // }
     _image.sink.add(t);
   }
 

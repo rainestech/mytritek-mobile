@@ -33,10 +33,13 @@ class _MyCourseState extends State<MyCourse> {
   void initState() {
     super.initState();
     if (_user != null && _user.id == null) {
+      debugPrint('Getting User...');
       userBloc.userSubject.listen((value) {
         if (!mounted) {
           return;
         }
+        debugPrint('Getting User... ${value.results == null}');
+
         setState(() {
           _user = value.results;
 
