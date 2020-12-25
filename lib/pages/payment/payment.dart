@@ -99,7 +99,7 @@ class _StripePaymentState extends State<StripePayment> {
       return;
     }
     if (!stripeCard.validateDate()) {
-      showAlertDialog(context, "Errore", "Date not valid.", false);
+      showAlertDialog(context, "Error", "Date not valid.", false);
       return;
     }
     if (!stripeCard.validateNumber()) {
@@ -170,7 +170,8 @@ class _StripePaymentState extends State<StripePayment> {
   }
 
   showAlertDialog(
-      BuildContext context, String title, String message, bool success) {
+      BuildContext context, String title, String message, bool success) async {
+    await Future.delayed(Duration(seconds: 2));
     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
 
     showDialog(

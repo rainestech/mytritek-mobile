@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as Sec;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'endpoints.dart';
 import 'http.client.dart';
@@ -49,16 +50,26 @@ class PingResponse {
   final Sec.FlutterSecureStorage _secureStorage = Sec.FlutterSecureStorage();
 
   Future<PingServerResp> pingServer() async {
+    final _prefs = await SharedPreferences.getInstance();
+
     try {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(pingEndpoint);
       Ping resp = Ping.fromJson(response.data);
       debugPrint('Ping: ${resp.uuid}');
       await _secureStorage.write(key: 'ping', value: resp.uuid);
+      await _prefs.setString('ping', 'ping');
 
-      return PingServerResp(resp, '');
+      return PingServerResp(resp, null);
     } catch (e) {
+      await _prefs.setString('pingError', 'ping');
       debugPrint('Ping Error: ${e.toString()}');
+      String ping = await _prefs.get('ping') ?? null;
+
+      if (ping != null) {
+        return PingServerResp(Ping(), null);
+      }
+
       return PingServerResp(null, 'error');
     }
   }

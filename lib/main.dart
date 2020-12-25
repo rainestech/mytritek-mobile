@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/appTheme/my_behaviour.dart';
 import 'package:tritek_lms/pages/splashscreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences.setMockInitialValues({});
+  // SharedPreferences.setMockInitialValues({});
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tritek LMS',
+      title: 'MyTritek',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.amber,

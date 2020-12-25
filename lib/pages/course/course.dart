@@ -5,12 +5,15 @@ import 'package:page_transition/page_transition.dart';
 import 'package:share/share.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/pages/course/lessons.dart';
 import 'package:tritek_lms/pages/course/overview.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/payment/select_plan.dart';
+
+import 'lesson.view.dart';
 
 class CoursePage extends StatefulWidget {
   final Course courseData;
@@ -30,6 +33,7 @@ class _CoursePageState extends State<CoursePage> {
 
   Users _user;
   Course _course;
+  String token;
 
   @override
   void initState() {
@@ -40,6 +44,7 @@ class _CoursePageState extends State<CoursePage> {
         return;
       }
       setState(() {
+        _course = widget.courseData;
         _user = value.results;
         if (_user != null) {
           bloc.getMyCourseById(_user.id, widget.courseData.id);
@@ -59,6 +64,17 @@ class _CoursePageState extends State<CoursePage> {
         }
       });
     });
+
+    userBloc.token.listen((value) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        token = value;
+      });
+    });
+
+    userBloc.getToken();
 
     bloc.getUser();
     wishlist = widget.courseData.wishList ?? false;
@@ -373,15 +389,22 @@ class _CoursePageState extends State<CoursePage> {
                                     ),
                                   ),
                                 ),
-                              if (_user != null && _user.status == 'active')
+                              if (_user != null &&
+                                  _user.status == 'active' &&
+                                  _course.sections.length > 0 &&
+                                  _course.sections[0].lessons.length > 0)
                                 InkWell(
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SelectPlan(
-                                                  course: _course,
-                                                )));
+                                    if (token != null) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  InAppLessonView(
+                                                      _course.sections[0]
+                                                          .lessons[0].postId,
+                                                      token)));
+                                    }
                                   },
                                   child: Container(
                                     width: width,

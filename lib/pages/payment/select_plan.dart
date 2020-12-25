@@ -146,7 +146,7 @@ class _SelectPlanState extends State<SelectPlan> {
       children: <Widget>[
         for (SubscriptionPlans item in data) getSubItem(item),
         Container(
-            padding: EdgeInsets.fromLTRB(90.0, 10, 90, 10),
+            padding: EdgeInsets.fromLTRB(20.0, 10, 20, 10),
             child: RaisedButton.icon(
               textColor: Colors.white,
               color: selectedPlan != null ? themeBlue : Colors.black54,
@@ -200,7 +200,7 @@ class _SelectPlanState extends State<SelectPlan> {
           height: 30,
         ),
         Container(
-          padding: EdgeInsets.fromLTRB(90.0, 10, 90, 10),
+          padding: EdgeInsets.fromLTRB(20.0, 10, 20, 10),
           child: RaisedButton.icon(
             textColor: Colors.white,
             color: Colors.green.withGreen(120),

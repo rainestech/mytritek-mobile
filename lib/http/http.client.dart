@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as Sec;
 
 class HttpClient {
@@ -20,7 +19,7 @@ class HttpClient {
       await init();
     }
     if (_token != null) {
-      debugPrint('T_: $_token');
+      // debugPrint('T_: $_token');
       _dio.interceptors
           .add(InterceptorsWrapper(onRequest: (Options options) async {
         options.headers["Authorization"] = "Bearer " + _token;
