@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as Sec;
 
 class HttpClient {
@@ -19,6 +20,7 @@ class HttpClient {
       await init();
     }
     if (_token != null) {
+      debugPrint('T_: $_token');
       _dio.interceptors
           .add(InterceptorsWrapper(onRequest: (Options options) async {
         options.headers["Authorization"] = "Bearer " + _token;
@@ -41,6 +43,11 @@ class HttpClient {
     }
 
     return _token;
+  }
+
+  static Future<void> setToken(String token) async {
+    await init();
+    await _secureStorage.write(key: 'token', value: token);
   }
 
   static Future<void> removeToken() async {

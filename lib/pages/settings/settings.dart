@@ -1,13 +1,17 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/blocs/agents.bloc.dart';
+import 'package:tritek_lms/data/entity/ccagents.dart';
+import 'package:tritek_lms/http/customer.agent.dart';
+import 'package:tritek_lms/pages/common/utils.dart';
 import 'package:tritek_lms/pages/notes/controller/HomePage.dart';
-import 'package:tritek_lms/pages/payment/select_plan.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 import 'package:tritek_lms/pages/settings/app_settings.dart';
-import 'package:tritek_lms/pages/settings/inapp.webview.dart';
 import 'package:tritek_lms/pages/settings/membership.settings.dart';
 import 'package:tritek_lms/pages/settings/progress.settings.dart';
-import 'package:tritek_lms/pages/settings/webview.navoff.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -15,6 +19,157 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  @override
+  initState() {
+    super.initState();
+    agentBloc.getAgents();
+  }
+
+  Widget getAgentTile(Agents agent, double width, double height) {
+    return InkWell(
+      onTap: () {
+        FlutterOpenWhatsapp.sendSingleMessage(agent.number,
+            "Hi, I'll like to know more about MyTritek Consulting! (Sent from MyTritek Mobile App)");
+      },
+      child: Container(
+        padding: EdgeInsets.all(10.0),
+        margin: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              blurRadius: 1.5,
+              spreadRadius: 1.5,
+              color: Colors.grey[200],
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 100.0,
+              height: 100.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(agent.image),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            Container(
+              width: width - 140.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 4.0, right: 8.0, left: 8.0),
+                    child: AutoSizeText(
+                      agent.name,
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: themeGold,
+                        fontSize: 20.0,
+                        fontFamily: 'Signika Negative',
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.7,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
+                    child: Text(
+                      agent.title,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontFamily: 'Signika Negative',
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.7,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 0.0, right: 8.0, left: 8.0, bottom: 8.0),
+                    child: AutoSizeText(
+                      agent.available,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        fontFamily: 'Signika Negative',
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.7,
+                        color: headingColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bottomSheet(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return StreamBuilder<AgentResponse>(
+        stream: agentBloc.subject.stream,
+        builder: (context, AsyncSnapshot<AgentResponse> snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data.error != null && snapshot.data.error.length > 0) {
+              return HttpErrorWidget(snapshot.data.error, width, height);
+            }
+            return _buildAgentWidget(snapshot.data.data, width, height);
+          } else if (snapshot.hasError) {
+            return HttpErrorWidget(snapshot.error, width, height);
+          } else {
+            return LoadingWidget(width, height);
+          }
+        });
+  }
+
+  Widget _buildAgentWidget(List<Agents> data, double width, double height) {
+    return ListView(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: AutoSizeText(
+            "Select Who to Chat With",
+            maxLines: 1,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        for (Agents item in data) getAgentTile(item, width, height),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: AutoSizeText(
+            "This Continue in your WhatsApp App",
+            maxLines: 1,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     nestedAppBar() {
@@ -27,29 +182,29 @@ class _SettingsState extends State<Settings> {
               pinned: true,
               flexibleSpace: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                // print('constraints=' + constraints.toString());
-                return FlexibleSpaceBar(
-                    centerTitle: false,
-                    title: AnimatedOpacity(
-                      duration: Duration(milliseconds: 300),
-                      //opacity: top == 80.0 ? 1.0 : 0.0,
-                      opacity: 1.0,
-                      child: Text(
-                        'Settings',
-                        style: TextStyle(
-                          fontFamily: 'Signika Negative',
-                          fontWeight: FontWeight.w700,
-                          color: themeGold,
-                          fontSize: 25.0,
+                    // print('constraints=' + constraints.toString());
+                    return FlexibleSpaceBar(
+                        centerTitle: false,
+                        title: AnimatedOpacity(
+                          duration: Duration(milliseconds: 300),
+                          //opacity: top == 80.0 ? 1.0 : 0.0,
+                          opacity: 1.0,
+                          child: Text(
+                            'Settings',
+                            style: TextStyle(
+                              fontFamily: 'Signika Negative',
+                              fontWeight: FontWeight.w700,
+                              color: themeGold,
+                              fontSize: 25.0,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    background: Container(
-                      padding: EdgeInsets.all(20.0),
-                      alignment: Alignment.bottomLeft,
-                      decoration: BoxDecoration(color: themeBlue),
-                    ));
-              }),
+                        background: Container(
+                          padding: EdgeInsets.all(20.0),
+                          alignment: Alignment.bottomLeft,
+                          decoration: BoxDecoration(color: themeBlue),
+                        ));
+                  }),
               automaticallyImplyLeading: false,
             ),
           ];
@@ -170,33 +325,7 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SelectPlan()));
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Select Plan',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w700,
-                              color: themeBlue,
-                              fontFamily: 'Signika Negative'),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 18.0,
-                        ),
-                      ],
-                    ),
-                  ),
+                  Divider(),
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
@@ -208,7 +337,7 @@ class _SettingsState extends State<Settings> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          'Notes',
+                          'My Notes',
                           style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w700,
@@ -222,14 +351,16 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NoNavWebView(
-                                  'https://mytritek.co.uk/about-us')));
+                      _launchURL('https://mytritek.co.uk/about-us');
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => WebviewInApp(
+                      //             'https://mytritek.co.uk/about-us')));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -250,14 +381,16 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NoNavWebView(
-                                  'https://mytritek.co.uk/terms-and-conditions/')));
+                      _launchURL('https://mytritek.co.uk/terms-and-conditions');
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => WebviewInApp(
+                      //             'https://mytritek.co.uk/terms-and-conditions')));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,10 +415,11 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WebviewInApp('')));
+                      _launchURL('https://mytritek.co.uk/terms-and-conditions');
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => WebviewInApp('https://mytritek.co.uk/terms-and-conditions')));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -307,6 +441,29 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   Divider(),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context, builder: _bottomSheet);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Chat With Us',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Text('WhatsApp', style: TextStyle(fontSize: 12),),
+                      ],
+                    ),
+                  ),
+                  Divider(),
                 ],
               ),
             ),
@@ -318,5 +475,13 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       body: nestedAppBar(),
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

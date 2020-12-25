@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share/share.dart';
+import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/data/entity/note.dart';
 import 'package:tritek_lms/data/repository/notes.repository.dart';
 import 'package:tritek_lms/pages/notes/views/MoreOptionsSheet.dart';
@@ -65,11 +67,11 @@ class _NotePageState extends State<NotePage> {
         appBar: AppBar(
           brightness: Brightness.light,
           leading: BackButton(
-            color: Colors.black,
+            color: themeGold,
           ),
           actions: _archiveAction(context),
           elevation: 1,
-          backgroundColor: noteColor,
+          backgroundColor: themeBlue,
           title: _pageTitle(),
         ),
         body: _body(context),
@@ -86,9 +88,21 @@ class _NotePageState extends State<NotePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-
+              AutoSizeText(
+                _editableNote.course +
+                    ': ' +
+                    _editableNote.lesson +
+                    ' @' +
+                    _editableNote.time,
+                maxLines: 2,
+                style: TextStyle(
+                  fontFamily: 'Signika Negative',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16.0,
+                  color: themeBlue,
+                ),
+              ),
               Divider(),
-
               Flexible(
                   child: Container(
                       padding: EdgeInsets.all(5),
@@ -114,7 +128,15 @@ class _NotePageState extends State<NotePage> {
 
   //returns a new text with "New Note" or "Edit Note" based on the value of _editableNote.id
   Widget _pageTitle() {
-    return Text(_editableNote.id == -1 ? "New Note" : "Edit Note");
+    return Text(
+      _editableNote.id == null ? "New Note" : "Edit Note",
+      style: TextStyle(
+        fontFamily: 'Signika Negative',
+        fontWeight: FontWeight.w700,
+        fontSize: 18.0,
+        color: themeGold,
+      ),
+    );
   }
 
   List<Widget> _archiveAction(BuildContext context) {
@@ -127,7 +149,7 @@ class _NotePageState extends State<NotePage> {
             onTap: () => _undo(),
             child: Icon(
               Icons.undo,
-              color: Colors.black,
+              color: themeGold,
             ),
           ),
         ),
@@ -141,7 +163,7 @@ class _NotePageState extends State<NotePage> {
             onTap: () => _archivePopup(context),
             child: Icon(
               Icons.archive,
-              color: Colors.black,
+              color: themeGold,
             ),
           ),
         ),
@@ -151,22 +173,22 @@ class _NotePageState extends State<NotePage> {
         child: InkWell(
           child: GestureDetector(
             onTap: () => bottomSheet(context),
-            child: Icon(Icons.more_vert, color: Colors.black),
+            child: Icon(Icons.more_vert, color: themeGold),
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => {_saveAndStartNewNote(context)},
-            child: Icon(
-              Icons.add,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      )
+      // Padding(
+      //   padding: EdgeInsets.symmetric(horizontal: 12),
+      //   child: InkWell(
+      //     child: GestureDetector(
+      //       onTap: () => {_saveAndStartNewNote(context)},
+      //       child: Icon(
+      //         Icons.add,
+      //         color: themeGold,
+      //       ),
+      //     ),
+      //   ),
+      // )
     ];
     return actions;
   }
@@ -202,7 +224,6 @@ class _NotePageState extends State<NotePage> {
         if (_editableNote.noteColor == null) {
           _editableNote.noteColor = Colors.white;
         }
-        print(_editableNote);
         _repository.save(_editableNote); // for updating the existing note
       }
     }

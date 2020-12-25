@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/http/endpoints.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -36,9 +37,15 @@ class _VideoViewLesson extends State<LessonWebView> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'MyTrikek',
-            style: TextStyle(color: Colors.amber),
+          backgroundColor: themeBlue,
+          title: Text(
+            appName,
+            style: TextStyle(
+              fontFamily: 'Signika Negative',
+              fontWeight: FontWeight.w700,
+              fontSize: 25.0,
+              color: themeGold,
+            ),
           ),
         ),
         body: Stack(children: [

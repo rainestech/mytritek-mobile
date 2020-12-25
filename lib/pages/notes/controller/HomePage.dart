@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/data/entity/note.dart';
 
-import 'NotePage.dart';
 import 'StagerredView.dart';
 
 enum viewType { List, Staggered }
@@ -59,31 +57,6 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  //Contains a FlatButton widget that is responsible for calling the _newNoteTapped function to take us to
-  //a new page to create a new note
-  Widget _bottomBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FlatButton(
-          child: Text(
-            "New Note\n",
-            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-          ),
-          onPressed: () => _newNoteTapped(context),
-        )
-      ],
-    );
-  }
-
-/* responsible for creating a new route using the Navigator.push class*/
-  void _newNoteTapped(BuildContext ctx) {
-    // "-1" id indicates the note is not new
-    var emptyNote = new Notes();
-    Navigator.push(
-        ctx, MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));
-  }
-
   //sets the viewType to either grid or list based on the noteViewType value
   void _toggleViewType() {
     setState(() {
@@ -100,14 +73,14 @@ class _HomePageState extends State<HomePage> {
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: InkWell(
-          child: GestureDetector(
-            onTap: () => _toggleViewType(),
-            child: Icon(
-              notesViewType == viewType.List
-                  ? Icons.developer_board
-                  : Icons.view_headline,
-              color: themeGold,
-            ),
+            onTap: () {
+            _toggleViewType();
+          },
+          child: Icon(
+            notesViewType == viewType.List
+                ? Icons.developer_board
+                : Icons.view_headline,
+            color: themeGold,
           ),
         ),
       ),

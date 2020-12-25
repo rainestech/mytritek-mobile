@@ -359,14 +359,17 @@ class _AppSettingsState extends State<AppSettings> {
       context: context,
     );
 
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
     selectedTime.then((value) =>
     {
-      settingsBloc.setNotificationTime(
-          value.hour.toString() + ':' + value.minute.toString()),
-      notificationsBloc.scheduleDailyTenAMNotification(
-          'Time to continue your lessons!',
-          'Continue your lessons on MyTritek App', value.hour, value.minute),
-      print(value.toString())
-    });
+          settingsBloc.setNotificationTime(
+              twoDigits(value.hour) + ':' + twoDigits(value.minute)),
+          notificationsBloc.scheduleDailyTenAMNotification(
+              'Time to continue your lessons!',
+              'Continue your lessons on MyTritek App',
+              value.hour,
+              value.minute),
+          print(value.toString())
+        });
   }
 }

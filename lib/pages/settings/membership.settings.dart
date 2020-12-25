@@ -135,7 +135,7 @@ class _MembershipSettingsState extends State<MembershipSettings> {
                         elevation: 3.0,
                         borderRadius: BorderRadius.circular(10.0),
                         child: Container(
-                          height: 100.0,
+                          height: 110.0,
                           padding: EdgeInsets.all(20.0),
                           width: MediaQuery.of(context).size.width - 40.0,
                           alignment: Alignment.center,

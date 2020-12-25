@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -41,10 +43,13 @@ class _VideoViewLesson extends State<InAppLessonView> {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: themeBlue,
-          title: const Text(
-            'MyTrikek',
+          title: Text(
+            appName,
             style: TextStyle(
-              color: Colors.amber,
+              fontFamily: 'Signika Negative',
+              fontWeight: FontWeight.w700,
+              fontSize: 25.0,
+              color: themeGold,
             ),
           ),
         ),
@@ -52,8 +57,7 @@ class _VideoViewLesson extends State<InAppLessonView> {
           initialUrl: '$playEndpoint$_lesson?token=$_token',
           initialOptions: InAppWebViewGroupOptions(
               crossPlatform: InAppWebViewOptions(
-                  // debuggingEnabled: true,
-                  )),
+                  debuggingEnabled: false, useShouldOverrideUrlLoading: true)),
           onWebViewCreated: (InAppWebViewController controller) {
             _webViewController = controller;
 
@@ -78,17 +82,16 @@ class _VideoViewLesson extends State<InAppLessonView> {
             _webViewController.addJavaScriptHandler(
                 handlerName: 'playTime',
                 callback: (args) {
-                  print('playTime: $args');
                   String arg = args[0].toString();
-                  print('Args: $arg');
+                  Map<String, dynamic> data = jsonDecode(arg);
                   Notes note = Notes();
-                  note.lessonId = int.parse(args[0]['lessonId']);
-                  note.lesson = args[0]['lesson'];
-                  note.sectionId = int.parse(args[0]['sectionId']);
-                  note.section = args[0]['section'];
-                  note.courseId = int.parse(args[0]['courseId']);
-                  note.course = args[0]['course'];
-                  note.time = _getTime(args[0]['playTime']);
+                  note.lessonId = int.parse(data['lessonId']);
+                  note.lesson = data['lesson'];
+                  note.sectionId = int.parse(data['sectionId']);
+                  note.section = data['section'];
+                  note.courseId = int.parse(data['courseId']);
+                  note.course = data['course'];
+                  note.time = _getTime(data['time'].toString());
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => NotePage(note)));
                 });
@@ -98,15 +101,18 @@ class _VideoViewLesson extends State<InAppLessonView> {
             // it will print: {message: {"bar":"bar_value","baz":"baz_value"}, messageLevel: 1}
           },
           onLoadStart: (InAppWebViewController controller, String _url) {
+            debugPrint('Loading url: $url');
             setState(() {
               url = _url;
             });
           },
           onLoadStop: (InAppWebViewController controller, String _url) async {
-            List<Cookie> cookies = await _cookieManager.getCookies(url: url);
-            cookies.forEach((cookie) {
-              print(cookie.name + " " + cookie.value);
-            });
+            // List<Cookie> cookies = await _cookieManager.getCookies(url: url);
+            // cookies.forEach((cookie) {
+            //   print(cookie.name + " " + cookie.value);
+            // });
+            debugPrint('Loaded url: $url');
+
             setState(() {
               url = _url;
               isLoading = false;
@@ -123,14 +129,26 @@ class _VideoViewLesson extends State<InAppLessonView> {
               });
             }
           },
+          shouldOverrideUrlLoading: (controller,
+              shouldOverrideUrlLoadingRequest) async {
+            print("URL: ${shouldOverrideUrlLoadingRequest.url}");
+            return ShouldOverrideUrlLoadingAction.ALLOW;
+          },
         ),
       ),
     );
   }
 
-  String _getTime(arg) {
-    var time = int.parse(arg);
-    var d = Duration(seconds: time);
-    return d.toString();
+  String _getTime(String arg) {
+    int time = int.parse(arg);
+    Duration d = Duration(seconds: time);
+    return _printDuration(d);
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

@@ -42,16 +42,49 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey _stagKey = GlobalKey();
+    noteBloc.getNotes();
+    final _key = GlobalKey();
+    // return Container(
+    //     child: Padding(
+    //     padding: _paddingForView(context),
+    //     child:
+    //       StreamBuilder<List<Notes>>(
+    //       stream: noteBloc.subject.stream,
+    //         builder: (context, AsyncSnapshot<List<Notes>> snapshot) {
+    //           return new StaggeredGridView.count(
+    //             physics: new BouncingScrollPhysics(),
+    //               crossAxisSpacing: 6,
+    //               mainAxisSpacing: 6,
+    //             crossAxisCount: _colForStaggeredView(context),
+    //             children: snapshot.hasData ? getList(snapshot.data) : getList([]),
+    //             staggeredTiles: _tilesForView()
+    //           );
+    //         }
+    //       ),
+    //     )
+    // );
+    if (widget.notesViewType == viewType.List)
+      return Container(
+          child: Padding(
+        padding: _paddingForView(context),
+        child: StaggeredGridView.count(
+          key: _key,
+          crossAxisSpacing: 6,
+          mainAxisSpacing: 6,
+          crossAxisCount: _colForStaggeredView(context),
+          children:
+              // _allNotesInQueryResult.map((i) { return _tileGenerator(i)}),;
+              List.generate(_allNotesInQueryResult.length, (i) {
+            return _tileGenerator(i);
+          }),
+          staggeredTiles: _tilesForView(),
+        ),
+      ));
 
-    if (CentralStation.updateNeeded) {
-      noteBloc.getNotes();
-    }
     return Container(
         child: Padding(
       padding: _paddingForView(context),
-      child: new StaggeredGridView.count(
-        key: _stagKey,
+      child: StaggeredGridView.count(
         crossAxisSpacing: 6,
         mainAxisSpacing: 6,
         crossAxisCount: _colForStaggeredView(context),
@@ -94,5 +127,17 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 //gets the values of the notes for each of the fields in the grid
   MyStaggeredTile _tileGenerator(int n) {
     return MyStaggeredTile(_allNotesInQueryResult.elementAt(n));
+  }
+
+  List<MyStaggeredTile> getList(List<Notes> notes) {
+    List<MyStaggeredTile> res = [];
+    for (Notes n in notes)
+      res.add(_generateTile(n));
+
+    return res;
+  }
+
+  MyStaggeredTile _generateTile(Notes n) {
+    return MyStaggeredTile(n);
   }
 }

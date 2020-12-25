@@ -33,12 +33,10 @@ class _MyCourseState extends State<MyCourse> {
   void initState() {
     super.initState();
     if (_user != null && _user.id == null) {
-      debugPrint('Getting User...');
       userBloc.userSubject.listen((value) {
         if (!mounted) {
           return;
         }
-        debugPrint('Getting User... ${value.results == null}');
 
         setState(() {
           _user = value.results;
@@ -153,7 +151,7 @@ class _MyCourseState extends State<MyCourse> {
                           Text(
                             _weeks,
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               fontFamily: 'Signika Negative',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.7,
@@ -163,7 +161,7 @@ class _MyCourseState extends State<MyCourse> {
                           Text(
                             ' / ' + course.duration,
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               fontFamily: 'Signika Negative',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.7,
@@ -174,7 +172,7 @@ class _MyCourseState extends State<MyCourse> {
                           Text(
                             getPercentComplete(course) + '% ',
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               fontFamily: 'Signika Negative',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.7,
@@ -184,7 +182,7 @@ class _MyCourseState extends State<MyCourse> {
                           Text(
                             'Completed',
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: 12.0,
                               fontFamily: 'Signika Negative',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.7,
@@ -518,9 +516,9 @@ class _MyCourseState extends State<MyCourse> {
                 return _noLoginWidget(width, height);
               } else if (_user != null && _user.id == null) {
                 return LoadingWidget(width, height);
+              } else {
+                return LoadingWidget(width, height);
               }
-
-              return _noCourseWidget(width, height);
             },
           ));
     }

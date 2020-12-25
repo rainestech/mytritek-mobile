@@ -17,10 +17,9 @@ class UserRepository {
 
   Future<UserResponse> login(String username, String password) async {
     UserResponse response = await _apiProvider.loginUser(username, password);
-    final storage = new FlutterSecureStorage();
 
     if (response.results != null) {
-      await storage.write(key: 'token', value: response.results.password);
+      await HttpClient.setToken(response.results.password);
       await saveUser(response.results);
       getUserLevel(response.results.id);
 
@@ -66,6 +65,7 @@ class UserRepository {
     UserResponse response = await _apiProvider.verify(otp, email);
 
     if (response.results != null) {
+      await HttpClient.setToken(response.results.password);
       await saveUser(response.results);
 
       if (response.results.image != null && response.results.image.length > 0) {

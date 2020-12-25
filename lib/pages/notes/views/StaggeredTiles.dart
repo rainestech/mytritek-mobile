@@ -14,11 +14,8 @@ class MyStaggeredTile extends StatefulWidget {
 
 class _MyStaggeredTileState extends State<MyStaggeredTile> {
   String _content;
-
   double _fontSize;
-
   Color tileColor;
-
   String title;
 
   @override
@@ -27,10 +24,13 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     _fontSize = _determineFontSizeForContent();
     tileColor = widget.note.noteColor;
     title =
-        '${widget.note.course} ${widget.note.section} ${widget.note.lesson} @ ${widget.note.time}';
+        '${widget.note.course}: ${widget.note.lesson} @ ${widget.note.time}';
 
-    return GestureDetector(
-      onTap: () => _noteTapped(context),
+    return InkWell(
+      onTap: () {
+        print('tapped note');
+        _noteTapped(context);
+      },
       child: Container(
         decoration: BoxDecoration(
             border: tileColor == Colors.white
@@ -45,6 +45,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   }
 
   void _noteTapped(BuildContext ctx) {
+    print('Note Tapped');
     CentralStation.updateNeeded = false;
     Navigator.push(
         ctx, MaterialPageRoute(builder: (ctx) => NotePage(widget.note)));
@@ -59,11 +60,11 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
           title,
           style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold),
           maxLines:
-              ('${widget.note.course} ${widget.note.section} ${widget.note.lesson} @ ${widget.note.time}')
-                          .length ==
-                      0
-                  ? 1
-                  : 3,
+          ('${widget.note.course}: ${widget.note.lesson} @ ${widget.note.time}')
+              .length ==
+              0
+              ? 1
+              : 4,
           textScaleFactor: 1.5,
         ),
       );

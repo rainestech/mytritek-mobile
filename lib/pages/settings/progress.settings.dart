@@ -104,7 +104,7 @@ class _ProgressState extends State<Progress> {
               maxLines: 2,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontWeight: FontWeight.bold,
                 color: themeBlue,
               ),
