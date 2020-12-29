@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
@@ -13,7 +12,8 @@ class AppSettings extends StatefulWidget {
 }
 
 class _AppSettingsState extends State<AppSettings> {
-  bool cellularData = false;
+  // bool cellularData;
+  bool cellularData = true;
   bool notifications = false;
   String notificationTime = '..:..';
   bool standard = true;
@@ -161,7 +161,16 @@ class _AppSettingsState extends State<AppSettings> {
                           fontFamily: 'Signika Negative',
                         ),
                       ),
-                      CustomSwitch(
+                      // if (cellularData)
+                      //   CustomSwitch(
+                      //     activeColor: textColor,
+                      //     value: false,
+                      //     onChanged: (value) {
+                      //       settingsBloc.setCellularData(value);
+                      //     },
+                      //   ),
+                      // if (!cellularData)
+                      Switch(
                         activeColor: textColor,
                         value: cellularData,
                         onChanged: (value) {
@@ -282,7 +291,7 @@ class _AppSettingsState extends State<AppSettings> {
                           fontFamily: 'Signika Negative',
                         ),
                       ),
-                      CustomSwitch(
+                      Switch(
                         activeColor: textColor,
                         value: notifications,
                         onChanged: (value) {
