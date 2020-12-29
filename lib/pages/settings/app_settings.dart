@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/notificationsBloc.dart';
 import 'package:tritek_lms/blocs/settings.bloc.dart';
@@ -285,10 +288,7 @@ class _AppSettingsState extends State<AppSettings> {
                         onChanged: (value) {
                           settingsBloc.setNotifications(value);
                           if (value) {
-                            debugPrint(value.toString());
-                            notificationsBloc.displayNotification(
-                                'MyTritek Notifications',
-                                'Notifications turned On', '');
+                            turnOnNotifications();
                           } else {
                             notificationsBloc.cancelAllNotifications();
                           }
@@ -331,10 +331,6 @@ class _AppSettingsState extends State<AppSettings> {
                             ),
                           ],
                         ),
-                        Icon(
-                          (high) ? Icons.check : null,
-                          size: 25.0,
-                        ),
                       ],
                     ),
                   ),
@@ -371,5 +367,28 @@ class _AppSettingsState extends State<AppSettings> {
               value.minute),
           print(value.toString())
         });
+  }
+
+  void turnOnNotifications() async {
+    if (Platform.isIOS) {
+      final bool result = await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+
+      if (result) {
+        notificationsBloc.displayNotification(
+            'MyTritek Notifications', 'Notifications turned On', '');
+        settingsBloc.setNotifications(true);
+      }
+    } else {
+      notificationsBloc.displayNotification(
+          'MyTritek Notifications', 'Notifications turned On', '');
+      settingsBloc.setNotifications(true);
+    }
   }
 }
