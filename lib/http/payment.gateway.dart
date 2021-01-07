@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tritek_lms/data/entity/subscription.plans.dart';
 import 'package:tritek_lms/http/endpoints.dart';
 import 'package:tritek_lms/http/http.client.dart';
@@ -37,6 +38,19 @@ class StripeSecretApiProvider {
         return StripeSecret.withError(error['message'], error['error']);
       }
       return StripeSecret.withError(e.message, "Network Error");
+    }
+  }
+
+  Future<bool> savePayment(
+      String email, String paymentResp, SubscriptionPlans plan) async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      Response response = await _dio.put(paymentLogEndpoint,
+          data: {'email': email, 'paymentResp': paymentResp, 'plan': plan});
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
   }
 }

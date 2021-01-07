@@ -1,5 +1,5 @@
-// String _endpoint = "http://10.0.2.2/api";
-String _endpoint = "https://tritek.rainestech.com/api";
+String _endpoint = "https://api.mytritek.co.uk/v1";
+// String _endpoint = "https://tritek.rainestech.com/api";
 // String _endpoint = "http://192.168.0.100/api";
 
 /*
@@ -80,3 +80,4 @@ String subsEndpoint = "$_endpoint/subs/";
 String agentsEndpoint = "$_endpoint/agents/";
 
 String secretEndpoint = "$_endpoint/stripe/secret";
+String paymentLogEndpoint = "$_endpoint/payment/success";

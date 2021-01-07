@@ -261,6 +261,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: OTPScreen(_response.otp, _email, 2)));
       }
     } catch (error) {
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      ServerValidationDialog.errorDialog(
+          context, 'An Error Occurred, Please try again', ''); //invoking log
       print(error);
     }
   }

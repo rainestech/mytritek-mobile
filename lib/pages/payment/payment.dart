@@ -28,7 +28,7 @@ class _StripePaymentState extends State<StripePayment> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   final Stripe stripe = Stripe(
-    "pk_test_51HsR3wGaJnbtdG28cW9E5DCOpj1eh6R5CGb550AY6BkDjAzomSdffYaaQqzsVtrvWhHJhJZtEkk3reLlzXECypOl00HvkfCg7U",
+    "pk_live_DcCw5bq0Njn1uwNSuvv3RlOW",
     //Your Publishable Key
     returnUrlForSca: "stripesdk://3ds.stripesdk.io", //Return URL for SCA
   );
@@ -123,6 +123,7 @@ class _StripePaymentState extends State<StripePayment> {
     }
 
     if (paymentIntentRes['status'] == 'succeeded') {
+      await logPayment(paymentIntentRes);
       showAlertDialog(
           context,
           "Subscription Success",
@@ -199,5 +200,10 @@ class _StripePaymentState extends State<StripePayment> {
         );
       },
     );
+  }
+
+  logPayment(Map<String, dynamic> paymentIntentRes) async {
+    _provider.savePayment(
+        widget._user.email, paymentIntentRes.toString(), widget._plan);
   }
 }
