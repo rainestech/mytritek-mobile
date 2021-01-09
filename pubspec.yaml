@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: ^1.6.24
+  path_provider: ^1.6.27
   cupertino_icons: any
   carousel_slider: ^2.3.1
   dio: ^3.0.10
@@ -40,13 +40,13 @@ dependencies:
   floor: ^0.18.0
   connectivity: ^2.0.2
   data_connection_checker: ^0.3.4
-  google_sign_in: ^4.5.6
+  google_sign_in: ^4.5.9
   flutter_cache_manager: any
   share: ^0.6.5+4
   jiffy: ^3.0.1
   flutter_local_notifications: ^3.0.2
   flutter_native_timezone: ^1.0.4
-  stripe_sdk: ^4.0.1
+  stripe_sdk: ^4.0.2
   flutter_staggered_grid_view: ^0.3.3
   intl: ^0.16.1
   flutter_inappwebview: ^4.0.0+4
@@ -56,14 +56,14 @@ dependencies:
   auto_size_text: ^2.1.0
   flutter_html: any
   email_validator: ^1.0.6
-  image_picker: ^0.6.7+17
+  image_picker: ^0.6.7+20
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.8.1
   floor_generator: ^0.18.0
-  build_runner: ^1.10.11
+  build_runner: ^1.10.12
 
 flutter_icons:
   android: "launcher_icon"

@@ -56,7 +56,6 @@ class PingResponse {
       final Dio _dio = await HttpClient.http();
       Response response = await _dio.get(pingEndpoint);
       Ping resp = Ping.fromJson(response.data);
-      debugPrint('Ping: ${resp.uuid}');
       await _secureStorage.write(key: 'ping', value: resp.uuid);
       await _prefs.setString('ping', 'ping');
 
