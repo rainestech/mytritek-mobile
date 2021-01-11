@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
       },
@@ -941,17 +941,16 @@ class _$LevelLogsDao extends LevelLogsDao {
         _levelLogsInsertionAdapter = InsertionAdapter(
             database,
             'levelLogs',
-                (LevelLogs item) =>
-            <String, dynamic>{
-              'userEarningId': item.userEarningId,
-              'title': item.title,
-              'userId': item.userId,
-              'postId': item.postId,
-              'postType': item.postType,
-              'points': item.points,
-              'pointsType': item.pointsType,
-              'date': item.date
-            });
+            (LevelLogs item) => <String, dynamic>{
+                  'userEarningId': item.userEarningId,
+                  'title': item.title,
+                  'userId': item.userId,
+                  'postId': item.postId,
+                  'postType': item.postType,
+                  'points': item.points,
+                  'pointsType': item.pointsType,
+                  'date': item.date
+                });
 
   final sqflite.DatabaseExecutor database;
 

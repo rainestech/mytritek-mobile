@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/agents.bloc.dart';
 import 'package:tritek_lms/data/entity/ccagents.dart';
@@ -19,6 +23,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  final InAppReview inAppReview = InAppReview.instance;
+
   @override
   initState() {
     super.initState();
@@ -386,11 +392,6 @@ class _SettingsState extends State<Settings> {
                   InkWell(
                     onTap: () {
                       _launchURL('https://mytritek.co.uk/terms-and-conditions');
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => WebviewInApp(
-                      //             'https://mytritek.co.uk/terms-and-conditions')));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -459,7 +460,45 @@ class _SettingsState extends State<Settings> {
                               color: themeBlue,
                               fontFamily: 'Signika Negative'),
                         ),
-                        Text('WhatsApp', style: TextStyle(fontSize: 12),),
+                        Text(
+                          'WhatsApp',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  SizedBox(height: 20.0),
+                  InkWell(
+                    onTap: () async {
+                      if (await inAppReview.isAvailable()) {
+                        inAppReview.requestReview();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'Can not review App at this time',
+                          backgroundColor: Colors.black,
+                          textColor: Theme.of(context).appBarTheme.color,
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Review App',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w700,
+                              color: themeBlue,
+                              fontFamily: 'Signika Negative'),
+                        ),
+                        Text(
+                          Platform.isAndroid
+                              ? 'Rate on PlayStore'
+                              : 'Rate on AppStore',
+                          style: TextStyle(fontSize: 12),
+                        ),
                       ],
                     ),
                   ),

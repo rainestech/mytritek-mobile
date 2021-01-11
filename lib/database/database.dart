@@ -11,7 +11,7 @@ import 'dao.dart';
 part 'database.g.dart'; // the generated code will be there
 
 @TypeConverters([DateTimeConverter, ColorConverter])
-@Database(version: 1, entities: [
+@Database(version: 2, entities: [
   Course,
   Sections,
   Lessons,

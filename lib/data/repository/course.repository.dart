@@ -172,6 +172,14 @@ class CourseRepository {
     return search;
   }
 
+  Future<List<String>> lessonsStringList() async {
+    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final searchDao = database.lessonsDao;
+
+    final List<Lessons> search = await searchDao.findAll();
+    return search.map((e) => e.postTitle).toList().toSet().toList();
+  }
+
   Future<CourseResponse> getDbMyCourse(int userId, int courseId) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final courseDao = database.courseDao;

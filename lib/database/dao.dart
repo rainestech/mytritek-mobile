@@ -50,6 +50,9 @@ abstract class LessonsDao {
   @Query('SELECT * FROM lessons')
   Future<List<Lessons>> findAll();
 
+  // @Query('SELECT DISTINCT postTitle FROM lessons')
+  // Future<List<String>> lessonsStringList();
+
   @Query('SELECT * FROM lessons WHERE sectionId = :sectionId')
   Future<List<Lessons>> findBySectionId(int sectionId);
 

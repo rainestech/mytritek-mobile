@@ -30,7 +30,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  // Initially password is obscure
   bool _obscureText = true;
   DateTime currentBackPressTime;
 
@@ -418,7 +417,6 @@ class _LoginState extends State<Login> {
       return Future.value(false);
     }
     exit(0);
-    return Future.value(true);
   }
 
   Future<void> login(BuildContext context) async {

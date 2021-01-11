@@ -291,9 +291,7 @@ class _CoursePageState extends State<CoursePage> {
                                       ),
                                     ],
                                   ),
-                                  if (_user == null ||
-                                      (_user != null &&
-                                          _user.status != 'active'))
+                                  if (_user != null && _user.status != 'active')
                                     InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -313,6 +311,36 @@ class _CoursePageState extends State<CoursePage> {
                                         ),
                                         child: Text(
                                           'Buy Membership',
+                                          style: TextStyle(
+                                            fontFamily: 'Signika Negative',
+                                            fontSize: 20.0,
+                                            color: themeGold,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  if (_user != null &&
+                                      _user.status == 'active')
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType
+                                                    .rightToLeft,
+                                                child: SelectPlan(
+                                                  course: _course,
+                                                )));
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color: Colors.transparent,
+                                        ),
+                                        child: Text(
+                                          'Add Review',
                                           style: TextStyle(
                                             fontFamily: 'Signika Negative',
                                             fontSize: 20.0,

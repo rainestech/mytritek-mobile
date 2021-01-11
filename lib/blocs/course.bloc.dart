@@ -9,16 +9,19 @@ import 'package:tritek_lms/http/user.dart';
 class CourseBloc {
   final CourseRepository _repository = CourseRepository();
   final BehaviorSubject<CoursesResponse> _coursesSubject =
-  BehaviorSubject<CoursesResponse>();
+      BehaviorSubject<CoursesResponse>();
+
+  final BehaviorSubject<List<String>> _lessonStringList =
+      BehaviorSubject<List<String>>();
 
   final BehaviorSubject<CoursesResponse> _myCoursesSubject =
-  BehaviorSubject<CoursesResponse>();
+      BehaviorSubject<CoursesResponse>();
 
   final BehaviorSubject<CourseResponse> _courseSubject =
-  BehaviorSubject<CourseResponse>();
+      BehaviorSubject<CourseResponse>();
 
   final BehaviorSubject<CoursesResponse> _wishList =
-  BehaviorSubject<CoursesResponse>();
+      BehaviorSubject<CoursesResponse>();
 
   final UserRepository _userRepository = UserRepository();
 
@@ -29,6 +32,8 @@ class CourseBloc {
   BehaviorSubject<List<LessonSearch>>();
 
   BehaviorSubject<UserResponse> get userSubject => _userSubject;
+
+  BehaviorSubject<List<String>> get lessonStringList => _lessonStringList;
 
   void getUser() async {
     UserResponse resp = await _userRepository.getDbUser();
@@ -66,6 +71,13 @@ class CourseBloc {
     _search.sink.add(response);
   }
 
+  getLessonStringList() async {
+    List<String> response = await _repository.lessonsStringList();
+    if (!_lessonStringList.isClosed) {
+      _lessonStringList.sink.add(response);
+    }
+  }
+
   dispose() {
     _coursesSubject.close();
     _courseSubject.close();
@@ -73,6 +85,7 @@ class CourseBloc {
     _myCoursesSubject.close();
     _wishList.close();
     _search.close();
+    _lessonStringList.close();
   }
 
   BehaviorSubject<CoursesResponse> get subject => _coursesSubject;

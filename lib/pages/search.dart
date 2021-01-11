@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
@@ -16,11 +17,26 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final searchController = TextEditingController();
+  List<String> lessons = [];
+
+  String selectedValue = '';
 
   @override
   void initState() {
     super.initState();
     bloc.getCourses();
+
+    bloc.lessonStringList.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        lessons = value;
+      });
+    });
+
+    bloc.getLessonStringList();
   }
 
   @override
@@ -117,32 +133,91 @@ class _SearchState extends State<Search> {
                     ),
                     child: Container(
                       // width: width - 20.0,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search lessons',
-                          contentPadding: EdgeInsets.all(13),
-                          hintStyle: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              Icons.search,
-                              color: themeGold,
-                            ),
-                            onPressed: () {
-                              _search();
-                            },
-                          ),
-                          border: InputBorder.none,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
                         ),
-                      ),
+                        child:
+                        TypeAheadField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            autofocus: true,
+                            style: DefaultTextStyle
+                                .of(context)
+                                .style
+                                .copyWith(
+                                fontStyle: FontStyle.italic
+                            ),
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search lessons',
+                              contentPadding: EdgeInsets.all(13),
+                              hintStyle: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  Icons.search,
+                                  color: themeGold,
+                                ),
+                                onPressed: () {
+                                  _search();
+                                },
+                              ),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                          suggestionsCallback: (pattern) async {
+                            if (pattern.isEmpty) {
+                              return [];
+                            }
+
+                            if (pattern == selectedValue) {
+                              return [];
+                            }
+
+                            return lessons.where((e) =>
+                                e.toLowerCase().contains(pattern.toLowerCase()))
+                                .toList();
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          onSuggestionSelected: (suggestion) {
+                            setState(() {
+                              searchController.text = suggestion;
+                              selectedValue = suggestion;
+                            });
+                          },
+                          hideOnEmpty: true,
+                          hideOnError: true,
+                          hideOnLoading: true,
+                        )
+                      // TextField(
+                      //   controller: searchController,
+                      //   decoration: InputDecoration(
+                      //     hintText: 'Search lessons',
+                      //     contentPadding: EdgeInsets.all(13),
+                      //     hintStyle: TextStyle(
+                      //       fontSize: 12.0,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     suffixIcon: IconButton(
+                      //       icon: Icon(
+                      //         // Based on passwordVisible state choose the icon
+                      //         Icons.search,
+                      //         color: themeGold,
+                      //       ),
+                      //       onPressed: () {
+                      //         _search();
+                      //       },
+                      //     ),
+                      //     border: InputBorder.none,
+                      //   ),
+                      // ),
                     ),
                   ),
                 ),
