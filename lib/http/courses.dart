@@ -20,7 +20,7 @@ class CoursesResponse {
         length = len;
 
   CoursesResponse.withError(String error, String title)
-      : results = List(),
+      : results = [],
         error = error,
         eTitle = title,
         length = 0;

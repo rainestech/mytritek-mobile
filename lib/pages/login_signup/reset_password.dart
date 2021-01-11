@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
@@ -7,20 +8,20 @@ import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/repository/user.repository.dart';
 import 'package:tritek_lms/http/user.dart';
 import 'package:tritek_lms/pages/common/dialog.dart';
-import 'package:tritek_lms/pages/home/home.dart';
+import 'package:tritek_lms/pages/login_signup/login.dart';
 
-class OTPScreen extends StatefulWidget {
+class ResetPasswordScreen extends StatefulWidget {
   final data;
   final email;
   final mode;
 
-  OTPScreen(this.data, this.email, this.mode);
+  ResetPasswordScreen(this.data, this.email, this.mode);
 
   @override
-  _OTPScreenState createState() => _OTPScreenState();
+  _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
 }
 
-class _OTPScreenState extends State<OTPScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   var firstController = TextEditingController();
   var secondController = TextEditingController();
   var thirdController = TextEditingController();
@@ -30,6 +31,11 @@ class _OTPScreenState extends State<OTPScreen> {
   FocusNode fourthFocusNode = FocusNode();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   final UserRepository _repository = UserRepository();
+
+  FocusNode _passwordFocusNode = FocusNode();
+  bool _obscureText = true;
+  bool _otpCorrect = false;
+  String _password;
 
   Timer _timer;
   int _start = 60;
@@ -56,12 +62,6 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
     _start = 60;
@@ -69,10 +69,15 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    int mode = widget.mode;
 
     otp() {
       return Container(
@@ -138,9 +143,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     Padding(
                       padding: EdgeInsets.only(left: 20.0),
                       child: Text(
-                        mode == 1 ?
-                        'Email Verification'
-                            : 'Password Reset Request',
+                        'Password Reset Request',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12.0,
@@ -150,10 +153,10 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                     SizedBox(height: 90.0),
                     Padding(
-                      padding: EdgeInsets.only(
-                          left: 25.0, right: 25, bottom: 20),
+                      padding:
+                          EdgeInsets.only(left: 25.0, right: 25, bottom: 20),
                       child: Text(
-                        'Enter the OTP your received on your registered Email:',
+                        'Enter the OTP you received on your registered Email:',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12.0,
@@ -164,8 +167,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     // OTP Box Start
                     Padding(
                       padding: EdgeInsets.only(left: 50.0, right: 50),
-                      child:
-                      Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
@@ -230,8 +232,8 @@ class _OTPScreenState extends State<OTPScreen> {
                                 return Validator.required(value, 0, '');
                               },
                               onChanged: (v) {
-                                FocusScope.of(context).requestFocus(
-                                    thirdFocusNode);
+                                FocusScope.of(context)
+                                    .requestFocus(thirdFocusNode);
                               },
                             ),
                           ),
@@ -342,7 +344,50 @@ class _OTPScreenState extends State<OTPScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    if (_otpCorrect) SizedBox(height: 20.0),
+                    if (_otpCorrect)
+                      Padding(
+                        padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200].withOpacity(0.3),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: TextFormField(
+                            focusNode: _passwordFocusNode,
+                            textCapitalization: TextCapitalization.none,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              return Validator.password(value);
+                            },
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            obscureText: _obscureText,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(
+                                  left: 20.0, top: 13.0, bottom: 12.0),
+                              hintText: 'Password',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                // fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.remove_red_eye),
+                                onPressed: _viewPassword,
+                              ),
+                            ),
+                            onSaved: (password) => _password = password,
+                          ),
+                        ),
+                      ),
+                    if (_otpCorrect) SizedBox(height: 20.0),
                     Padding(
                       padding: EdgeInsets.only(right: 20.0, left: 20.0),
                       child: SizedBox(
@@ -365,10 +410,16 @@ class _OTPScreenState extends State<OTPScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (_otpCorrect) {
+                                changePassword();
+                              } else {
+                                checkPin('d', context);
+                              }
+                            },
                             color: Colors.transparent,
                             child: Text(
-                              'Submit OTP',
+                              _otpCorrect ? 'Change Password' : 'Verify OTP',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16.0,
@@ -398,43 +449,118 @@ class _OTPScreenState extends State<OTPScreen> {
       if (v.length < 1) {
         return;
       }
-      String otp = firstController.value.text + secondController.value.text +
-          thirdController.value.text + fourthController.value.text;
+      String otp = firstController.value.text +
+          secondController.value.text +
+          thirdController.value.text +
+          fourthController.value.text;
       if (otp == widget.data) {
-        LoadingDialogs.showLoadingDialog(
-            context, _keyLoader, 'Processing your details'); //invoking login
-        if (widget.mode == 1) {
-          UserResponse _response = await _repository.verify(
-              otp, widget.email);
-
-          if (_response.error.length > 0) {
-            Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-                .pop(); //close the dialoge
-
-            ServerValidationDialog.errorDialog(
-                context, _response.error, ""); //invoking log
-          } else {
-            Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-                .pop(); //close the dialoge
-            Navigator.push(context, PageTransition(
-                type: PageTransitionType.rightToLeft,
-                child: Home()));
-          }
-        } else {
-          Navigator.push(context, PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: Home()));
-        }
+        setState(() {
+          _otpCorrect = true;
+        });
       } else {
         ServerValidationDialog.errorDialog(
             context, 'Please check again.', 'Invalid input'); //invoking log
       }
     } catch (error) {
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-          .pop(); //close the dialoge
-
       ServerValidationDialog.errorDialog(
           context, 'An Error Occurred. Pls try again', ""); //invoking log
+    }
+  }
+
+  void _viewPassword() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  Future<void> changePassword() async {
+    try {
+      LoadingDialogs.showLoadingDialog(
+          context, _keyLoader, 'Processing your request...'); //invoking login
+
+      RegisterResponse _response = await _repository.setNewPassword(
+          widget.email, _password, widget.data);
+
+      if (_response.error.length > 0) {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop(); //close the dialog
+
+        ServerValidationDialog.errorDialog(
+            context, _response.error, ""); //invoking log
+      } else {
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+            .pop(); //close the dialog
+
+        showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return new WillPopScope(
+                  onWillPop: () async => false,
+                  child: Dialog(
+                      backgroundColor: themeBlue,
+                      child: Container(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AutoSizeText(
+                                'Password Reset Success',
+                                style: TextStyle(
+                                  color: themeGold,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              AutoSizeText(
+                                'Your Password has been reset successfully. Click Ok to proceed to  Login',
+                                style: TextStyle(color: themeGold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          type: PageTransitionType.rightToLeft,
+                                          child: Login(null, null)));
+                                },
+                                child: Container(
+                                  width: 100,
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    color: themeGold,
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(
+                                      fontFamily: 'Signika Negative',
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      )));
+            });
+      }
+    } catch (e) {
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+
+      ServerValidationDialog.errorDialog(
+          context,
+          'An Error Occurred. Pls check your Network Connection and try again',
+          "");
     }
   }
 

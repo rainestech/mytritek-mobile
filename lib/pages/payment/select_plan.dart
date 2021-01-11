@@ -14,6 +14,7 @@ import 'package:tritek_lms/http/customer.agent.dart';
 import 'package:tritek_lms/http/subscription.plan.dart';
 import 'package:tritek_lms/pages/common/utils.dart';
 import 'package:tritek_lms/pages/payment/payment.dart';
+import 'package:tritek_lms/pages/payment/transfer.dart';
 
 class SelectPlan extends StatefulWidget {
   final Course course;
@@ -27,6 +28,7 @@ class SelectPlan extends StatefulWidget {
 class _SelectPlanState extends State<SelectPlan> {
   SubscriptionPlans selectedPlan;
   Users _user;
+  bool _paypal = false;
 
   @override
   initState() {
@@ -44,7 +46,18 @@ class _SelectPlanState extends State<SelectPlan> {
       });
     });
 
+    subBloc.paypal.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _paypal = value;
+      });
+    });
+
     userBloc.getUser();
+    subBloc.getPayPal();
   }
 
   Widget getAgentTile(Agents agent, double width, double height) {
@@ -156,12 +169,9 @@ class _SelectPlanState extends State<SelectPlan> {
                   Fluttertoast.showToast(msg: "Select first your desired plan");
                   return;
                 }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StripePayment(selectedPlan, _user),
-                  ),
-                );
+
+                showModalBottomSheet(
+                    context: context, builder: _paymentMethodModal);
               },
               icon: Icon(
                 Icons.credit_card,
@@ -173,7 +183,7 @@ class _SelectPlanState extends State<SelectPlan> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Pay With Card",
+                    "Pay For Selected Plan",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       color: themeGold,
@@ -299,6 +309,163 @@ class _SelectPlanState extends State<SelectPlan> {
             return LoadingWidget(width, height);
           }
         });
+  }
+
+  Widget _paymentMethodModal(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return SafeArea(
+      child: Container(
+        child: new Wrap(
+          spacing: 15,
+          children: [
+            SizedBox(height: 15.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: InkWell(
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StripePayment(selectedPlan, _user),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white,
+                    border: Border.all(width: 0.3, color: Colors.grey),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        blurRadius: 1.0,
+                        spreadRadius: 1.0,
+                        color: Colors.grey[300],
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/payment_icon/card.png',
+                        height: 40.0,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(width: 10.0),
+                      AutoSizeText(
+                        'Pay With Credit/Debit Card',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: InkWell(
+                onTap: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TransferPayment(selectedPlan),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white,
+                    border: Border.all(width: 0.3, color: Colors.grey),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        blurRadius: 1.0,
+                        spreadRadius: 1.0,
+                        color: Colors.grey[300],
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.monetization_on_outlined,
+                        size: 40.0,
+                        color: themeBlue,
+                      ),
+                      SizedBox(width: 10.0),
+                      AutoSizeText(
+                        'Pay With Bank Transfer',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (_paypal) SizedBox(height: 15.0),
+            if (_paypal)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0),
+                child: InkWell(
+                  onTap: () async {},
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white,
+                      border: Border.all(width: 0.3, color: Colors.grey),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          blurRadius: 1.0,
+                          spreadRadius: 1.0,
+                          color: Colors.grey[300],
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/payment_icon/paypal.png',
+                          height: 40.0,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(width: 10.0),
+                        AutoSizeText(
+                          'Pay With PayPal',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            SizedBox(height: 15.0),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget getSubItem(SubscriptionPlans plan) {

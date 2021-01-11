@@ -284,54 +284,6 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(height: 20.0),
-                    // Padding(
-                    //   padding: EdgeInsets.all(20.0),
-                    //   child: Container(
-                    //     padding: EdgeInsets.only(left: 10.0),
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.grey[200].withOpacity(0.3),
-                    //       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    //     ),
-                    //     child: InternationalPhoneNumberInput(
-                    //       textStyle: TextStyle(
-                    //         color: Colors.white,
-                    //         fontSize: 14.0,
-                    //         fontWeight: FontWeight.w500,
-                    //       ),
-                    //       // autoValidate: false,
-                    //       selectorTextStyle: TextStyle(
-                    //         color: Colors.white,
-                    //         fontSize: 14.0,
-                    //         fontWeight: FontWeight.w500,
-                    //       ),
-                    //       selectorConfig: SelectorConfig(
-                    //         selectorType: PhoneInputSelectorType.DIALOG,
-                    //       ),
-                    //       inputBorder: InputBorder.none,
-                    //       inputDecoration: InputDecoration(
-                    //         // contentPadding: EdgeInsets.only(left: 20.0),
-                    //         hintText: 'Phone Number',
-                    //         hintStyle: TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 14.0,
-                    //           fontWeight: FontWeight.w500,
-                    //         ),
-                    //         border: InputBorder.none,
-                    //       ),
-                    //       validator: (value) {
-                    //         return Validator.required(
-                    //             value, 5, 'Phone number is required');
-                    //       },
-                    //       onFieldSubmitted: (_) {
-                    //         fieldFocusChange(
-                    //             context, _phoneNoFocusNode, _usernameFocusNode);
-                    //       },
-                    //       onInputChanged: (PhoneNumber value) {
-                    //         _phoneNo = value.phoneNumber;
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
                     Padding(
                       padding: EdgeInsets.only(right: 20.0, left: 20.0),
                       child: Container(
@@ -387,8 +339,7 @@ class _SignUpState extends State<SignUp> {
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
                           validator: (value) {
-                            return Validator.required(
-                                value, 6, 'Password is required');
+                            return Validator.password(value);
                           },
                           style: TextStyle(
                             color: Colors.white,

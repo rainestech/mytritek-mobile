@@ -40,4 +40,14 @@ class SubscriptionPlanApiProvider {
       return SubscriptionPlanResponse.withError(e.message, "Network Error");
     }
   }
+
+  Future<bool> getPayPal() async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      await _dio.get(paypalConfEndpoint);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -51,7 +51,7 @@ class CourseBloc {
 
   getMyCourses(int userId) async {
     CoursesResponse response = await _repository.getMyCourses(userId);
-
+    if (_myCoursesSubject.isClosed) return;
     _myCoursesSubject.sink.add(response);
   }
 

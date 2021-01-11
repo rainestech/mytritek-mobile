@@ -4,10 +4,15 @@ class Validator {
   static password(String password) {
     Pattern pattern = r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(password))
-      return 'Invalid password. Must contain at least a number, lower and uppercase letters';
-    else
-      return null;
+
+    if (password.isEmpty) {
+      return "Password is Required";
+    } else if (password.length < 6) {
+      return "Password length must be minimum of 6 characters";
+    } else if (!regex.hasMatch(password)) {
+      return "Password at least one uppercase letter, one lowercase letter and one number";
+    }
+    return null;
   }
 
   static username(String username, String label) {

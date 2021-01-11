@@ -67,7 +67,11 @@ class _StripePaymentState extends State<StripePayment> {
                         color: themeBlue),
                   ),
                 ),
-                CardForm(formKey: formKey, card: card),
+                CardForm(
+                  formKey: formKey,
+                  card: card,
+                  postalCodeDecoration: InputDecoration(),
+                ),
                 Container(
                   child: RaisedButton(
                       color: themeBlue,

@@ -36,7 +36,7 @@ String registerEndpoint = "$_endpoint/signup";
 /*
  * Post Login request
  */
-String editUserEndpoint = "$_endpoint/edit";
+String editUserEndpoint = "$_endpoint/user";
 
 /*
  * Post Login request
@@ -77,6 +77,7 @@ String levelEndpoint = "$_endpoint/points/";
  * Get all user viewed lessons. course Id must be supplied
  */
 String subsEndpoint = "$_endpoint/subs/";
+String paypalConfEndpoint = "$_endpoint/paypal/conf/";
 String agentsEndpoint = "$_endpoint/agents/";
 
 String secretEndpoint = "$_endpoint/stripe/secret";

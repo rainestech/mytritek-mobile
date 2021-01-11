@@ -5,7 +5,7 @@ import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/repository/user.repository.dart';
 import 'package:tritek_lms/http/user.dart';
 import 'package:tritek_lms/pages/common/dialog.dart';
-import 'package:tritek_lms/pages/login_signup/otp_screen.dart';
+import 'package:tritek_lms/pages/login_signup/reset_password.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -256,9 +256,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       } else {
         Navigator.of(_keyLoader.currentContext, rootNavigator: true)
             .pop(); //close the dialoge
-        Navigator.push(context, PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: OTPScreen(_response.otp, _email, 2)));
+        Navigator.push(
+            context,
+            PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: ResetPasswordScreen(_response.otp, _email, 2)));
       }
     } catch (error) {
       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();

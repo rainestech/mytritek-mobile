@@ -6,4 +6,8 @@ class SubscriptionPlanRepository {
   Future<SubscriptionPlanResponse> getSubs() {
     return _apiProvider.getSubscriptionPlans();
   }
+
+  Future<bool> getPaypal() {
+    return _apiProvider.getPayPal();
+  }
 }

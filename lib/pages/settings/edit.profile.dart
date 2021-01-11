@@ -72,10 +72,17 @@ class _EditProfileState extends State<EditProfile> {
 
     _imgFromGallery() async {
       PickedFile image =
-      await picker.getImage(source: ImageSource.gallery, imageQuality: 50);
+          await picker.getImage(source: ImageSource.gallery, imageQuality: 50);
 
       if (image == null) return;
       saveImage(image);
+    }
+
+    _removePic() async {
+      SaveFile().deleteImage();
+      setState(() {
+        _image = null;
+      });
     }
 
     void _showPicker(context) {
@@ -101,6 +108,15 @@ class _EditProfileState extends State<EditProfile> {
                         Navigator.of(context).pop();
                       },
                     ),
+                    if (_image != null)
+                      new ListTile(
+                        leading: new Icon(Icons.no_photography_outlined),
+                        title: new Text('Remove Profile Pic'),
+                        onTap: () {
+                          _removePic();
+                          Navigator.of(context).pop();
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -367,6 +383,7 @@ class _EditProfileState extends State<EditProfile> {
     } catch (error) {
       Navigator.of(_keyLoader.currentContext, rootNavigator: true)
           .pop();
+      debugPrint(error.toString());
       ServerValidationDialog.errorDialog(
           context, 'An Error Occurred! Please try again', ''); //invoking log
       print(error);
