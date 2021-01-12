@@ -80,6 +80,16 @@ class CoursesApiProvider {
     }
   }
 
+  Future<bool> postComment(Comments comment) async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      await _dio.post(commentEndpoint, data: comment);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<CourseResponse> getMyCourse(int userId, int courseId) async {
     try {
       final Dio _dio = await HttpClient.http();

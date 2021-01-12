@@ -9,6 +9,7 @@ import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/http/payment.gateway.dart';
 import 'package:tritek_lms/pages/common/dialog.dart';
 import 'package:tritek_lms/pages/home/home.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StripePayment extends StatefulWidget {
   final Users _user;
@@ -70,7 +71,22 @@ class _StripePaymentState extends State<StripePayment> {
                 CardForm(
                   formKey: formKey,
                   card: card,
-                  postalCodeDecoration: InputDecoration(),
+                ),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: InkWell(
+                      child: Text(
+                        'By making payment, you agree to Terms and Conditions of Tritek Consulting Limited (Tap to View T&C)',
+                        style: TextStyle(fontSize: 18, color: Colors.green),
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: () async {
+                        const url =
+                            'https://mytritek.co.uk/terms-and-conditions/';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }
+                      }),
                 ),
                 Container(
                   child: RaisedButton(

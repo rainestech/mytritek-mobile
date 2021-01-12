@@ -21,6 +21,7 @@ String pingEndpoint = "$_endpoint/ping";
  * Get all User courses, user id must be supplied
  */
 String myCoursesEndpoint = "$_endpoint/my/courses/";
+String commentEndpoint = "$_endpoint/comment_post";
 
 /*
  * Post Login request

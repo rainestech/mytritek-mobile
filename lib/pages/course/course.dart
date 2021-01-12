@@ -12,6 +12,7 @@ import 'package:tritek_lms/pages/course/lessons.dart';
 import 'package:tritek_lms/pages/course/overview.dart';
 import 'package:tritek_lms/pages/login_signup/login.dart';
 import 'package:tritek_lms/pages/payment/select_plan.dart';
+import 'package:tritek_lms/pages/reviews/reviews.dart';
 
 import 'lesson.view.dart';
 
@@ -291,7 +292,8 @@ class _CoursePageState extends State<CoursePage> {
                                       ),
                                     ],
                                   ),
-                                  if (_user != null && _user.status != 'active')
+                                  if (_user != null &&
+                                      _user.status.toLowerCase() != 'active')
                                     InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -321,7 +323,7 @@ class _CoursePageState extends State<CoursePage> {
                                       ),
                                     ),
                                   if (_user != null &&
-                                      _user.status == 'active')
+                                      _user.status.toLowerCase() == 'active')
                                     InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -329,9 +331,8 @@ class _CoursePageState extends State<CoursePage> {
                                             PageTransition(
                                                 type: PageTransitionType
                                                     .rightToLeft,
-                                                child: SelectPlan(
-                                                  course: _course,
-                                                )));
+                                                child: CourseReview(
+                                                    _course, _user)));
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(5.0),
@@ -494,7 +495,7 @@ class _CoursePageState extends State<CoursePage> {
             children: [
               ListView(
                 children: <Widget>[
-                  OverviewCoursePage(_course),
+                  OverviewCoursePage(_course, _user),
                 ],
               ),
               LessonView(

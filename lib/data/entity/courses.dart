@@ -50,7 +50,7 @@ class Course {
     description = json['description'];
     userId = json['userId'];
     if (json['sections'] != null) {
-      sections = new List<Sections>();
+      sections = [];
       json['sections'].forEach((v) {
         sections.add(new Sections.fromJson(v));
       });
@@ -60,7 +60,7 @@ class Course {
         ? new Instructor.fromJson(json['instructor'])
         : null;
     if (json['comments'] != null) {
-      comments = new List<Comments>();
+      comments = [];
       json['comments'].forEach((v) {
         comments.add(new Comments.fromJson(v));
       });
@@ -123,7 +123,7 @@ class Sections {
     id = json['id'];
     courseId = json['courseId'];
     if (json['lessons'] != null) {
-      lessons = new List<Lessons>();
+      lessons = [];
       json['lessons'].forEach((v) {
         lessons.add(new Lessons.fromJson(v));
       });
@@ -277,16 +277,24 @@ class Comments {
   @primaryKey
   int id;
   String author;
+  String email;
   String comment;
   String rating;
   String image;
   int courseId;
 
-  Comments({this.id, this.author, this.comment, this.rating, this.image});
+  Comments(
+      {this.id,
+      this.author,
+      this.email,
+      this.comment,
+      this.rating,
+      this.image});
 
   Comments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     author = json['author'];
+    email = json['email'];
     comment = json['comment'];
     rating = json['rating'];
     image = json['image'];
@@ -297,6 +305,7 @@ class Comments {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['author'] = this.author;
+    data['emil'] = this.email;
     data['comment'] = this.comment;
     data['rating'] = this.rating;
     data['image'] = this.image;
@@ -364,7 +373,7 @@ class Questions {
     order = json['order'];
     itemId = json['itemId'];
     if (json['options'] != null) {
-      options = new List<QuizOptions>();
+      options = [];
       json['options'].forEach((v) {
         options.add(new QuizOptions.fromJson(v));
       });
