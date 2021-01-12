@@ -107,6 +107,7 @@ class UserApiProvider {
       Response response = await _dio.get(levelEndpoint + userId.toString());
       return UserLevelResponse.fromJson(response.data, response.data.length);
     } catch (e) {
+      print('Error' + e.toString());
       if (e.response != null) {
         Map<String, dynamic> error = json.decode(e.response.toString());
         return UserLevelResponse.withError(error['message'], error['error']);

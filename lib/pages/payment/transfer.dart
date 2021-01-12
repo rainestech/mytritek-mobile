@@ -154,7 +154,7 @@ class _TransferPaymentState extends State<TransferPayment> {
                           child: Text(
                             'Bank Name: ',
                             style: TextStyle(
-                                color: textColor,
+                                color: Colors.white,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -164,7 +164,7 @@ class _TransferPaymentState extends State<TransferPayment> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            'Tide Bank: ',
+                            'Tide Bank',
                             style: TextStyle(
                                 color: textColor,
                                 fontSize: 17,
@@ -174,67 +174,166 @@ class _TransferPaymentState extends State<TransferPayment> {
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  'Account Number: ',
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 22),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      "Sort Code",
-                                      style: TextStyle(
-                                          color: textColor, fontSize: 15),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      'code',
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Text(
-                                  'Account Name: ',
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 17),
-                                ),
-                              ],
-                            ),
-                          ],
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 30,
+                        child: Center(
+                          child: Text(
+                            'Account No.: ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ),
                       ),
-                    ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '04135020',
+                            style: TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 20,
+                        child: Center(
+                          child: Text(
+                            'Sort Code: ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '236972',
+                            style: TextStyle(
+                                color: textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 20,
+                        child: Center(
+                          child: Text(
+                            'Account Name: ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Tritek Consulting Ltd',
+                            style: TextStyle(
+                                color: textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Expanded(
+                  //   child: Align(
+                  //     alignment: Alignment.bottomLeft,
+                  //     child: Container(
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         crossAxisAlignment: CrossAxisAlignment.end,
+                  //         children: <Widget>[
+                  //           Column(
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             mainAxisAlignment: MainAxisAlignment.end,
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: <Widget>[
+                  //               Text(
+                  //                 'Account No: ',
+                  //                 style: TextStyle(
+                  //                     color: textColor,
+                  //                     fontWeight: FontWeight.w500,
+                  //                     fontSize: 12),
+                  //               ),
+                  //               SizedBox(
+                  //                 height: 15,
+                  //               ),
+                  //               Row(
+                  //                 mainAxisAlignment: MainAxisAlignment.start,
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: <Widget>[
+                  //                   Text(
+                  //                     "Sort Code",
+                  //                     style: TextStyle(
+                  //                         color: textColor, fontSize: 15),
+                  //                   ),
+                  //                   SizedBox(
+                  //                     width: 10,
+                  //                   ),
+                  //                   Text(
+                  //                     'code',
+                  //                     style: TextStyle(
+                  //                         color: textColor,
+                  //                         fontWeight: FontWeight.w500,
+                  //                         fontSize: 16),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //               SizedBox(
+                  //                 height: 15,
+                  //               ),
+                  //               Text(
+                  //                 'Account Name: ',
+                  //                 style: TextStyle(
+                  //                     color: textColor,
+                  //                     fontWeight: FontWeight.w500,
+                  //                     fontSize: 17),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             )

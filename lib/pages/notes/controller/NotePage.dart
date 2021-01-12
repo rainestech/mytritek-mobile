@@ -107,14 +107,14 @@ class _NotePageState extends State<NotePage> {
                   child: Container(
                       padding: EdgeInsets.all(5),
 //    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: EditableText(
+                      child: TextField(
+                        decoration: InputDecoration(hintText: 'Your Note here'),
                         onChanged: (str) => {updateNoteObject()},
                         maxLines: 300,
                         // line limit extendable later
                         controller: _contentController,
                         focusNode: _contentFocus,
                         style: TextStyle(color: Colors.black, fontSize: 20),
-                        backgroundCursorColor: Colors.red,
                         cursorColor: Colors.blue,
                       )))
             ],

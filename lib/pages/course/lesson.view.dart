@@ -38,6 +38,18 @@ class _VideoViewLesson extends State<InAppLessonView> {
     String _lesson = widget.lessonId.toString();
     // initialUrl: 'http://10.0.2.2/video/8603',
 
+    String _js = '''
+  if (!window.flutter_inappwebview.callHandler) {
+      window.flutter_inappwebview.callHandler = function () {
+          var _callHandlerID = setTimeout(function () { });
+          window.flutter_inappwebview._callHandler(arguments[0], _callHandlerID, JSON.stringify(Array.prototype.slice.call(arguments, 1)));
+          return new Promise(function (resolve, reject) {
+              window.flutter_inappwebview[_callHandlerID] = resolve;
+          });
+      };
+  }
+  ''';
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -93,6 +105,7 @@ class _VideoViewLesson extends State<InAppLessonView> {
                   });
             },
             onConsoleMessage: (controller, consoleMessage) {
+              print('consoleMessage');
               print(consoleMessage);
               // it will print: {message: {"bar":"bar_value","baz":"baz_value"}, messageLevel: 1}
             },
@@ -107,6 +120,8 @@ class _VideoViewLesson extends State<InAppLessonView> {
               // cookies.forEach((cookie) {
               //   print(cookie.name + " " + cookie.value);
               // });
+              controller.evaluateJavascript(source: _js);
+
               debugPrint('Loaded url: $url');
 
               setState(() {

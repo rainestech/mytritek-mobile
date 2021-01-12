@@ -92,15 +92,15 @@ class UserLevel {
       this.logs});
 
   UserLevel.fromJson(Map<String, dynamic> json) {
-    points = json['points'];
-    award = json['award'];
-    newPoint = json['newPoint'];
-    level = json['level'];
-    deducted = json['deducted'];
+    points = json['points'].toString();
+    award = json['award'].toString();
+    newPoint = json['newPoint'].toString();
+    level = json['level'].toString();
+    deducted = json['deducted'].toString();
     userId = json['userId'];
     badge = json['badge'];
     if (json['logs'] != null) {
-      logs = new List<LevelLogs>();
+      logs = [];
       json['logs'].forEach((v) {
         logs.add(new LevelLogs.fromJson(v));
       });

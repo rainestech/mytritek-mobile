@@ -24,7 +24,11 @@ class UserRepository {
       getUserLevel(response.results.id);
 
       if (response.results.image != null && response.results.image.length > 0) {
-        await SaveFile().saveImage(response.results.image);
+        try {
+          await SaveFile().saveImage(response.results.image);
+        } catch (e) {
+          print('Image Get Error: ' + e.toString());
+        }
       }
     }
 
