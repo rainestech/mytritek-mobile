@@ -6,17 +6,17 @@ import 'package:tritek_lms/data/entity/note.dart';
 import 'package:tritek_lms/http/endpoints.dart';
 import 'package:tritek_lms/pages/notes/controller/NotePage.dart';
 
-class VideoViewLesson extends StatefulWidget {
+class VideoViewLessonss extends StatefulWidget {
   final int lessonId;
   final String token;
 
-  VideoViewLesson(this.lessonId, this.token);
+  VideoViewLessonss(this.lessonId, this.token);
 
   @override
-  _VideoViewLesson createState() => _VideoViewLesson();
+  _VideoViewLessonss createState() => _VideoViewLessonss();
 }
 
-class _VideoViewLesson extends State<VideoViewLesson> {
+class _VideoViewLessonss extends State<VideoViewLessonss> {
   InAppWebViewController _webViewController;
   String url = "";
   double progress = 0;

@@ -5,7 +5,7 @@ import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/course.bloc.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/http/http.client.dart';
-import 'package:tritek_lms/pages/course/video.view.dart';
+import 'package:tritek_lms/pages/course/lesson.view.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchTerm;
@@ -53,7 +53,7 @@ class _SearchResultState extends State<SearchResult> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VideoViewLesson(lesson.itemId, _token),
+                  builder: (context) => InAppLessonView(lesson.itemId, _token),
                 ),
               );
             } else {

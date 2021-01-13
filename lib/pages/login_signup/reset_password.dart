@@ -26,6 +26,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   var secondController = TextEditingController();
   var thirdController = TextEditingController();
   var fourthController = TextEditingController();
+  var passwordController = TextEditingController();
   FocusNode secondFocusNode = FocusNode();
   FocusNode thirdFocusNode = FocusNode();
   FocusNode fourthFocusNode = FocusNode();
@@ -356,6 +357,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           child: TextFormField(
                             focusNode: _passwordFocusNode,
+                            controller: passwordController,
                             textCapitalization: TextCapitalization.none,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
@@ -475,6 +477,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   Future<void> changePassword() async {
     try {
+      _password = passwordController.value.text;
+      var validate = Validator.password(_password);
+      if (validate != null) {
+        print('Validate Error: $validate');
+        ServerValidationDialog.errorDialog(
+            context, validate, ""); //invoking log
+        return;
+      }
+
       LoadingDialogs.showLoadingDialog(
           context, _keyLoader, 'Processing your request...'); //invoking login
 

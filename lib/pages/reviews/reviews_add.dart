@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
+import 'package:tritek_lms/custom/form.validators.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/http/courses.dart';
@@ -28,6 +29,7 @@ class _CourseAddReviewState extends State<CourseAddReview> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   final _contentController = TextEditingController();
+  final _titleController = TextEditingController();
   final _contentFocus = FocusNode();
   double _rating = 3;
 
@@ -35,7 +37,6 @@ class _CourseAddReviewState extends State<CourseAddReview> {
   void initState() {
     super.initState();
     comments = widget._course.comments;
-    print(comments[0].author);
     var mine = widget._course.comments
         .where((e) => e.email == widget._users.email)
         .toList();
@@ -122,12 +123,25 @@ class _CourseAddReviewState extends State<CourseAddReview> {
               ],
             ),
             Divider(),
+            Container(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: TextField(
+                  decoration: InputDecoration(hintText: 'Review Title'),
+                  maxLines: 1,
+                  controller: _titleController,
+                  focusNode: _contentFocus,
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                  //backgroundCursorColor: Colors.red,
+                  cursorColor: themeBlue,
+                )),
+            SizedBox(
+              height: 10,
+            ),
             Flexible(
                 child: Container(
                     padding: EdgeInsets.only(left: 20, right: 20),
-//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
                     child: TextField(
-                      decoration: InputDecoration(hintText: 'Write a review'),
+                      decoration: InputDecoration(hintText: 'Review content'),
                       maxLines: 50,
                       controller: _contentController,
                       focusNode: _contentFocus,
@@ -184,6 +198,26 @@ class _CourseAddReviewState extends State<CourseAddReview> {
     comments.comment = _contentController.value.text;
     comments.rating = _rating.toString();
     comments.courseId = widget._course.id;
+    comments.title = _titleController.value.text;
+
+    if (Validator.required(comments.comment, 10,
+        'Your review is too short! Please write in excess of 3 words') !=
+        null) {
+      ServerValidationDialog.errorDialog(
+          context,
+          'Your review is too short! Please write in excess of 3 words', "");
+
+      return;
+    }
+
+    if (Validator.required(comments.title, 8,
+        'Your review is too short! Please write in excess of 3 words') !=
+        null) {
+      ServerValidationDialog.errorDialog(
+          context, 'Review Title is required in at least 2 words!', "");
+
+      return;
+    }
 
     LoadingDialogs.showLoadingDialog(
         context, _keyLoader, 'Submitting your review');
@@ -220,7 +254,8 @@ class _CourseAddReviewState extends State<CourseAddReview> {
                             ),
                             AutoSizeText(
                               'Your review has been submitted for moderation by admin. Thank You',
-                              style: TextStyle(color: themeGold),
+                              style: TextStyle(color: themeGold,),
+                              textAlign: TextAlign.center,
                             ),
                             SizedBox(
                               height: 10,

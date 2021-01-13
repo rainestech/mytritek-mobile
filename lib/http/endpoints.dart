@@ -1,6 +1,4 @@
 String _endpoint = "https://api.mytritek.co.uk/v1";
-// String _endpoint = "https://tritek.rainestech.com/api";
-// String _endpoint = "http://192.168.0.100/api";
 
 /*
  * Get all available courses

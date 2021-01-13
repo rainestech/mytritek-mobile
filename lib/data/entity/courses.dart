@@ -282,6 +282,7 @@ class Comments {
   String rating;
   String image;
   int courseId;
+  String title;
 
   Comments(
       {this.id,
@@ -289,7 +290,8 @@ class Comments {
       this.email,
       this.comment,
       this.rating,
-      this.image});
+      this.image,
+      this.title});
 
   Comments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -299,17 +301,19 @@ class Comments {
     rating = json['rating'];
     image = json['image'];
     courseId = json['courseId'];
+    title = json['title'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['author'] = this.author;
-    data['emil'] = this.email;
+    data['email'] = this.email;
     data['comment'] = this.comment;
     data['rating'] = this.rating;
     data['image'] = this.image;
     data['courseId'] = this.courseId;
+    data['title'] = this.title;
     return data;
   }
 }

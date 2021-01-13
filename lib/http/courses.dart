@@ -84,8 +84,10 @@ class CoursesApiProvider {
     try {
       final Dio _dio = await HttpClient.http();
       await _dio.post(commentEndpoint, data: comment);
+
       return true;
     } catch (e) {
+      print(e.response.toString());
       return false;
     }
   }

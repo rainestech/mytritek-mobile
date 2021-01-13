@@ -171,6 +171,7 @@ class UserApiProvider {
     } catch (e) {
       if (e.response != null) {
         Map<String, dynamic> error = json.decode(e.response.toString());
+
         return RegisterResponse.withError(error['message'], error['error']);
       }
       return RegisterResponse.withError(e.message, "Network Error");

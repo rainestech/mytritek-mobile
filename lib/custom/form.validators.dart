@@ -2,7 +2,8 @@ import 'package:email_validator/email_validator.dart';
 
 class Validator {
   static password(String password) {
-    Pattern pattern = r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
+    // Pattern pattern = r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
+    Pattern pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$';
     RegExp regex = new RegExp(pattern);
 
     if (password.isEmpty) {
@@ -10,7 +11,7 @@ class Validator {
     } else if (password.length < 6) {
       return "Password length must be minimum of 6 characters";
     } else if (!regex.hasMatch(password)) {
-      return "Password at least one uppercase letter, one lowercase letter and one number";
+      return "Password must at least have one uppercase letter, one lowercase letter and one number with a minimum length of 6!";
     }
     return null;
   }

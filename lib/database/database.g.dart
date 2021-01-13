@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 3,
+      version: 4,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
       },
@@ -108,7 +108,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Instructor` (`userId` INTEGER, `email` TEXT, `username` TEXT, `name` TEXT, `description` TEXT, PRIMARY KEY (`userId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comments` (`id` INTEGER, `author` TEXT, `email` TEXT, `comment` TEXT, `rating` TEXT, `image` TEXT, `courseId` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Comments` (`id` INTEGER, `author` TEXT, `email` TEXT, `comment` TEXT, `rating` TEXT, `image` TEXT, `courseId` INTEGER, `title` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Testimonial` (`id` INTEGER, `title` TEXT, `content` TEXT, `name` TEXT, `image` TEXT, PRIMARY KEY (`id`))');
         await database.execute(
@@ -569,15 +569,15 @@ class _$CommentsDao extends CommentsDao {
         _commentsInsertionAdapter = InsertionAdapter(
             database,
             'Comments',
-            (Comments item) =>
-            <String, dynamic>{
+                (Comments item) => <String, dynamic>{
                   'id': item.id,
                   'author': item.author,
                   'email': item.email,
                   'comment': item.comment,
                   'rating': item.rating,
                   'image': item.image,
-                  'courseId': item.courseId
+                  'courseId': item.courseId,
+                  'title': item.title
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -591,13 +591,15 @@ class _$CommentsDao extends CommentsDao {
   @override
   Future<List<Comments>> findAll() async {
     return _queryAdapter.queryList('SELECT * FROM comments',
-        mapper: (Map<String, dynamic> row) => Comments(
-            id: row['id'] as int,
-            author: row['author'] as String,
-            email: row['email'] as String,
-            comment: row['comment'] as String,
-            rating: row['rating'] as String,
-            image: row['image'] as String));
+        mapper: (Map<String, dynamic> row) =>
+            Comments(
+                id: row['id'] as int,
+                author: row['author'] as String,
+                email: row['email'] as String,
+                comment: row['comment'] as String,
+                rating: row['rating'] as String,
+                image: row['image'] as String,
+                title: row['title'] as String));
   }
 
   @override
@@ -609,13 +611,15 @@ class _$CommentsDao extends CommentsDao {
   Future<List<Comments>> findByCourseId(int courseId) async {
     return _queryAdapter.queryList('SELECT * FROM comments WHERE courseId = ?',
         arguments: <dynamic>[courseId],
-        mapper: (Map<String, dynamic> row) => Comments(
-            id: row['id'] as int,
-            author: row['author'] as String,
-            email: row['email'] as String,
-            comment: row['comment'] as String,
-            rating: row['rating'] as String,
-            image: row['image'] as String));
+        mapper: (Map<String, dynamic> row) =>
+            Comments(
+                id: row['id'] as int,
+                author: row['author'] as String,
+                email: row['email'] as String,
+                comment: row['comment'] as String,
+                rating: row['rating'] as String,
+                image: row['image'] as String,
+                title: row['title'] as String));
   }
 
   @override

@@ -244,6 +244,17 @@ class CourseRepository {
     }
   }
 
+  Future<void> saveComment(Comments comments) async {
+    try {
+      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final commentDao = database.commentsDao;
+      comments.image = 'local';
+      commentDao.save(comments);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> updateMyCourses(List<Course> courses, int userId) async {
     final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
     final courseDao = database.courseDao;
