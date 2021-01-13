@@ -10,5 +10,5 @@ Color themeBlue = const Color.fromRGBO(41, 57, 134, 1);
 Color themeBg = Colors.grey[100];
 
 String appName = 'MyTritek';
-String appDB = 'data.db';
+String appDB = 'data_v2.db';
 String noPicture = 'assets/user_profile/profile.png';
