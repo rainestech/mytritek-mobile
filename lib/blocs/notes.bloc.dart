@@ -10,6 +10,7 @@ class NotesBloc {
   final BehaviorSubject<List<Notes>> _search = BehaviorSubject<List<Notes>>();
 
   getNotes() async {
+    await _repository.syncNotes();
     List<Notes> response = await _repository.getNotes();
     _noteSubject.sink.add(response);
   }

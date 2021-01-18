@@ -76,8 +76,18 @@ String levelEndpoint = "$_endpoint/points/";
  * Get all user viewed lessons. course Id must be supplied
  */
 String subsEndpoint = "$_endpoint/subs/";
+String bankEndpoint = "$_endpoint/bank";
 String paypalConfEndpoint = "$_endpoint/paypal/conf/";
 String agentsEndpoint = "$_endpoint/agents/";
 
 String secretEndpoint = "$_endpoint/stripe/secret";
 String paymentLogEndpoint = "$_endpoint/payment/success";
+
+/*
+* Notes Api Calls
+ */
+String notesEndpoint = "$_endpoint/notes";
+String editNoteEndpoint = "$_endpoint/note/edit";
+String syncNoteEndpoint = "$_endpoint/notes/sync";
+String deleteNoteEndpoint = "$_endpoint/note/delete/";
+String deleteAllNotesEndpoint = "$_endpoint/notes/delete";

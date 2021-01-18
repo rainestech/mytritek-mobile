@@ -34,7 +34,10 @@ class AgentsApiProvider {
         Map<String, dynamic> error = json.decode(e.response.toString());
         return AgentResponse.withError(error['message'], error['error']);
       }
-      return AgentResponse.withError(e.message, "Network Error");
+      print('Network Error: ${e.message}');
+      return AgentResponse.withError(
+          "Network Error. Please check your network connection",
+          "Network Error");
     }
   }
 }

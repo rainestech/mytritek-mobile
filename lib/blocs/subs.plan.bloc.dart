@@ -8,10 +8,17 @@ class SubsBloc {
       BehaviorSubject<SubscriptionPlanResponse>();
 
   final BehaviorSubject<bool> _payPalSubject = BehaviorSubject<bool>();
+  final BehaviorSubject<BankResponse> _bankSubject =
+      BehaviorSubject<BankResponse>();
 
   getSubs() async {
     SubscriptionPlanResponse response = await _repository.getSubs();
     _subSubject.sink.add(response);
+  }
+
+  getBank() async {
+    BankResponse response = await _repository.getBank();
+    _bankSubject.sink.add(response);
   }
 
   getPayPal() async {
@@ -22,9 +29,12 @@ class SubsBloc {
   dispose() {
     _subSubject.close();
     _payPalSubject.close();
+    _bankSubject.close();
   }
 
   BehaviorSubject<SubscriptionPlanResponse> get subject => _subSubject;
+
+  BehaviorSubject<BankResponse> get bank => _bankSubject;
 
   BehaviorSubject<bool> get paypal => _payPalSubject;
 }

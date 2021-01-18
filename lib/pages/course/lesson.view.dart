@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/data/entity/note.dart';
@@ -30,6 +31,21 @@ class _VideoViewLesson extends State<InAppLessonView> {
     super.initState();
     // Enable hybrid composition.
     // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+    super.dispose();
   }
 
   @override
@@ -64,94 +80,99 @@ class _VideoViewLesson extends State<InAppLessonView> {
             ),
           ),
         ),
-        body: Stack(children: [
-          InAppWebView(
-            initialUrl: '$playEndpoint$_lesson?token=$_token',
-            initialOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-                    debuggingEnabled: false,
-                    useShouldOverrideUrlLoading: true)),
-            onWebViewCreated: (InAppWebViewController controller) {
-              _webViewController = controller;
+        body: OrientationBuilder(
+          builder: (BuildContext context, Orientation orientation) {
+            return Stack(fit: StackFit.expand, children: [
+              InAppWebView(
+                initialUrl: '$playEndpoint$_lesson?token=$_token',
+                initialOptions: InAppWebViewGroupOptions(
+                    crossPlatform: InAppWebViewOptions(
+                        debuggingEnabled: false,
+                        useShouldOverrideUrlLoading: true)),
+                onWebViewCreated: (InAppWebViewController controller) {
+                  _webViewController = controller;
 
-              _webViewController.addJavaScriptHandler(
-                  handlerName: 'playVideo',
-                  callback: (args) {
-                    // return data to JavaScript side!
-                    return 123;
+                  _webViewController.addJavaScriptHandler(
+                      handlerName: 'playVideo',
+                      callback: (args) {
+                        // return data to JavaScript side!
+                        return 123;
+                      });
+                  _webViewController.addJavaScriptHandler(
+                      handlerName: 'playPause',
+                      callback: (args) {
+                        print('playPause: $args');
+                      });
+                  _webViewController.addJavaScriptHandler(
+                      handlerName: 'playTime',
+                      callback: (args) {
+                        String arg = args[0].toString();
+                        Map<String, dynamic> data = jsonDecode(arg);
+                        Notes note = Notes();
+                        note.lessonId = int.parse(data['lessonId']);
+                        note.lesson = data['lesson'];
+                        note.sectionId = int.parse(data['sectionId']);
+                        note.section = data['section'];
+                        note.courseId = int.parse(data['courseId']);
+                        note.course = data['course'];
+                        note.time = _getTime(data['time'].toString());
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotePage(note)));
+                      });
+                },
+                onConsoleMessage: (controller, consoleMessage) {
+                  print('consoleMessage');
+                  print(consoleMessage);
+                  // it will print: {message: {"bar":"bar_value","baz":"baz_value"}, messageLevel: 1}
+                },
+                onLoadStart: (InAppWebViewController controller, String _url) {
+                  debugPrint('Loading url: $url');
+                  setState(() {
+                    url = _url;
                   });
-              _webViewController.addJavaScriptHandler(
-                  handlerName: 'playPause',
-                  callback: (args) {
-                    print('playPause: $args');
-                  });
-              _webViewController.addJavaScriptHandler(
-                  handlerName: 'playTime',
-                  callback: (args) {
-                    String arg = args[0].toString();
-                    Map<String, dynamic> data = jsonDecode(arg);
-                    Notes note = Notes();
-                    note.lessonId = int.parse(data['lessonId']);
-                    note.lesson = data['lesson'];
-                    note.sectionId = int.parse(data['sectionId']);
-                    note.section = data['section'];
-                    note.courseId = int.parse(data['courseId']);
-                    note.course = data['course'];
-                    note.time = _getTime(data['time'].toString());
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NotePage(note)));
-                  });
-            },
-            onConsoleMessage: (controller, consoleMessage) {
-              print('consoleMessage');
-              print(consoleMessage);
-              // it will print: {message: {"bar":"bar_value","baz":"baz_value"}, messageLevel: 1}
-            },
-            onLoadStart: (InAppWebViewController controller, String _url) {
-              debugPrint('Loading url: $url');
-              setState(() {
-                url = _url;
-              });
-            },
-            onLoadStop: (InAppWebViewController controller, String _url) async {
-              // List<Cookie> cookies = await _cookieManager.getCookies(url: url);
-              // cookies.forEach((cookie) {
-              //   print(cookie.name + " " + cookie.value);
-              // });
-              controller.evaluateJavascript(source: _js);
+                },
+                onLoadStop:
+                    (InAppWebViewController controller, String _url) async {
+                  // List<Cookie> cookies = await _cookieManager.getCookies(url: url);
+                  // cookies.forEach((cookie) {
+                  //   print(cookie.name + " " + cookie.value);
+                  // });
+                  controller.evaluateJavascript(source: _js);
 
-              debugPrint('Loaded url: $url');
+                  debugPrint('Loaded url: $url');
 
-              setState(() {
-                url = _url;
-                isLoading = false;
-              });
-            },
-            onProgressChanged:
-                (InAppWebViewController controller, int _progress) {
-              setState(() {
-                progress = _progress / 100;
-              });
-              if (_progress == 100) {
-                setState(() {
-                  isLoading = false;
-                });
-              }
-            },
-            shouldOverrideUrlLoading:
-                (controller, shouldOverrideUrlLoadingRequest) async {
-              print("URL: ${shouldOverrideUrlLoadingRequest.url}");
-              return ShouldOverrideUrlLoadingAction.ALLOW;
-            },
-          ),
-          isLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Stack(),
-        ]),
+                  setState(() {
+                    url = _url;
+                    isLoading = false;
+                  });
+                },
+                onProgressChanged:
+                    (InAppWebViewController controller, int _progress) {
+                  setState(() {
+                    progress = _progress / 100;
+                  });
+                  if (_progress == 100) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+                },
+                shouldOverrideUrlLoading:
+                    (controller, shouldOverrideUrlLoadingRequest) async {
+                  print("URL: ${shouldOverrideUrlLoadingRequest.url}");
+                  return ShouldOverrideUrlLoadingAction.ALLOW;
+                },
+              ),
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Stack(),
+            ]);
+          },
+        ),
       ),
     );
   }

@@ -42,7 +42,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 
   @override
   Widget build(BuildContext context) {
-    noteBloc.getNotes();
+    // noteBloc.getNotes();
     final _key = GlobalKey();
     // return Container(
     //     child: Padding(

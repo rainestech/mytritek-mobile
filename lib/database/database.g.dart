@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 4,
+      version: 5,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
       },
@@ -116,7 +116,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `userLevel` (`points` TEXT, `award` TEXT, `newPoint` TEXT, `level` TEXT, `deducted` TEXT, `userId` INTEGER, `badge` TEXT, PRIMARY KEY (`userId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `notes` (`id` INTEGER, `time` TEXT, `course` TEXT, `courseId` INTEGER, `sectionId` INTEGER, `section` TEXT, `lessonId` INTEGER, `lesson` TEXT, `content` TEXT, `createdAt` TEXT, `updatedAt` TEXT, `noteColor` INTEGER, `isArchived` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `notes` (`id` INTEGER, `time` TEXT, `course` TEXT, `courseId` INTEGER, `sectionId` INTEGER, `section` TEXT, `lessonId` INTEGER, `lesson` TEXT, `content` TEXT, `createdAt` TEXT, `updatedAt` TEXT, `noteColor` INTEGER, `isArchived` INTEGER, `synced` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `levelLogs` (`userEarningId` INTEGER, `title` TEXT, `userId` INTEGER, `postId` INTEGER, `postType` TEXT, `points` INTEGER, `pointsType` TEXT, `date` TEXT, PRIMARY KEY (`userEarningId`))');
 
@@ -788,19 +788,21 @@ class _$NotesDao extends NotesDao {
             (Notes item) => <String, dynamic>{
                   'id': item.id,
                   'time': item.time,
-                  'course': item.course,
-                  'courseId': item.courseId,
-                  'sectionId': item.sectionId,
-                  'section': item.section,
-                  'lessonId': item.lessonId,
-                  'lesson': item.lesson,
-                  'content': item.content,
-                  'createdAt': _dateTimeConverter.encode(item.createdAt),
-                  'updatedAt': _dateTimeConverter.encode(item.updatedAt),
-                  'noteColor': _colorConverter.encode(item.noteColor),
-                  'isArchived':
-                      item.isArchived == null ? null : (item.isArchived ? 1 : 0)
-                });
+              'course': item.course,
+              'courseId': item.courseId,
+              'sectionId': item.sectionId,
+              'section': item.section,
+              'lessonId': item.lessonId,
+              'lesson': item.lesson,
+              'content': item.content,
+              'createdAt': _dateTimeConverter.encode(item.createdAt),
+              'updatedAt': _dateTimeConverter.encode(item.updatedAt),
+              'noteColor': _colorConverter.encode(item.noteColor),
+              'isArchived': item.isArchived == null
+                  ? null
+                  : (item.isArchived ? 1 : 0),
+              'synced': item.synced == null ? null : (item.synced ? 1 : 0)
+            });
 
   final sqflite.DatabaseExecutor database;
 
@@ -828,7 +830,9 @@ class _$NotesDao extends NotesDao {
             noteColor: _colorConverter.decode(row['noteColor'] as int),
             isArchived: row['isArchived'] == null
                 ? null
-                : (row['isArchived'] as int) != 0));
+                : (row['isArchived'] as int) != 0,
+            synced:
+            row['synced'] == null ? null : (row['synced'] as int) != 0));
   }
 
   @override
@@ -850,7 +854,9 @@ class _$NotesDao extends NotesDao {
             noteColor: _colorConverter.decode(row['noteColor'] as int),
             isArchived: row['isArchived'] == null
                 ? null
-                : (row['isArchived'] as int) != 0));
+                : (row['isArchived'] as int) != 0,
+            synced:
+            row['synced'] == null ? null : (row['synced'] as int) != 0));
   }
 
   @override
@@ -872,29 +878,62 @@ class _$NotesDao extends NotesDao {
             noteColor: _colorConverter.decode(row['noteColor'] as int),
             isArchived: row['isArchived'] == null
                 ? null
-                : (row['isArchived'] as int) != 0));
+                : (row['isArchived'] as int) != 0,
+            synced:
+            row['synced'] == null ? null : (row['synced'] as int) != 0));
+  }
+
+  @override
+  Future<List<Notes>> findNotSynced() async {
+    return _queryAdapter.queryList('SELECT * FROM notes WHERE synced = 0',
+        mapper: (Map<String, dynamic> row) =>
+            Notes(
+                id: row['id'] as int,
+                time: row['time'] as String,
+                course: row['course'] as String,
+                courseId: row['courseId'] as int,
+                sectionId: row['sectionId'] as int,
+                section: row['section'] as String,
+                lessonId: row['lessonId'] as int,
+                lesson: row['lesson'] as String,
+                content: row['content'] as String,
+                createdAt: _dateTimeConverter.decode(
+                    row['createdAt'] as String),
+                updatedAt: _dateTimeConverter.decode(
+                    row['updatedAt'] as String),
+                noteColor: _colorConverter.decode(row['noteColor'] as int),
+                isArchived: row['isArchived'] == null
+                    ? null
+                    : (row['isArchived'] as int) != 0,
+                synced:
+                row['synced'] == null ? null : (row['synced'] as int) != 0));
   }
 
   @override
   Future<List<Notes>> findByLessonId(int lessonId) async {
     return _queryAdapter.queryList('SELECT * FROM notes WHERE lesson = ?',
         arguments: <dynamic>[lessonId],
-        mapper: (Map<String, dynamic> row) => Notes(
-            id: row['id'] as int,
-            time: row['time'] as String,
-            course: row['course'] as String,
+        mapper: (Map<String, dynamic> row) =>
+            Notes(
+                id: row['id'] as int,
+                time: row['time'] as String,
+                course: row['course'] as String,
             courseId: row['courseId'] as int,
-            sectionId: row['sectionId'] as int,
-            section: row['section'] as String,
-            lessonId: row['lessonId'] as int,
-            lesson: row['lesson'] as String,
-            content: row['content'] as String,
-            createdAt: _dateTimeConverter.decode(row['createdAt'] as String),
-            updatedAt: _dateTimeConverter.decode(row['updatedAt'] as String),
-            noteColor: _colorConverter.decode(row['noteColor'] as int),
-            isArchived: row['isArchived'] == null
-                ? null
-                : (row['isArchived'] as int) != 0));
+                sectionId: row['sectionId'] as int,
+                section: row['section'] as String,
+                lessonId: row['lessonId'] as int,
+                lesson: row['lesson'] as String,
+                content: row['content'] as String,
+                createdAt: _dateTimeConverter.decode(
+                    row['createdAt'] as String),
+                updatedAt: _dateTimeConverter.decode(
+                    row['updatedAt'] as String),
+                noteColor: _colorConverter.decode(row['noteColor'] as int),
+                isArchived: row['isArchived'] == null
+                    ? null
+                    : (row['isArchived'] as int) != 0,
+                synced:
+                row['synced'] == null ? null : (row['synced'] as int) != 0));
   }
 
   @override
@@ -916,7 +955,9 @@ class _$NotesDao extends NotesDao {
             noteColor: _colorConverter.decode(row['noteColor'] as int),
             isArchived: row['isArchived'] == null
                 ? null
-                : (row['isArchived'] as int) != 0));
+                : (row['isArchived'] as int) != 0,
+            synced:
+            row['synced'] == null ? null : (row['synced'] as int) != 0));
   }
 
   @override

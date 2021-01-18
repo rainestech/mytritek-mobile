@@ -26,3 +26,28 @@ class SubscriptionPlans {
     return data;
   }
 }
+
+class AccountDetails {
+  String bankName;
+  String accountNo;
+  String sortCode;
+  String name;
+
+  AccountDetails({this.bankName, this.name, this.accountNo, this.sortCode});
+
+  AccountDetails.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    accountNo = json['accountNo'];
+    sortCode = json['sortCode'];
+    bankName = json['bankName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['bankName'] = this.bankName;
+    data['sortCode'] = this.sortCode;
+    data['accountNo'] = this.accountNo;
+    return data;
+  }
+}

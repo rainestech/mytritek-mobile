@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:floor/floor.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 @Entity(tableName: 'notes')
@@ -19,6 +20,7 @@ class Notes {
   DateTime updatedAt;
   Color noteColor;
   bool isArchived = false;
+  bool synced = false;
 
   Notes(
       {this.id,
@@ -33,7 +35,8 @@ class Notes {
       this.createdAt,
       this.updatedAt,
       this.noteColor,
-      this.isArchived});
+      this.isArchived,
+      this.synced});
 
   Notes.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -49,6 +52,7 @@ class Notes {
     updatedAt = new DateFormat("yyyy-MM-dd hh:mm:ss").parse(json['updatedAt']);
     noteColor = json['noteColor'] != null ? Color(json['noteColor']) : null;
     isArchived = json['isArchived'];
+    synced = json['isArchived'];
   }
 
   Map<String, dynamic> toJson(bool update) {
@@ -68,8 +72,10 @@ class Notes {
         DateFormat("yyyy-MM-dd hh:mm:ss").format(this.createdAt);
     data['updatedAt'] =
         DateFormat("yyyy-MM-dd hh:mm:ss").format(this.updatedAt);
-    data['noteColor'] = this.noteColor.value;
+    data['noteColor'] =
+    this.noteColor == null ? Colors.white.value : this.noteColor.value;
     data['isArchived'] = this.isArchived;
+    data['synced'] = this.synced;
     return data;
   }
 }
@@ -94,7 +100,7 @@ class ColorConverter extends TypeConverter<Color, int> {
 
   @override
   int encode(Color value) {
-    return value.value;
+    return value == null ? Colors.white.value : value.value;
   }
 }
 

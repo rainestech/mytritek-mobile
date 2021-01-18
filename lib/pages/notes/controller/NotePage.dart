@@ -208,7 +208,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   //saves data as the user makes changes and saves and updates this value whenever it changes
-  void _persistData() async {
+  Future<void> _persistData() async {
     updateNoteObject();
 
     if (_editableNote.content.isNotEmpty) {
@@ -224,7 +224,8 @@ class _NotePageState extends State<NotePage> {
         if (_editableNote.noteColor == null) {
           _editableNote.noteColor = Colors.white;
         }
-        _repository.save(_editableNote); // for updating the existing note
+        _editableNote.synced = false;
+        await _repository.save(_editableNote); // for updating the existing note
       }
     }
   }
@@ -233,11 +234,6 @@ class _NotePageState extends State<NotePage> {
   void updateNoteObject() {
     _editableNote.content = _contentController.text;
     _editableNote.noteColor = noteColor;
-    print("new content: ${_editableNote.content}");
-    print(widget.noteInEditing);
-    print(_editableNote);
-
-    print("same content? ${_editableNote.content == _contentFromInitial}");
 
     if (!(_editableNote.content == _contentFromInitial) || (_isNewNote)) {
       if (_editableNote.id == -1) {
@@ -246,7 +242,6 @@ class _NotePageState extends State<NotePage> {
       // No changes to the note
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
       _editableNote.updatedAt = DateTime.now();
-      print("Updating date_last_edited");
       CentralStation.updateNeeded = true;
     }
   }
@@ -293,10 +288,9 @@ class _NotePageState extends State<NotePage> {
                 FlatButton(
                     onPressed: () {
                       _persistenceTimer.cancel();
-                      Navigator.of(context).pop();
                       _repository.delete(_editableNote);
-                      Navigator.of(context).pop();
                       CentralStation.updateNeeded = true;
+                      Navigator.of(context).pop();
                     },
                     child: Text("Yes")),
                 FlatButton(
@@ -337,7 +331,7 @@ class _NotePageState extends State<NotePage> {
     _persistenceTimer.cancel();
     //show saved toast after calling _persistData function.
 
-    _persistData();
+    await _persistData();
     return true;
   }
 
@@ -384,10 +378,9 @@ class _NotePageState extends State<NotePage> {
     _persistenceTimer.cancel(); // shutdown the timer
 
     CentralStation.updateNeeded = true;
-    Navigator.of(context).pop(); // pop back to staggered view
-    // TODO: OPTIONAL show the toast of deletion completion
     ScaffoldMessenger.of(context)
         .showSnackBar(new SnackBar(content: Text("deleted")));
+    Navigator.of(context).pop(); // pop back to staggered view
   }
 
   //this function duplicates a note with the selected id whenever

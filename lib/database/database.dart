@@ -11,7 +11,7 @@ import 'dao.dart';
 part 'database.g.dart'; // the generated code will be there
 
 @TypeConverters([DateTimeConverter, ColorConverter])
-@Database(version: 4, entities: [
+@Database(version: 5, entities: [
   Course,
   Sections,
   Lessons,
@@ -48,3 +48,4 @@ abstract class AppDatabase extends FloorDatabase {
 
   LevelLogsDao get levelLogsDao;
 }
+

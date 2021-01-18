@@ -46,13 +46,13 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
                 Navigator.of(context).pop();
                 widget.callBackOptionTapped(moreOptions.delete);
               }),
-          new ListTile(
-              leading: new Icon(Icons.content_copy),
-              title: new Text('Duplicate'),
-              onTap: () {
-                Navigator.of(context).pop();
-                widget.callBackOptionTapped(moreOptions.copy);
-              }),
+          // new ListTile(
+          //     leading: new Icon(Icons.content_copy),
+          //     title: new Text('Duplicate'),
+          //     onTap: () {
+          //       Navigator.of(context).pop();
+          //       widget.callBackOptionTapped(moreOptions.copy);
+          //     }),
           new ListTile(
               leading: new Icon(Icons.share),
               title: new Text('Share'),

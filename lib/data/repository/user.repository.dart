@@ -4,11 +4,10 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/custom/helper.dart';
 import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/data/repository/course.repository.dart';
-import 'package:tritek_lms/database/database.dart';
+import 'package:tritek_lms/database/app.db.dart';
 import 'package:tritek_lms/http/http.client.dart';
 import 'package:tritek_lms/http/user.dart';
 
@@ -95,7 +94,7 @@ class UserRepository {
   }
 
   Future<UserResponse> getDbUser() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final userDao = database.userDao;
 
     final Users user = await userDao.findAll();
@@ -107,7 +106,7 @@ class UserRepository {
   Future<UserLevelResponse> getUserLevel(int userId) async {
     bool conn = await DataConnectionChecker().hasConnection;
     if (!conn) {
-      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final database = await AppDB().getDatabase();
       final userLevelDao = database.userLevelDao;
       final logDao = database.levelLogsDao;
 
@@ -132,7 +131,7 @@ class UserRepository {
   }
 
   Future<void> saveUser(Users user) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final userDao = database.userDao;
 
     await userDao.deleteAll();
@@ -140,7 +139,7 @@ class UserRepository {
   }
 
   Future<void> saveUserLevel(UserLevel level) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final userDao = database.userLevelDao;
     final levelLog = database.levelLogsDao;
 
@@ -152,7 +151,7 @@ class UserRepository {
   }
 
   Future<void> refreshUser() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final userDao = database.userDao;
     final notesDao = database.notesDao;
     final userLevelDao = database.userLevelDao;

@@ -167,6 +167,9 @@ abstract class NotesDao {
   @Query('SELECT * FROM notes WHERE sectionId = :courseId')
   Future<List<Notes>> findByCourseId(int courseId);
 
+  @Query('SELECT * FROM notes WHERE synced = 0')
+  Future<List<Notes>> findNotSynced();
+
   @Query('SELECT * FROM notes WHERE lesson = :lessonId')
   Future<List<Notes>> findByLessonId(int lessonId);
 

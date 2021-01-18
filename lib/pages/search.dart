@@ -122,6 +122,7 @@ class _SearchState extends State<Search> {
             return <Widget>[
               SliverAppBar(
                 expandedHeight: 150,
+                backgroundColor: themeBlue,
                 pinned: true,
                 titleSpacing: 0.0,
                 flexibleSpace: FlexibleSpaceBar(
@@ -132,7 +133,7 @@ class _SearchState extends State<Search> {
                       color: themeBlue,
                     ),
                     child: Container(
-                      // width: width - 20.0,
+                        // width: width - 20.0,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25.0),
@@ -244,6 +245,7 @@ class _SearchState extends State<Search> {
 
     return Scaffold(
       body: nestedAppBar(),
+      backgroundColor: themeBg,
     );
   }
 

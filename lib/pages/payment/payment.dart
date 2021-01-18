@@ -43,9 +43,9 @@ class _StripePaymentState extends State<StripePayment> {
           "Buying Membership",
           style: TextStyle(color: themeGold),
         ),
-        leading: Icon(
-          Icons.arrow_back_ios,
+        leading: BackButton(
           color: themeGold,
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: new SingleChildScrollView(

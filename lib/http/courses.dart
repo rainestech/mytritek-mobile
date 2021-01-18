@@ -60,7 +60,10 @@ class CoursesApiProvider {
         Map<String, dynamic> error = json.decode(e.response.toString());
         return CoursesResponse.withError(error['message'], error['error']);
       }
-      return CoursesResponse.withError(e.message, "Network Error");
+      print('Network Error: ${e.message}');
+      return CoursesResponse.withError(
+          "Network Error. Please check your network connection",
+          "Network Error");
     }
   }
 
@@ -76,7 +79,10 @@ class CoursesApiProvider {
         Map<String, dynamic> error = json.decode(e.response.toString());
         return CoursesResponse.withError(error['message'], error['error']);
       }
-      return CoursesResponse.withError(e.message, "Network Error");
+      print('Network Error: ${e.message}');
+      return CoursesResponse.withError(
+          "Network Error. Please check your network connection",
+          "Network Error");
     }
   }
 

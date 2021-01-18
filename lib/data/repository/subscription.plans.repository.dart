@@ -10,4 +10,8 @@ class SubscriptionPlanRepository {
   Future<bool> getPaypal() {
     return _apiProvider.getPayPal();
   }
+
+  Future<BankResponse> getBank() {
+    return _apiProvider.getBank();
+  }
 }

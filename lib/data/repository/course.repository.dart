@@ -1,9 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
-import 'package:tritek_lms/database/database.dart';
+import 'package:tritek_lms/database/app.db.dart';
 import 'package:tritek_lms/http/courses.dart';
 
 class CourseRepository {
@@ -19,7 +18,6 @@ class CourseRepository {
       return getDbCourses();
     }
     CoursesResponse response = await _apiProvider.getCourses();
-    // print("CourseResp: ${response.error}");
 
     if (response.length != courseResp && response.results.length > 0) {
       await saveCourses(response.results);
@@ -69,7 +67,7 @@ class CourseRepository {
   }
 
   Future<CoursesResponse> getDbCourses() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final sectionsDao = database.sectionsDao;
     final lessonsDao = database.lessonsDao;
@@ -101,7 +99,7 @@ class CourseRepository {
   }
 
   Future<CoursesResponse> getDbMyCourses(int userId) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final sectionsDao = database.sectionsDao;
     final lessonsDao = database.lessonsDao;
@@ -133,7 +131,7 @@ class CourseRepository {
   }
 
   Future<CoursesResponse> getWishList() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final sectionsDao = database.sectionsDao;
     final lessonsDao = database.lessonsDao;
@@ -165,7 +163,7 @@ class CourseRepository {
   }
 
   Future<List<LessonSearch>> searchLesson(String term) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final searchDao = database.lessonSearchDao;
 
     final List<LessonSearch> search = await searchDao.search('%' + term + '%');
@@ -173,7 +171,7 @@ class CourseRepository {
   }
 
   Future<List<String>> lessonsStringList() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final searchDao = database.lessonsDao;
 
     final List<Lessons> search = await searchDao.findAll();
@@ -181,7 +179,7 @@ class CourseRepository {
   }
 
   Future<CourseResponse> getDbMyCourse(int userId, int courseId) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final sectionsDao = database.sectionsDao;
     final lessonsDao = database.lessonsDao;
@@ -210,7 +208,7 @@ class CourseRepository {
 
   Future<void> saveCourses(List<Course> courses) async {
     try {
-      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final database = await AppDB().getDatabase();
       final courseDao = database.courseDao;
       final sectionsDao = database.sectionsDao;
       final lessonsDao = database.lessonsDao;
@@ -246,7 +244,7 @@ class CourseRepository {
 
   Future<void> saveComment(Comments comments) async {
     try {
-      final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+      final database = await AppDB().getDatabase();
       final commentDao = database.commentsDao;
       comments.image = 'local';
       commentDao.save(comments);
@@ -256,7 +254,7 @@ class CourseRepository {
   }
 
   Future<void> updateMyCourses(List<Course> courses, int userId) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final lessonsDao = database.lessonsDao;
 
@@ -273,7 +271,7 @@ class CourseRepository {
   }
 
   Future<void> updateMyCourse(Course course, int userId) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final lessonsDao = database.lessonsDao;
 
@@ -288,7 +286,7 @@ class CourseRepository {
   }
 
   Future<void> setWishList(Course course, bool add) async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
 
     course.wishList = add;
@@ -296,7 +294,7 @@ class CourseRepository {
   }
 
   Future<void> refreshCourses() async {
-    final database = await $FloorAppDatabase.databaseBuilder(appDB).build();
+    final database = await AppDB().getDatabase();
     final courseDao = database.courseDao;
     final sectionsDao = database.sectionsDao;
     final lessonsDao = database.lessonsDao;
