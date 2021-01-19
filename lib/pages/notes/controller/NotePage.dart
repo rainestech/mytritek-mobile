@@ -37,6 +37,7 @@ class _NotePageState extends State<NotePage> {
   Timer _persistenceTimer;
 
   final GlobalKey<ScaffoldState> _globalKey = new GlobalKey<ScaffoldState>();
+  bool _deleted = false;
 
   @override
   void initState() {
@@ -51,10 +52,7 @@ class _NotePageState extends State<NotePage> {
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
     }
-    _persistenceTimer = new Timer.periodic(Duration(seconds: 5), (timer) {
-      // call insert query here
-      // print("5 seconds passed");
-      // print("editable note id: ${_editableNote.id}");
+    _persistenceTimer = new Timer.periodic(Duration(seconds: 10), (timer) {
       _persistData();
     });
   }
@@ -209,8 +207,12 @@ class _NotePageState extends State<NotePage> {
 
   //saves data as the user makes changes and saves and updates this value whenever it changes
   Future<void> _persistData() async {
-    updateNoteObject();
+    print(_deleted.toString());
+    if (_deleted) {
+      return;
+    }
 
+    updateNoteObject();
     if (_editableNote.content.isNotEmpty) {
       if (_editableNote.id == -1) {
         Notes autoIncrementedId =
@@ -225,6 +227,7 @@ class _NotePageState extends State<NotePage> {
           _editableNote.noteColor = Colors.white;
         }
         _editableNote.synced = false;
+        print('Saving Note: NotePage');
         await _repository.save(_editableNote); // for updating the existing note
       }
     }
@@ -287,9 +290,13 @@ class _NotePageState extends State<NotePage> {
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
+                      setState(() {
+                        _deleted = true;
+                      });
                       _persistenceTimer.cancel();
                       _repository.delete(_editableNote);
                       CentralStation.updateNeeded = true;
+                      Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
                     child: Text("Yes")),
@@ -305,7 +312,6 @@ class _NotePageState extends State<NotePage> {
   //responsible for responding whenever the user selects on a color by changing the color and saving the color
   //value to the database
   void _changeColor(Color newColorSelected) {
-    print("note color changed");
     setState(() {
       noteColor = newColorSelected;
       _editableNote.noteColor = newColorSelected;
@@ -379,7 +385,7 @@ class _NotePageState extends State<NotePage> {
 
     CentralStation.updateNeeded = true;
     ScaffoldMessenger.of(context)
-        .showSnackBar(new SnackBar(content: Text("deleted")));
+        .showSnackBar(new SnackBar(content: Text("Archived")));
     Navigator.of(context).pop(); // pop back to staggered view
   }
 

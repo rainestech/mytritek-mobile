@@ -49,6 +49,7 @@ class _CommentSlider extends State<CommentSlider> {
                     ),
                   ),
                   if (widget._users != null &&
+                      widget._users.status != null &&
                       widget._users.status.toLowerCase() == 'active')
                     Container(
                       height: 46.0,

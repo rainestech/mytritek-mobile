@@ -39,9 +39,9 @@ class _MyCourseState extends State<MyCourse> {
         }
 
         setState(() {
-          _user = value.results;
+          _user = value != null ? value.results : null;
 
-          if (value.results != null) {
+          if (value != null && value.results != null) {
             bloc.getMyCourses(_user.id);
 
             if (_user.startDate != null) {

@@ -2,18 +2,22 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tritek_lms/data/entity/note.dart';
+import 'package:tritek_lms/data/repository/user.repository.dart';
 import 'package:tritek_lms/database/app.db.dart';
 import 'package:tritek_lms/http/notes.http.dart';
+import 'package:tritek_lms/http/user.dart';
 
 class NoteRepository {
   final _apiProvider = NoteApiProvider();
+  final _userRepository = UserRepository();
 
   Future<List<Notes>> getNotes() async {
     bool conn = await DataConnectionChecker().hasConnection;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int noteResp = prefs.getInt('noteResp') ?? 0;
 
-    if (!conn && noteResp > 0) {
+    UserResponse user = await _userRepository.getDbUser();
+    if ((!conn && noteResp > 0) || user.results == null) {
       final database = await AppDB().getDatabase();
       final noteDao = database.notesDao;
 
@@ -48,6 +52,12 @@ class NoteRepository {
   }
 
   Future<void> syncNotes() async {
+    UserResponse user = await _userRepository.getDbUser();
+    if (user.results == null) {
+      print('Sycing Notes: User not found');
+      return;
+    }
+    print('Sycing Notes');
     final database = await AppDB().getDatabase();
     final noteDao = database.notesDao;
 
@@ -116,11 +126,12 @@ class NoteRepository {
   }
 
   Future<Notes> delete(Notes note) async {
+    await _apiProvider.deleteNotes(note);
+
     final database = await AppDB().getDatabase();
     final noteDao = database.notesDao;
     await noteDao.delete(note.id);
 
-    await _apiProvider.deleteNotes(note);
     return note;
   }
 

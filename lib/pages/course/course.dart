@@ -293,6 +293,7 @@ class _CoursePageState extends State<CoursePage> {
                                     ],
                                   ),
                                   if (_user != null &&
+                                      _user.status != null &&
                                       _user.status.toLowerCase() != 'active')
                                     InkWell(
                                       onTap: () {
@@ -323,6 +324,7 @@ class _CoursePageState extends State<CoursePage> {
                                       ),
                                     ),
                                   if (_user != null &&
+                                      _user.status != null &&
                                       _user.status.toLowerCase() == 'active')
                                     InkWell(
                                       onTap: () {

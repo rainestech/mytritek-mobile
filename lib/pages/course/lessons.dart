@@ -50,9 +50,9 @@ class _LessonViewState extends State<LessonView> {
       } else if (user != null && user.status != 'active') {
         widget.scaffoldKey.currentState.showSnackBar(SnackBar(
             content: Text(
-              'First Login and Subscribe to one of the membership plans, then you can view the course.',
-              style: TextStyle(fontSize: 14.0),
-            )));
+              'Buy one of the membership plans, then you can view the course.',
+          style: TextStyle(fontSize: 14.0),
+        )));
       } else if (token != null) {
         Navigator.push(
             context,

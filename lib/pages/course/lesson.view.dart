@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
-import 'package:tritek_lms/data/entity/note.dart';
 import 'package:tritek_lms/http/endpoints.dart';
-import 'package:tritek_lms/pages/notes/controller/NotePage.dart';
 
 class InAppLessonView extends StatefulWidget {
   final int lessonId;
@@ -92,35 +88,35 @@ class _VideoViewLesson extends State<InAppLessonView> {
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
 
-                  _webViewController.addJavaScriptHandler(
-                      handlerName: 'playVideo',
-                      callback: (args) {
-                        // return data to JavaScript side!
-                        return 123;
-                      });
-                  _webViewController.addJavaScriptHandler(
-                      handlerName: 'playPause',
-                      callback: (args) {
-                        print('playPause: $args');
-                      });
-                  _webViewController.addJavaScriptHandler(
-                      handlerName: 'playTime',
-                      callback: (args) {
-                        String arg = args[0].toString();
-                        Map<String, dynamic> data = jsonDecode(arg);
-                        Notes note = Notes();
-                        note.lessonId = int.parse(data['lessonId']);
-                        note.lesson = data['lesson'];
-                        note.sectionId = int.parse(data['sectionId']);
-                        note.section = data['section'];
-                        note.courseId = int.parse(data['courseId']);
-                        note.course = data['course'];
-                        note.time = _getTime(data['time'].toString());
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NotePage(note)));
-                      });
+                  // _webViewController.addJavaScriptHandler(
+                  //     handlerName: 'playVideo',
+                  //     callback: (args) {
+                  //       // return data to JavaScript side!
+                  //       return 123;
+                  //     });
+                  // _webViewController.addJavaScriptHandler(
+                  //     handlerName: 'playPause',
+                  //     callback: (args) {
+                  //       print('playPause: $args');
+                  //     });
+                  // _webViewController.addJavaScriptHandler(
+                  //     handlerName: 'playTime',
+                  //     callback: (args) {
+                  //       String arg = args[0].toString();
+                  //       Map<String, dynamic> data = jsonDecode(arg);
+                  //       Notes note = Notes();
+                  //       note.lessonId = int.parse(data['lessonId']);
+                  //       note.lesson = data['lesson'];
+                  //       note.sectionId = int.parse(data['sectionId']);
+                  //       note.section = data['section'];
+                  //       note.courseId = int.parse(data['courseId']);
+                  //       note.course = data['course'];
+                  //       note.time = _getTime(data['time'].toString());
+                  //       Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => NotePage(note)));
+                  //     });
                 },
                 onConsoleMessage: (controller, consoleMessage) {
                   print('consoleMessage');

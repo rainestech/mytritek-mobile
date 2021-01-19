@@ -1,7 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:tritek_lms/blocs/notes.bloc.dart';
+import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/data/entity/note.dart';
+import 'package:tritek_lms/data/entity/users.dart';
 import 'package:tritek_lms/pages/notes/views/StaggeredTiles.dart';
 
 import 'HomePage.dart';
@@ -19,12 +22,26 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   //a map which will be used in inflating our staggered grid view
   List<Notes> _allNotesInQueryResult = [];
   viewType notesViewType;
+  Users _user = Users();
 
   @override
   void initState() {
     super.initState();
     this.notesViewType = widget.notesViewType;
 
+    if (_user != null && _user.id == null) {
+      userBloc.userSubject.listen((value) {
+        if (!mounted) {
+          return;
+        }
+
+        setState(() {
+          _user = value != null ? value.results : null;
+        });
+      });
+
+      userBloc.getUser();
+    }
     noteBloc.subject.listen((value) {
       if (!mounted) {
         return;
@@ -63,6 +80,23 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
     //       ),
     //     )
     // );
+    if (_allNotesInQueryResult.length < 1)
+      return Center(
+        child: AutoSizeText(
+          _user == null
+              ? 'Login to Sync Notes'
+              : 'You have No Note! Watch Lessons to create one',
+          maxLines: 5,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 18.0,
+            fontFamily: 'Signika Negative',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
+
     if (widget.notesViewType == viewType.List)
       return Container(
           child: Padding(
@@ -75,27 +109,27 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
           children:
               // _allNotesInQueryResult.map((i) { return _tileGenerator(i)}),;
               List.generate(_allNotesInQueryResult.length, (i) {
-            return _tileGenerator(i);
-          }),
-          staggeredTiles: _tilesForView(),
-        ),
-      ));
+                return _tileGenerator(i);
+              }),
+              staggeredTiles: _tilesForView(),
+            ),
+          ));
 
     return Container(
         child: Padding(
-      padding: _paddingForView(context),
-      child: StaggeredGridView.count(
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
-        crossAxisCount: _colForStaggeredView(context),
-        children:
+          padding: _paddingForView(context),
+          child: StaggeredGridView.count(
+            crossAxisSpacing: 6,
+            mainAxisSpacing: 6,
+            crossAxisCount: _colForStaggeredView(context),
+            children:
             // _allNotesInQueryResult.map((i) { return _tileGenerator(i)}),;
             List.generate(_allNotesInQueryResult.length, (i) {
-          return _tileGenerator(i);
-        }),
-        staggeredTiles: _tilesForView(),
-      ),
-    ));
+              return _tileGenerator(i);
+            }),
+            staggeredTiles: _tilesForView(),
+          ),
+        ));
   }
 
   int _colForStaggeredView(BuildContext context) {

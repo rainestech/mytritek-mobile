@@ -416,7 +416,7 @@ class _SettingsState extends State<Settings> {
                   SizedBox(height: 20.0),
                   InkWell(
                     onTap: () {
-                      _launchURL('https://mytritek.co.uk/contact-us/');
+                      _launchURL('https://tritekconsulting.co.uk/contact');
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(

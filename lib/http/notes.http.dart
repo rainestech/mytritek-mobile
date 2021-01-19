@@ -92,6 +92,7 @@ class NoteApiProvider {
       Response response = await _dio.patch(syncNoteEndpoint, data: req);
       return NotesResponse.fromJson(response.data, 0);
     } catch (e) {
+      print('sycn error: ${e.message}');
       if (e.response != null) {
         Map<String, dynamic> error = json.decode(e.response.toString());
         return NotesResponse.withError(error['message'], error['error']);
@@ -108,6 +109,7 @@ class NoteApiProvider {
     try {
       final Dio _dio = await HttpClient.http();
       await _dio.delete(deleteNoteEndpoint + note.id.toString());
+      print('Note Deleted');
       return true;
     } catch (e) {
       return false;

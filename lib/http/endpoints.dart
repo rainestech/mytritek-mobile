@@ -91,3 +91,10 @@ String editNoteEndpoint = "$_endpoint/note/edit";
 String syncNoteEndpoint = "$_endpoint/notes/sync";
 String deleteNoteEndpoint = "$_endpoint/note/delete/";
 String deleteAllNotesEndpoint = "$_endpoint/notes/delete";
+
+/*
+* WishList Api Calls
+ */
+String wishListEndpoint = "$_endpoint/wishlist";
+String saveListEndpoint = "$_endpoint/wishlist/save";
+String deleteListEndpoint = "$_endpoint/wishlist/delete/";
