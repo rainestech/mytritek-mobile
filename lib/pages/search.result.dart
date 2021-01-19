@@ -9,8 +9,9 @@ import 'package:tritek_lms/pages/course/lesson.view.dart';
 
 class SearchResult extends StatefulWidget {
   final String searchTerm;
+  final List<Course> courses;
 
-  SearchResult(this.searchTerm);
+  SearchResult(this.searchTerm, this.courses);
 
   @override
   _SearchResultState createState() => _SearchResultState();
@@ -22,8 +23,8 @@ class _SearchResultState extends State<SearchResult> {
   @override
   void initState() {
     super.initState();
-    bloc.searchLessons(widget.searchTerm);
-    // noteBloc.searchNote(widget.searchTerm);
+    // bloc.searchLessons(widget.searchTerm);
+    bloc.searchLessonsFromCourses(widget.searchTerm, widget.courses);
     getToken();
   }
 

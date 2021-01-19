@@ -307,4 +307,27 @@ class CourseRepository {
     await sectionsDao.deleteAll();
     await courseDao.deleteAll();
   }
+
+  List<LessonSearch> searchLessonFromCourses(
+      String term, List<Course> courses) {
+    List<LessonSearch> response = [];
+    for (Course course in courses) {
+      for (Sections section in course.sections) {
+        for (Lessons lesson in section.lessons) {
+          if (lesson.postTitle.toLowerCase().contains(term.toLowerCase())) {
+            var search = LessonSearch();
+            search.section = section.sectionName;
+            search.lesson = lesson.postTitle;
+            search.course = course.title;
+            search.itemId = lesson.itemId;
+
+            response.add(search);
+          }
+        }
+      }
+    }
+
+    print(response.length.toString());
+    return response;
+  }
 }

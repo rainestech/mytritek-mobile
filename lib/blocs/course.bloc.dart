@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tritek_lms/data/entity/courses.dart';
 import 'package:tritek_lms/data/repository/course.repository.dart';
@@ -65,9 +64,15 @@ class CourseBloc {
     _courseSubject.sink.add(response);
   }
 
-  searchLessons(String term) async {
-    List<LessonSearch> response = await _repository.searchLesson(term);
-    debugPrint('Searching lesson...');
+  // searchLessons(String term) async {
+  //   List<LessonSearch> response = await _repository.searchLesson(term);
+  //   debugPrint('Searching lesson...');
+  //   _search.sink.add(response);
+  // }
+
+  searchLessonsFromCourses(String term, List<Course> courses) async {
+    List<LessonSearch> response =
+        _repository.searchLessonFromCourses(term, courses);
     _search.sink.add(response);
   }
 

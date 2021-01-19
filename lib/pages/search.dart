@@ -18,8 +18,8 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   final searchController = TextEditingController();
   List<String> lessons = [];
-
   String selectedValue = '';
+  List<Course> courses;
 
   @override
   void initState() {
@@ -33,6 +33,16 @@ class _SearchState extends State<Search> {
 
       setState(() {
         lessons = value;
+      });
+    });
+
+    bloc.subject.listen((value) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        courses = value.results;
       });
     });
 
@@ -255,10 +265,14 @@ class _SearchState extends State<Search> {
       return;
     }
 
+    if (courses == null) {
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchResult(term),
+        builder: (context) => SearchResult(term, courses),
       ),
     );
   }
