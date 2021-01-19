@@ -56,6 +56,15 @@ class UserRepository {
     return response;
   }
 
+  Future<UserResponse> getUser() async {
+    print('Getting user');
+    final UserResponse response = await _apiProvider.getUser();
+    if (response.results != null) {
+      await saveUser(response.results);
+    }
+    return response;
+  }
+
   Future<RegisterResponse> changePassword(
       String email, String password, String oldPassword) async {
     RegisterResponse response =
@@ -94,6 +103,13 @@ class UserRepository {
   }
 
   Future<UserResponse> getDbUser() async {
+    // UserResponse resp = await getUser();
+    // if (resp.results != null) {
+    //   await saveUser(resp.results);
+    //
+    //   return resp;
+    // }
+
     final database = await AppDB().getDatabase();
     final userDao = database.userDao;
 

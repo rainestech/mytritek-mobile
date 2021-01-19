@@ -60,12 +60,24 @@ class UserBloc {
   BehaviorSubject<File> get image => _image;
 
   void getUser() async {
+    updateUser();
     UserResponse resp = await _repository.getDbUser();
     if (_isDisposed) {
       return;
     }
     _userSubject.sink.add(resp);
     _userStatus.sink.add(resp.results != null);
+  }
+
+  void updateUser() async {
+    UserResponse resp = await _repository.getUser();
+    if (_isDisposed) {
+      return;
+    }
+
+    if (resp.results != null) {
+      _userSubject.sink.add(resp);
+    }
   }
 
   void getToken() async {

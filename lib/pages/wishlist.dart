@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 import 'package:tritek_lms/blocs/user.bloc.dart';
 import 'package:tritek_lms/blocs/wishlist.bloc.dart';
@@ -372,10 +373,9 @@ class _WishlistState extends State<Wishlist> {
               } else if (snapshot.hasError) {
                 return HttpErrorWidget(snapshot.error, width, height);
               } else if (_user != null && _user.id == null) {
-                return LoadingWidget(width, height);
+                return _noItemWidget(width, height);
               }
-
-              return _noItemWidget(width, height);
+              return LoadingWidget(width, height);
             },
           ));
     }
@@ -388,5 +388,10 @@ class _WishlistState extends State<Wishlist> {
 
   void _deleteList(WishList wishlist) {
     wishListBloc.delete(wishlist);
+    Fluttertoast.showToast(
+      msg: 'Lesson Removed from WishList!',
+      backgroundColor: Colors.black,
+      textColor: Theme.of(context).appBarTheme.color,
+    );
   }
 }

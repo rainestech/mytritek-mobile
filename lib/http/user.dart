@@ -233,4 +233,14 @@ class UserApiProvider {
     }
   }
 
+  Future<UserResponse> getUser() async {
+    try {
+      final Dio _dio = await HttpClient.http();
+      Response response = await _dio.get(editUserEndpoint);
+      return UserResponse.fromJson(response.data, response.data.length);
+    } catch (e) {
+      print(e.message);
+      return UserResponse.withError(e.message, "Network Error");
+    }
+  }
 }

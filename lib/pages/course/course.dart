@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:share/share.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
@@ -81,30 +80,30 @@ class _CoursePageState extends State<CoursePage> {
     wishlist = widget.courseData.wishList ?? false;
   }
 
-  onAddedInWishlist() {
-    setState(() {
-      if (wishlist) {
-        wishlist = false;
-        bloc.setWishlist(widget.courseData, false);
-        Fluttertoast.showToast(
-          msg: 'Course Removed from WishList',
-          backgroundColor: Colors.black,
-          textColor: Theme.of(context).appBarTheme.color,
-        );
-      } else {
-        wishlist = true;
-        bloc.setWishlist(widget.courseData, true);
-        Fluttertoast.showToast(
-          msg: 'Course Added to WishList',
-          backgroundColor: Colors.black,
-          textColor: Theme
-              .of(context)
-              .appBarTheme
-              .color,
-        );
-      }
-    });
-  }
+  // onAddedInWishlist() {
+  //   setState(() {
+  //     if (wishlist) {
+  //       wishlist = false;
+  //       bloc.setWishlist(widget.courseData, false);
+  //       Fluttertoast.showToast(
+  //         msg: 'Course Removed from WishList',
+  //         backgroundColor: Colors.black,
+  //         textColor: Theme.of(context).appBarTheme.color,
+  //       );
+  //     } else {
+  //       wishlist = true;
+  //       bloc.setWishlist(widget.courseData, true);
+  //       Fluttertoast.showToast(
+  //         msg: 'Course Added to WishList',
+  //         backgroundColor: Colors.black,
+  //         textColor: Theme
+  //             .of(context)
+  //             .appBarTheme
+  //             .color,
+  //       );
+  //     }
+  //   });
+  // }
 
   getRatings(Course course) {
     int r = 0;
@@ -155,29 +154,27 @@ class _CoursePageState extends State<CoursePage> {
                   ),
                 ),
                 actions: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child:
-                    InkWell(
-                      onTap: () {
-                        onAddedInWishlist();
-                      },
-                      child:
-                      Icon(
-                        (wishlist) ? Icons.favorite : Icons.favorite_border,
-                        color: iconColor,
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 12),
+                  //   child:
+                  //   InkWell(
+                  //     onTap: () {
+                  //       onAddedInWishlist();
+                  //     },
+                  //     child:
+                  //     Icon(
+                  //       (wishlist) ? Icons.favorite : Icons.favorite_border,
+                  //       color: iconColor,
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12),
-                      child:
-                      InkWell(
+                      child: InkWell(
                         onTap: () {
                           share();
                         },
-                        child:
-                        Icon(
+                        child: Icon(
                           Icons.share,
                           color: iconColor,
                         ),
