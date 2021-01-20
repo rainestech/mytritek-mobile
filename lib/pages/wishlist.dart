@@ -373,11 +373,10 @@ class _WishlistState extends State<Wishlist> {
               } else if (snapshot.hasError) {
                 return HttpErrorWidget(snapshot.error, width, height);
               } else if (_user != null && _user.id == null) {
-                return _noItemWidget(width, height);
-              } else if (_user == null) {
-                return _noItemWidget(width, height);
+                return LoadingWidget(width, height);
               }
-              return LoadingWidget(width, height);
+
+              return _noItemWidget(width, height);
             },
           ));
     }
