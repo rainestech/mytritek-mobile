@@ -57,7 +57,6 @@ class UserRepository {
   }
 
   Future<UserResponse> getUser() async {
-    print('Getting user');
     final UserResponse response = await _apiProvider.getUser();
     if (response.results != null) {
       await saveUser(response.results);

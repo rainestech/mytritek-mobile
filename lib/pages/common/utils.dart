@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tritek_lms/appTheme/appTheme.dart';
 
@@ -27,7 +28,22 @@ class HttpErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: AutoSizeText(error),
-    );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.error_outline,
+          size: 50,
+          color: Colors.orange,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        AutoSizeText(
+          error,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ));
   }
 }

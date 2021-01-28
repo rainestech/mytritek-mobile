@@ -14,7 +14,6 @@ import 'package:tritek_lms/pages/course/lesson.view.dart';
 import 'package:tritek_lms/pages/settings/account.settings.dart';
 
 import 'common/utils.dart';
-import 'login_signup/login.dart';
 
 class Wishlist extends StatefulWidget {
   @override
@@ -207,69 +206,6 @@ class _WishlistState extends State<Wishlist> {
                 fontSize: 18.0,
                 fontFamily: 'Signika Negative',
                 fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    Widget _noLoginWidget(double width, double height) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.person_add_disabled,
-              color: Colors.grey,
-              size: 60.0,
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            AutoSizeText(
-              'You are yet to login',
-              style: TextStyle(
-                color: themeBlue,
-                fontSize: 18.0,
-                fontFamily: 'Signika Negative',
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Login(null, null)));
-                },
-                borderRadius: BorderRadius.circular(30.0),
-                child: Material(
-                  elevation: 1.0,
-                  borderRadius: BorderRadius.circular(30.0),
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(40.0, 15.0, 40.0, 15.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      color: themeBlue,
-                    ),
-                    child: Text(
-                      'Login Here'.toUpperCase(),
-                      style: TextStyle(
-                        color: themeGold,
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
           ],
